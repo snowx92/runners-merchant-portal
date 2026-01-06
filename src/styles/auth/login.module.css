@@ -1,0 +1,9 @@
+.forgotPassword {
+    display: block;
+    text-align: left;
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 600;
+    margin-top: 0.8rem;
+    margin-bottom: 2rem;
+}

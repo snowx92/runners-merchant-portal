@@ -1,0 +1,325 @@
+/* Main Container */
+.mainContainer {
+    min-height: 100vh;
+    background-color: #FAFAFA;
+    direction: rtl;
+    /* Arabic Layout */
+    padding-bottom: 4rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Navbar */
+.navbar {
+    background-color: white;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.03);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.navContent {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navRight {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.navLinks {
+    display: flex;
+    gap: 2rem;
+}
+
+.navLink {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: #888;
+    font-weight: 500;
+    transition: color 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+
+.navLinkActive {
+
+}
+
+.navLink:hover {
+    color: #111;
+    transform: scale(1.07);
+}
+
+.navLeft {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.navIcon {
+    color: #333;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.navIcon:hover {
+    opacity: 0.7;
+    transform: scale(1.1);
+}
+
+.profileIcon img {
+    filter: brightness(0);
+}
+
+/* Hero Section */
+.pageTitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111;
+    margin: 2rem 0 1.5rem 0;
+}
+
+.heroCard {
+    background-color: #1A1A1A;
+    /* Fallback */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/hero-bg-placeholder.jpg');
+    /* Need an image, will map to color for now or generic */
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    padding: 3rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    /* RTL: Start is Right */
+    min-height: 280px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Since direction is RTL, flex-start aligns to Right. */
+.heroContent {
+    max-width: 50%;
+    z-index: 2;
+}
+
+.heroTitle {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.heroSubtitle {
+    font-size: 1rem;
+    color: #DDD;
+    margin-bottom: 1.5rem;
+}
+
+.heroButton {
+    background: white;
+    color: #111;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.heroButton:hover {
+    transform: scale(1.05);
+}
+
+.paginationDots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: -1rem;
+    /* Visual adjustment */
+    margin-bottom: 2rem;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #DDD;
+    cursor: pointer;
+}
+
+.dotActive {
+    background-color: #333;
+}
+
+/* Stats Section */
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.statCard {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        justify-content: flex-start;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.statInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+        text-align: right;
+}
+
+.statValue {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #111;
+}
+
+.statLabel {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.statIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #F5F5F5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+}
+
+.statIconLarge {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: #ededed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+}
+
+/* Recent Orders */
+.ordersHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.viewAll {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ordersList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.orderCard {
+    background: white;
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.orderInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.orderTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111;
+}
+
+.orderSub {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.badge {
+    padding: 0.4rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.badgePending {
+    background-color: #FFF8E1;
+    color: #FFA000;
+}
+
+.badgeNew {
+    background-color: #E3F2FD;
+    color: #2196F3;
+}
+
+.badgeCompleted {
+    background-color: #E8F5E9;
+    color: #4CAF50;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+    .navRight {
+        gap: 1rem;
+    }
+
+    .navLinks {
+        display: none;
+        /* Mobile menu needed logic, hiding for now or simplify */
+    }
+
+    .statsGrid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}

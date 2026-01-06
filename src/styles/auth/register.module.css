@@ -1,0 +1,37 @@
+.row {
+    display: flex;
+    gap: 1rem;
+}
+
+.col {
+    flex: 1;
+}
+
+.checkboxWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    justify-content: flex-start;
+}
+
+.checkboxLabel {
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid #DDD;
+    cursor: pointer;
+    appearance: checkbox;
+    accent-color: #1A1A1A;
+}
+
+.phoneInputWrapper {
+    direction: ltr;
+    /* Ensure flag + number flow LTR */
+}

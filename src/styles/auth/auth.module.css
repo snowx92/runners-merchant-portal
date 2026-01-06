@@ -1,0 +1,240 @@
+.authContainer {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #FAFAFA;
+    font-family: inherit;
+    direction: ltr;
+    /* Main layout LTR to keep logo on left */
+}
+
+/* We want the content inside to be RTL */
+.contentRTL {
+    direction: rtl;
+}
+
+.splitLayout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8rem;
+    width: 100%;
+    max-width: 1400px;
+    padding: 2rem;
+}
+
+/* Logo Side */
+.logoSide {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 300px;
+}
+
+.logoImage {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+}
+
+.logoTagline {
+    color: #777;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+    text-align: center;
+    width: 100%;
+    line-height: 1.5;
+}
+
+/* Card Side */
+.card {
+    background: white;
+    border-radius: 24px;
+    padding: 3rem 3rem;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 4px 40px rgba(0, 0, 0, 0.04);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 0.8rem;
+}
+
+.subtitle {
+    color: #888;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+/* Shared Form Elements (Inputs, Buttons, Divider) */
+.formGroup {
+    margin-bottom: 1.25rem;
+    text-align: right;
+}
+
+.label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.6rem;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background-color: #F8F9FA;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: #333;
+    transition: all 0.2s;
+    outline: none;
+    text-align: right;
+    font-family: inherit;
+}
+
+.input:focus {
+    background-color: #fff;
+    border-color: #E5E7EB;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+}
+
+.input::placeholder {
+    color: #BBB;
+    font-family: inherit;
+}
+
+.iconButton {
+    position: absolute;
+    left: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+
+.submitButton {
+    width: 100%;
+    padding: 1rem;
+    background-color: #1A1A1A;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-family: inherit;
+}
+
+.submitButton:hover {
+    opacity: 0.9;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #CCC;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.divider::before {
+    margin-left: 1rem;
+}
+
+.divider::after {
+    margin-right: 1rem;
+}
+
+.socialButtons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.socialBtn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem;
+    background: white;
+    border: 1px solid #EEE;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #333;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    font-family: inherit;
+}
+
+.socialBtn:hover {
+    border-color: #DDD;
+    background-color: #FAFAFA;
+}
+
+.footerLink {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #666;
+    font-weight: 600;
+}
+
+.footerLink a {
+    color: #111;
+    margin-right: 0.3rem;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+    .splitLayout {
+        flex-direction: column;
+        gap: 3rem;
+        padding: 2rem 1rem;
+    }
+
+    .logoSide {
+        align-items: center;
+        max-width: 100%;
+    }
+
+    .card {
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+}
