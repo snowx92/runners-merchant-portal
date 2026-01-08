@@ -1,8 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import styles from "@/styles/home/home.module.css";
 
 export const Navbar = () => {
+    const pathname = usePathname();
+
     return (
         <nav className={styles.navbar}>
             <div className={styles.navContent}>
@@ -18,21 +23,45 @@ export const Navbar = () => {
                         />
                     </Link>
                     <div className={styles.navLinks}>
-                        <Link href="/" className={`${styles.navLink} ${styles.navLinkActive}`}>
+                        <Link href="/" className={`${styles.navLink} ${pathname === '/' ? styles.navLinkActive : ''}`}>
+                            <Image
+                                src="/icons/Home.svg"
+                                alt="Home"
+                                width={20}
+                                height={20}
+                                className={pathname === '/' ? styles.navIconActive : styles.navIconInactive}
+                            />
                             الرئيسية
-                            <Image src="/icons/Home.svg" alt="Home" width={20} height={20} />
                         </Link>
-                        <Link href="/orders" className={styles.navLink}>
+                        <Link href="/orders" className={`${styles.navLink} ${pathname === '/orders' ? styles.navLinkActive : ''}`}>
+                            <Image
+                                src="/icons/Box.svg"
+                                alt="Orders"
+                                width={20}
+                                height={20}
+                                className={pathname === '/orders' ? styles.navIconActive : styles.navIconInactive}
+                            />
                             الطلبات
-                            <Image src="/icons/Box.svg" alt="Orders" width={20} height={20} />
                         </Link>
-                        <Link href="/wallet" className={styles.navLink}>
+                        <Link href="/wallet" className={`${styles.navLink} ${pathname === '/wallet' ? styles.navLinkActive : ''}`}>
+                            <Image
+                                src="/icons/Wallet.svg"
+                                alt="Wallet"
+                                width={20}
+                                height={20}
+                                className={pathname === '/wallet' ? styles.navIconActive : styles.navIconInactive}
+                            />
                             المحفظة
-                            <Image src="/icons/Wallet.svg" alt="Wallet" width={20} height={20} />
                         </Link>
-                        <Link href="/profile" className={styles.navLink}>
+                        <Link href="/profile" className={`${styles.navLink} ${pathname === '/profile' ? styles.navLinkActive : ''}`}>
+                            <Image
+                                src="/icons/Profile.svg"
+                                alt="Profile"
+                                width={20}
+                                height={20}
+                                className={pathname === '/profile' ? styles.navIconActive : styles.navIconInactive}
+                            />
                             ملف شخصي
-                            <Image src="/icons/Profile.svg" alt="Profile" width={20} height={20} />
                         </Link>
                     </div>
                 </div>

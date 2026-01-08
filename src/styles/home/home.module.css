@@ -55,15 +55,26 @@
     font-weight: 500;
     transition: color 0.2s, transform 0.2s;
     cursor: pointer;
+    flex-direction: row-reverse;
 }
 
 .navLinkActive {
-
+    color: #111 !important;
+    font-weight: 700;
 }
 
 .navLink:hover {
     color: #111;
     transform: scale(1.07);
+}
+
+.navIconActive {
+    filter: brightness(0);
+}
+
+.navIconInactive {
+    filter: brightness(0) saturate(100%) invert(67%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(95%) contrast(85%);
+    opacity: 0.5;
 }
 
 .navLeft {

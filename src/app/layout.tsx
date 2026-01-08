@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Cairo } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({ subsets: ["latin"] });
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 export const metadata: Metadata = {
   title: "Runners Merchant Portal",
@@ -15,11 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ar" dir="rtl">
       <head>
         <link rel="icon" href="/navLogo.png" type="image/png" />
       </head>
-      <body className={outfit.className}>{children}</body>
+      <body className={cairo.className}>{children}</body>
     </html>
   );
 }
