@@ -52,7 +52,7 @@ export default function BulkOrder() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [orders, setOrders] = useState<BulkOrder[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
-  const [showCountryDropdown, setShowCountryDropdown] = useState<{[key: number]: boolean}>({});
+  const [showCountryDropdown, setShowCountryDropdown] = useState<{ [key: number]: boolean }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   const orderFileInputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
 
@@ -173,6 +173,24 @@ export default function BulkOrder() {
     }));
   };
 
+  const handleDownloadTemplate = () => {
+    const headers = [
+      "اسم العميل",
+      "رقم الهاتف",
+      "المدينة",
+      "الحي",
+      "العنوان",
+      "وصف الشحنة",
+      "سعر الشحنة",
+      "سعر التوصيل",
+      "ملاحظات"
+    ];
+    const ws = XLSX.utils.json_to_sheet([], { header: headers });
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Template");
+    XLSX.writeFile(wb, "orders-template.xlsx");
+  };
+
   return (
     <main className={`${styles.mainContainer} ${cairo.className}`}>
       <Navbar />
@@ -255,7 +273,9 @@ export default function BulkOrder() {
 
             <p className={styles.uploadHint}>
               يجب ان يحتوي الملف على المعلومات الاساسية لكل طلب{" "}
-              <span className={styles.downloadLink}>تحميل ملف ارشادي</span>
+              <span className={styles.downloadLink} onClick={handleDownloadTemplate} style={{ cursor: "pointer", textDecoration: "underline" }}>
+                تحميل ملف ارشادي
+              </span>
             </p>
           </div>
         ) : (

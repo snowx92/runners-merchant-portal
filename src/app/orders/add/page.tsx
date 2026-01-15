@@ -4,8 +4,15 @@ import { Navbar } from "@/components/home/Navbar";
 import styles from "@/styles/orders/addOrder.module.css";
 import { Cairo } from "next/font/google";
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { zoneService } from "@/lib/api/services/zoneService";
+import { orderService } from "@/lib/api/services/orderService";
+import { locationService } from "@/lib/api/services/locationService";
+import type { UserAddress } from "@/lib/api/types/address.types";
+import type { Zone } from "@/lib/api/types/zone.types";
+import type { CreateOrderRequest } from "@/lib/api/types/order.types";
+import * as XLSX from "xlsx";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -13,23 +20,7 @@ const cairo = Cairo({
   variable: "--font-cairo",
 });
 
-interface Country {
-  name: string;
-  code: string;
-  dialCode: string;
-  flag: string;
-}
 
-const countries: Country[] = [
-  { name: "مصر", code: "EG", dialCode: "+20", flag: "🇪🇬" },
-  { name: "السعودية", code: "SA", dialCode: "+966", flag: "🇸🇦" },
-  { name: "الإمارات", code: "AE", dialCode: "+971", flag: "🇦🇪" },
-  { name: "الكويت", code: "KW", dialCode: "+965", flag: "🇰🇼" },
-  { name: "قطر", code: "QA", dialCode: "+974", flag: "🇶🇦" },
-  { name: "البحرين", code: "BH", dialCode: "+973", flag: "🇧🇭" },
-  { name: "الأردن", code: "JO", dialCode: "+962", flag: "🇯🇴" },
-  { name: "لبنان", code: "LB", dialCode: "+961", flag: "🇱🇧" },
-];
 
 interface OrderForm {
   id: number;
@@ -39,8 +30,12 @@ interface OrderForm {
   recipientAddress: string;
   recipientName: string;
   recipientPhone: string;
-  clientAddress: string;
-  city: string;
+  clientAddressId: string; // Changed to store address ID
+  governorate: string; // المحافظة
+  governorateId: string;
+  city: string; // المدينة
+  cityId: string;
+  paymentType: "COD" | "PREPAID"; // دفع مقدم or مدفوع اونلاين
   notes: string;
   image: string | null;
   isCollapsed: boolean;
@@ -49,8 +44,14 @@ interface OrderForm {
 export default function AddOrder() {
   const router = useRouter();
   const fileInputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
-  const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
-  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+
+
+
+  // API data states
+  const [userAddresses, setUserAddresses] = useState<UserAddress[]>([]);
+  const [zones, setZones] = useState<Zone[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [orders, setOrders] = useState<OrderForm[]>([
     {
       id: 1,
@@ -60,8 +61,12 @@ export default function AddOrder() {
       recipientAddress: "",
       recipientName: "",
       recipientPhone: "",
-      clientAddress: "",
+      clientAddressId: "",
+      governorate: "",
+      governorateId: "",
       city: "",
+      cityId: "",
+      paymentType: "COD", // Default to COD (دفع عند الاستلام)
       notes: "",
       image: null,
       isCollapsed: false,
@@ -69,9 +74,67 @@ export default function AddOrder() {
   ]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  // Fetch addresses and zones on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [addressesRes, zonesRes] = await Promise.allSettled([
+          locationService.getLocations(),
+          zoneService.getZones(),
+        ]);
+
+        if (addressesRes.status === "fulfilled" && addressesRes.value && addressesRes.value.data) {
+          setUserAddresses(addressesRes.value.data);
+        }
+
+        if (zonesRes.status === "fulfilled" && zonesRes.value && zonesRes.value.data) {
+          const zonesData = zonesRes.value.data;
+          setZones(zonesData);
+
+          // Find Cairo (القاهرة) and set it as default for all orders
+          const cairo = zonesData.find((zone) => zone.name === "القاهرة");
+          if (cairo) {
+            setOrders((prev) =>
+              prev.map((order) => ({
+                ...order,
+                governorate: cairo.name,
+                governorateId: cairo.id,
+              }))
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Helper function to get cities for a selected governorate
+  const getCitiesForGovernorate = (governorateId: string) => {
+    const zone = zones.find((z) => z.id === governorateId);
+    return zone?.cities || [];
+  };
+
+  // Handle governorate change - reset city when governorate changes
+  const handleGovernorateChange = (orderId: number, governorateId: string, governorateName: string) => {
+    updateOrder(orderId, "governorateId", governorateId);
+    updateOrder(orderId, "governorate", governorateName);
+    // Reset city when governorate changes
+    updateOrder(orderId, "cityId", "");
+    updateOrder(orderId, "city", "");
+  };
+
   const validateOrder = (order: OrderForm, orderId: number): boolean => {
     const newErrors: { [key: string]: string } = {};
 
+    if (!order.clientAddressId.trim()) {
+      newErrors[`${orderId}_clientAddressId`] = "اختر عنوانك مطلوب";
+    }
     if (!order.packageDescription.trim()) {
       newErrors[`${orderId}_packageDescription`] = "وصف الشحنة مطلوب";
     }
@@ -89,13 +152,13 @@ export default function AddOrder() {
     }
     if (!order.recipientPhone.trim()) {
       newErrors[`${orderId}_recipientPhone`] = "رقم الهاتف مطلوب";
-    } else if (!/^\d{11}$/.test(order.recipientPhone)) {
-      newErrors[`${orderId}_recipientPhone`] = "رقم الهاتف يجب أن يكون 11 رقماً";
+    } else if (!/^\d{11}$/.test(order.recipientPhone) || !order.recipientPhone.startsWith("0")) {
+      newErrors[`${orderId}_recipientPhone`] = "رقم الهاتف يجب أن يكون 11 رقماً ويبدأ بـ 0";
     }
-    if (!order.clientAddress.trim()) {
-      newErrors[`${orderId}_clientAddress`] = "عنوان العميل مطلوب";
+    if (!order.governorateId.trim()) {
+      newErrors[`${orderId}_governorate`] = "المحافظة مطلوبة";
     }
-    if (!order.city.trim()) {
+    if (!order.cityId.trim()) {
       newErrors[`${orderId}_city`] = "المدينة مطلوبة";
     }
 
@@ -118,7 +181,7 @@ export default function AddOrder() {
     updateOrder(orderId, "image", null);
   };
 
-  const updateOrder = (orderId: number, field: keyof OrderForm, value: any) => {
+  const updateOrder = (orderId: number, field: keyof OrderForm, value: OrderForm[keyof OrderForm]) => {
     setOrders((prev) =>
       prev.map((order) =>
         order.id === orderId ? { ...order, [field]: value } : order
@@ -153,8 +216,12 @@ export default function AddOrder() {
           recipientAddress: "",
           recipientName: "",
           recipientPhone: "",
-          clientAddress: "",
+          clientAddressId: "",
+          governorate: "",
+          governorateId: "",
           city: "",
+          cityId: "",
+          paymentType: "COD",
           notes: "",
           image: null,
           isCollapsed: false,
@@ -163,7 +230,7 @@ export default function AddOrder() {
     }
   };
 
-  const handleConfirmOrder = () => {
+  const handleConfirmOrder = async () => {
     let allValid = true;
     orders.forEach((order) => {
       if (!validateOrder(order, order.id)) {
@@ -171,8 +238,78 @@ export default function AddOrder() {
       }
     });
 
-    if (allValid) {
-      router.push("/orders");
+    if (!allValid) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // If there's only one order, create it directly
+      if (orders.length === 1) {
+        const order = orders[0];
+        const orderData: CreateOrderRequest = {
+          clientName: order.recipientName,
+          clientPhone: order.recipientPhone,
+          clientOtherPhone: "", // Optional field - empty for now
+          clientAddress: order.recipientAddress,
+          clientAddressId: order.clientAddressId,
+          gov: order.governorate,
+          govId: order.governorateId,
+          city: order.city,
+          cityId: order.cityId,
+          cash: Number(order.packagePrice),
+          type: order.paymentType,
+          notes: order.notes,
+          content: order.packageDescription,
+          attachment: order.image || "",
+          requiredSupplierFailedAmount: Number(order.deliveryPrice),
+        };
+
+        const response = await orderService.createOrder(orderData);
+
+        if (response) {
+          console.log("✅ Order created successfully:", response);
+          router.push("/orders");
+        } else {
+          throw new Error("Failed to create order");
+        }
+      } else {
+        // Create bulk orders
+        const bulkOrdersData = {
+          orders: orders.map((order) => ({
+            clientName: order.recipientName,
+            clientPhone: order.recipientPhone,
+            clientOtherPhone: "",
+            clientAddress: order.recipientAddress,
+            clientAddressId: order.clientAddressId,
+            gov: order.governorate,
+            govId: order.governorateId,
+            city: order.city,
+            cityId: order.cityId,
+            cash: Number(order.packagePrice),
+            type: order.paymentType as "COD" | "PREPAID",
+            notes: order.notes,
+            content: order.packageDescription,
+            attachment: order.image || "",
+            requiredSupplierFailedAmount: Number(order.deliveryPrice),
+          })),
+        };
+
+        const response = await orderService.createBulkOrders(bulkOrdersData);
+
+        if (response) {
+          console.log("✅ Bulk orders created successfully:", response);
+          router.push("/orders");
+        } else {
+          throw new Error("Failed to create bulk orders");
+        }
+      }
+    } catch (error) {
+      console.error("❌ Error creating order(s):", error);
+      alert(error instanceof Error ? error.message : "فشل في إنشاء الطلب. الرجاء المحاولة مرة أخرى");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -189,6 +326,8 @@ export default function AddOrder() {
       setOrders((prev) => prev.filter((order) => order.id !== orderId));
     }
   };
+
+
 
   const renderOrderForm = (order: OrderForm) => (
     <div key={order.id} className={styles.orderFormWrapper}>
@@ -252,6 +391,157 @@ export default function AddOrder() {
             </div>
           )}
 
+          {/* اختر عنوانك - FIRST FIELD */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>اختر عنوانك</label>
+            <div className={styles.selectWrapper}>
+              <select
+                className={`${styles.select} ${errors[`${order.id}_clientAddressId`] ? styles.inputError : ""}`}
+                value={order.clientAddressId}
+                onChange={(e) => updateOrder(order.id, "clientAddressId", e.target.value)}
+              >
+                <option value="">اختر العنوان</option>
+                {userAddresses.map((address) => (
+                  <option key={address.id} value={address.id}>
+                    {address.title} - {address.street}, {address.city}
+                  </option>
+                ))}
+              </select>
+              <span className={styles.selectArrow}>›</span>
+            </div>
+            {errors[`${order.id}_clientAddressId`] && (
+              <span className={styles.errorText}>{errors[`${order.id}_clientAddressId`]}</span>
+            )}
+          </div>
+
+          {/* المحافظة والمدينة - Governorate and City in same row */}
+          <div className={styles.formRow}>
+            {/* المحافظة - Governorate dropdown */}
+            <div className={styles.formGroup}>
+              <label className={styles.label}>المحافظة</label>
+              <div className={styles.selectWrapper}>
+                <select
+                  className={`${styles.select} ${errors[`${order.id}_governorate`] ? styles.inputError : ""}`}
+                  value={order.governorateId}
+                  onChange={(e) => {
+                    const selectedZone = zones.find((z) => z.id === e.target.value);
+                    if (selectedZone) {
+                      handleGovernorateChange(order.id, selectedZone.id, selectedZone.name);
+                    }
+                  }}
+                >
+                  <option value="">اختر المحافظة</option>
+                  {zones.map((zone) => (
+                    <option key={zone.id} value={zone.id}>
+                      {zone.name}
+                    </option>
+                  ))}
+                </select>
+                <span className={styles.selectArrow}>›</span>
+              </div>
+              {errors[`${order.id}_governorate`] && (
+                <span className={styles.errorText}>{errors[`${order.id}_governorate`]}</span>
+              )}
+            </div>
+            {/* المدينة - City dropdown (depends on governorate) */}
+            <div className={styles.formGroup}>
+              <label className={styles.label}>المدينة</label>
+              <div className={styles.selectWrapper}>
+                <select
+                  className={`${styles.select} ${errors[`${order.id}_city`] ? styles.inputError : ""}`}
+                  value={order.cityId}
+                  onChange={(e) => {
+                    const cities = getCitiesForGovernorate(order.governorateId);
+                    const selectedCity = cities.find((c) => c.id === e.target.value);
+                    if (selectedCity) {
+                      updateOrder(order.id, "cityId", selectedCity.id);
+                      updateOrder(order.id, "city", selectedCity.name);
+                    }
+                  }}
+                  disabled={!order.governorateId}
+                >
+                  <option value="">اختر المدينة</option>
+                  {getCitiesForGovernorate(order.governorateId).map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+                <span className={styles.selectArrow}>›</span>
+              </div>
+              {errors[`${order.id}_city`] && (
+                <span className={styles.errorText}>{errors[`${order.id}_city`]}</span>
+              )}
+            </div>
+
+
+          </div>
+
+          {/* Payment Type - نوع الدفع */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>نوع الدفع</label>
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "1rem",
+              marginTop: "0.5rem",
+              width: "100%"
+            }}>
+              <label style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                cursor: "pointer",
+                flex: 1
+              }}>
+                <input
+                  type="checkbox"
+                  checked={order.paymentType === "COD"}
+                  onChange={() => updateOrder(order.id, "paymentType", "COD")}
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    cursor: "pointer",
+                    borderRadius: "50%",
+                    appearance: "none",
+                    WebkitAppearance: "none",
+                    border: "2px solid #ddd",
+                    position: "relative",
+                    backgroundColor: order.paymentType === "COD" ? "#000" : "transparent",
+                    transition: "all 0.2s ease"
+                  }}
+                />
+                <span style={{ fontSize: "14px" }}>دفع عند الاستلام (COD)</span>
+              </label>
+              <label style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                cursor: "pointer",
+                flex: 1
+              }}>
+                <input
+                  type="checkbox"
+                  checked={order.paymentType === "PREPAID"}
+                  onChange={() => updateOrder(order.id, "paymentType", "PREPAID")}
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    cursor: "pointer",
+                    borderRadius: "50%",
+                    appearance: "none",
+                    WebkitAppearance: "none",
+                    border: "2px solid #ddd",
+                    position: "relative",
+                    backgroundColor: order.paymentType === "PREPAID" ? "#000" : "transparent",
+                    transition: "all 0.2s ease"
+                  }}
+                />
+                <span style={{ fontSize: "14px" }}>مدفوع اونلاين (Prepaid)</span>
+              </label>
+            </div>
+          </div>
+
           <div className={styles.formGroup}>
             <label className={styles.label}>وصف الشحنة</label>
             <textarea
@@ -298,7 +588,9 @@ export default function AddOrder() {
           <div className={styles.formGroup}>
             <label className={styles.label}>صورة الشحنة (اختياري)</label>
             <input
-              ref={(el) => (fileInputRefs.current[order.id] = el)}
+              ref={(el) => {
+                fileInputRefs.current[order.id] = el;
+              }}
               type="file"
               accept="image/png, image/jpeg"
               onChange={(e) => handleImageUpload(e, order.id)}
@@ -376,85 +668,21 @@ export default function AddOrder() {
 
           <div className={styles.formGroup}>
             <label className={styles.label}>رقم هاتف المستلم</label>
-            <div className={styles.phoneInputWrapper}>
-              <input
-                type="text"
-                className={`${styles.phoneInputField} ${errors[`${order.id}_recipientPhone`] ? styles.inputError : ""}`}
-                placeholder="ادخل رقم الهاتف"
-                value={order.recipientPhone}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, "");
-                  if (value.length <= 11) {
-                    updateOrder(order.id, "recipientPhone", value);
-                  }
-                }}
-                maxLength={11}
-              />
-              <div className={styles.countryCodeWrapper}>
-                <div
-                  className={styles.countryCodeButton}
-                  onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                >
-                  <span className={styles.flag}>{selectedCountry.flag}</span>
-                  <span className={styles.dialCode}>{selectedCountry.dialCode}</span>
-                  <span className={styles.dropdownArrow}>▼</span>
-                </div>
-                {showCountryDropdown && (
-                  <div className={styles.countryDropdown}>
-                    {countries.map((country) => (
-                      <div
-                        key={country.code}
-                        className={styles.countryOption}
-                        onClick={() => {
-                          setSelectedCountry(country);
-                          setShowCountryDropdown(false);
-                        }}
-                      >
-                        <span className={styles.flag}>{country.flag}</span>
-                        <span className={styles.countryName}>{country.name}</span>
-                        <span className={styles.dialCode}>{country.dialCode}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-            {errors[`${order.id}_recipientPhone`] && (
-              <span className={styles.errorText}>{errors[`${order.id}_recipientPhone`]}</span>
-            )}
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>عنوان العميل</label>
             <input
               type="text"
-              className={`${styles.input} ${errors[`${order.id}_clientAddress`] ? styles.inputError : ""}`}
-              placeholder="ادخل عنوان العميل هنا"
-              value={order.clientAddress}
-              onChange={(e) => updateOrder(order.id, "clientAddress", e.target.value)}
+              className={`${styles.input} ${errors[`${order.id}_recipientPhone`] ? styles.inputError : ""}`}
+              placeholder="ادخل رقم الهاتف (01xxxxxxxxx)"
+              value={order.recipientPhone}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                if (value.length <= 11) {
+                  updateOrder(order.id, "recipientPhone", value);
+                }
+              }}
+              maxLength={11}
             />
-            {errors[`${order.id}_clientAddress`] && (
-              <span className={styles.errorText}>{errors[`${order.id}_clientAddress`]}</span>
-            )}
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>المدينة</label>
-            <div className={styles.selectWrapper}>
-              <select
-                className={`${styles.select} ${errors[`${order.id}_city`] ? styles.inputError : ""}`}
-                value={order.city}
-                onChange={(e) => updateOrder(order.id, "city", e.target.value)}
-              >
-                <option value="">اختر المدينة</option>
-                <option value="القاهرة">القاهرة</option>
-                <option value="الجيزة">الجيزة</option>
-                <option value="الإسكندرية">الإسكندرية</option>
-              </select>
-              <span className={styles.selectArrow}>›</span>
-            </div>
-            {errors[`${order.id}_city`] && (
-              <span className={styles.errorText}>{errors[`${order.id}_city`]}</span>
+            {errors[`${order.id}_recipientPhone`] && (
+              <span className={styles.errorText}>{errors[`${order.id}_recipientPhone`]}</span>
             )}
           </div>
 
@@ -480,6 +708,7 @@ export default function AddOrder() {
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.toggleContainer}>
+
             <button
               className={styles.toggleButton}
               onClick={handleAddAnotherOrder}
@@ -489,8 +718,9 @@ export default function AddOrder() {
             <button
               className={`${styles.toggleButton} ${styles.toggleButtonActive}`}
               onClick={handleConfirmOrder}
+              disabled={loading}
             >
-              تأكيد الطلب
+              {loading ? "جاري التحميل..." : "تأكيد الطلب"}
             </button>
           </div>
           <h1 className={styles.pageTitle}>

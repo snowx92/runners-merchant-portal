@@ -2,11 +2,31 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import styles from "@/styles/home/home.module.css";
+import { getFirebaseAuth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
+import { SessionManager } from "@/lib/utils/session";
 
 export const Navbar = () => {
     const pathname = usePathname();
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            const auth = getFirebaseAuth();
+            await signOut(auth);
+
+            // Clear session
+            const sessionManager = SessionManager.getInstance();
+            sessionManager.clearAll();
+
+            // Redirect to login
+            router.push("/auth/login");
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
+    };
 
     return (
         <nav className={styles.navbar}>
@@ -77,6 +97,17 @@ export const Navbar = () => {
                     <div className={`${styles.navIcon} ${styles.profileIcon}`}>
                         <Image src="/icons/Profile.svg" alt="User" width={24} height={24} />
                     </div>
+                    <button
+                        onClick={handleLogout}
+                        className={styles.logoutButton}
+                        title="تسجيل الخروج"
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M16 17L21 12L16 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M21 12H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </nav>

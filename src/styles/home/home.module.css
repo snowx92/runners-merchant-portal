@@ -98,6 +98,25 @@
     filter: brightness(0);
 }
 
+.logoutButton {
+    background: none;
+    border: none;
+    color: #DC2626;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s, transform 0.2s;
+    border-radius: 8px;
+}
+
+.logoutButton:hover {
+    opacity: 0.7;
+    transform: scale(1.1);
+    background: rgba(220, 38, 38, 0.1);
+}
+
 /* Hero Section */
 .pageTitle {
     font-size: 1.5rem;
@@ -316,6 +335,11 @@
 .badgeCompleted {
     background-color: #E8F5E9;
     color: #4CAF50;
+}
+
+.badgeCancelled {
+    background-color: #FFEBEE;
+    color: #F44336;
 }
 
 /* Responsive */

@@ -137,7 +137,8 @@
     padding: 0;
 }
 
-.submitButton {
+.submitButton,
+.button {
     width: 100%;
     padding: 1rem;
     background-color: #1A1A1A;
@@ -149,10 +150,18 @@
     cursor: pointer;
     transition: opacity 0.2s;
     font-family: inherit;
+    text-align: center;
 }
 
-.submitButton:hover {
+.submitButton:hover,
+.button:hover {
     opacity: 0.9;
+}
+
+.submitButton:disabled,
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .divider {
@@ -185,7 +194,8 @@
     margin-bottom: 2rem;
 }
 
-.socialBtn {
+.socialBtn,
+.socialButton {
     flex: 1;
     display: flex;
     align-items: center;
@@ -203,7 +213,8 @@
     font-family: inherit;
 }
 
-.socialBtn:hover {
+.socialBtn:hover,
+.socialButton:hover {
     border-color: #DDD;
     background-color: #FAFAFA;
 }
@@ -218,6 +229,17 @@
 .footerLink a {
     color: #111;
     margin-right: 0.3rem;
+}
+
+.error {
+    background-color: #FEE2E2;
+    color: #DC2626;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    border: 1px solid #FECACA;
 }
 
 /* Responsive */

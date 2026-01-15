@@ -318,6 +318,218 @@
     text-align: right;
 }
 
+/* Loading and Empty States */
+.loadingState,
+.emptyState {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #999;
+    font-size: 1.1rem;
+}
+
+/* Runner Info */
+.runnerInfo {
+    margin: 1rem 0 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.infoItem {
+    font-size: 0.95rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.infoItem strong {
+    color: #111;
+    font-weight: 600;
+}
+
+/* Load More */
+.loadMoreWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.loadMoreButton {
+    padding: 0.875rem 2.5rem;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 2px solid #E5E5E5;
+    background: white;
+    color: #111;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.loadMoreButton:hover {
+    background-color: #F5F5F5;
+    border-color: #D5D5D5;
+}
+
+/* Modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modalContent {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.modalTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.closeButton:hover {
+    color: #111;
+}
+
+.modalBody {
+    padding: 1.5rem;
+}
+
+.starsSelector {
+    margin-bottom: 1.5rem;
+}
+
+.inputLabel {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 0.75rem;
+}
+
+.starsInput {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+.starButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s;
+}
+
+.starButton:hover {
+    transform: scale(1.1);
+}
+
+.inputGroup {
+    margin-bottom: 1.5rem;
+}
+
+.textareaInput {
+    width: 100%;
+    padding: 0.875rem;
+    border: 1px solid #E5E5E5;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+.textareaInput:focus {
+    outline: none;
+    border-color: #1A1A1A;
+}
+
+.textareaInput::placeholder {
+    color: #999;
+}
+
+.modalActions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.cancelButton,
+.submitButton {
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.cancelButton {
+    background-color: #E5E5E5;
+    color: #111;
+}
+
+.cancelButton:hover {
+    background-color: #D5D5D5;
+}
+
+.submitButton {
+    background-color: #1A1A1A;
+    color: white;
+}
+
+.submitButton:hover {
+    background-color: #333;
+}
+
+.submitButton:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .reviewsGrid {

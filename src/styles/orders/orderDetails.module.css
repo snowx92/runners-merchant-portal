@@ -412,3 +412,192 @@
         width: 100%;
     }
 }
+
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modalContent {
+    background: white;
+    border-radius: 20px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #F0F0F0;
+    flex-direction: row-reverse;
+}
+
+.modalTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #999;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+    background-color: #F5F5F5;
+}
+
+/* Courier Profile Modal */
+.courierProfileSection {
+    padding: 1.5rem;
+}
+
+.courierProfileHeader {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-direction: row-reverse;
+}
+
+.courierProfileAvatar {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.courierProfileName {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 0.5rem 0;
+}
+
+.courierProfilePhone {
+    font-size: 1rem;
+    color: #666;
+    margin: 0 0 0.25rem 0;
+}
+
+.courierProfileMethod {
+    font-size: 0.9rem;
+    color: #999;
+    margin: 0;
+}
+
+.courierProfileStats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.statItem {
+    background: #F8F9FA;
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.statValue {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 0.5rem;
+}
+
+.statLabel {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* Reviews Section */
+.reviewsSection {
+    margin-top: 2rem;
+}
+
+.reviewsTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 1rem 0;
+}
+
+.reviewCard {
+    background: #F8F9FA;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+}
+
+.reviewHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    flex-direction: row-reverse;
+}
+
+.reviewStars {
+    font-size: 0.9rem;
+}
+
+.reviewDate {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.reviewText {
+    font-size: 0.9rem;
+    color: #333;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Bid Status Badge */
+.bidStatusBadge {
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 1rem;
+    background-color: #E8F5E9;
+    color: #4CAF50;
+}
+
+/* Loading and Empty States */
+.loadingState,
+.emptyState {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #999;
+    font-size: 1rem;
+}
