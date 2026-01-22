@@ -7,6 +7,7 @@ import registerStyles from "@/styles/auth/register.module.css";
 import { EyeIcon, EyeOffIcon, GoogleIcon, AppleIcon } from "@/components/ui/Icons";
 import { AuthFooter } from "./AuthFooter";
 import { OTPVerification } from "./OTPVerification";
+import { LoadingOverlay } from "@/components/common/LoadingOverlay";
 import { otpService } from "@/lib/api/services/otpService";
 import { authService } from "@/lib/api/auth/authService";
 import {
@@ -686,6 +687,7 @@ export const RegisterForm = () => {
                     />
                 </div>
             </form>
+            <LoadingOverlay isLoading={isLoading} />
         </>
     );
 };

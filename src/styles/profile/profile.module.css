@@ -1,0 +1,402 @@
+/* Main Container */
+.mainContainer {
+  min-height: 100vh;
+  background: #f8f8f8;
+  direction: rtl;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Header Section */
+.headerSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.pageTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  text-align: right;
+}
+
+.headerButtons {
+  display: flex;
+  gap: 12px;
+}
+
+.verifyButton,
+.reviewsButton {
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.verifyButton {
+  background: #111;
+  color: white;
+}
+
+.verifyButton:hover {
+  background: #000;
+}
+
+.reviewsButton {
+  background: white;
+  color: #111;
+  border: 1px solid #e8e8e8;
+}
+
+.reviewsButton:hover {
+  background: #f5f5f5;
+}
+
+/* Profile Card */
+.profileCard {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  direction: rtl;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 32px;
+}
+
+.profileInfo {
+  flex: 1;
+  display: flex;
+  text-align: right;
+}
+.userDetails {
+  margin-right: 16px;
+}
+
+.userName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 8px 0;
+}
+
+.userId {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+}
+
+.profileImageWrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Addresses Section Inside Profile Card */
+.addressesSection {
+  width: 50%;
+  margin: 0;
+}
+
+.addressesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.addressesTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  text-align: right;
+}
+
+.addAddressButton {
+  padding: 10px 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  background: #111;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.addAddressButton:hover {
+  background: #000;
+}
+
+.addressesList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.addressItem {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.addressItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.addressContent {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  direction: rtl;
+}
+
+.addressInfo {
+  flex: 1;
+  text-align: right;
+}
+
+.addressLabel {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 8px 0;
+}
+
+.addressText {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.addressActions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Sections */
+.section {
+  margin-bottom: 32px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  text-align: right;
+}
+
+.addButton {
+  padding: 10px 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  background: #111;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.addButton:hover {
+  background: #000;
+}
+
+/* Icon Buttons */
+.iconButton {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.iconButton:hover {
+  background: #f5f5f5;
+  color: #111;
+}
+
+.iconButtonDelete {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #dc2626;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.iconButtonDelete:hover {
+  background: #fee;
+  color: #b91c1c;
+}
+
+/* Reviews */
+.reviewsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.reviewCard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.reviewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  direction: rtl;
+}
+
+.reviewerInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  direction: rtl;
+}
+
+.reviewerAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reviewerDetails {
+  text-align: right;
+}
+
+.reviewerName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 4px 0;
+}
+
+.reviewTime {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.reviewRating {
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  color: #FFD700;
+  font-size: 1.1rem;
+}
+
+.reviewComment {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .headerSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .headerButtons {
+    width: 100%;
+  }
+
+  .verifyButton,
+  .reviewsButton {
+    flex: 1;
+  }
+
+  .pageTitle {
+    font-size: 1.5rem;
+  }
+
+  .reviewsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .profileHeader {
+    flex-direction: row-reverse;
+    gap: 16px;
+  }
+
+  .addressContent {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .addressActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Navbar } from "@/components/home/Navbar";
+import { LoadingOverlay } from "@/components/common/LoadingOverlay";
 import styles from "@/styles/orders/orders.module.css";
 import { Cairo } from "next/font/google";
 import Image from "next/image";
@@ -684,6 +685,7 @@ export default function Orders() {
           </div>
         </div>
       )}
+      <LoadingOverlay isLoading={loading && orders.length === 0} />
     </main>
   );
 }

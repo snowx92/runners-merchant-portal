@@ -7,6 +7,7 @@ import styles from "@/styles/auth/auth.module.css";
 import loginStyles from "@/styles/auth/login.module.css";
 import { EyeIcon, EyeOffIcon, GoogleIcon, AppleIcon } from "@/components/ui/Icons";
 import { AuthFooter } from "./AuthFooter";
+import { LoadingOverlay } from "@/components/common/LoadingOverlay";
 import { signInWithEmailPassword, signInWithGoogle, signInWithApple, getFirebaseIdToken } from "@/lib/auth/socialAuth";
 import { SessionManager } from "@/lib/utils/session";
 
@@ -229,6 +230,7 @@ export const LoginForm = () => {
                     href="/auth/register"
                 />
             </form>
+            <LoadingOverlay isLoading={isLoading} />
         </>
     );
 };

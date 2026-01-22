@@ -1,0 +1,493 @@
+{
+  "info": {
+    "_postman_id": "664f09b2-2bf2-470a-8d61-c0c9e165d70e",
+    "name": "Suppliers",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51294049",
+    "_collection_link": "https://go.postman.co/collection/40774306-664f09b2-2bf2-470a-8d61-c0c9e165d70e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Locations",
+      "item": [
+        {
+          "name": "Get All Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerUrl}}/locations/",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "locations",
+                ""
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/locations/",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "locations",
+                    ""
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Sun, 11 Jan 2026 06:39:28 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "362"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"16a-otuCg8/NwC/IPugPPQ0rWD8swzE\""
+                },
+                {
+                  "key": "date",
+                  "value": "Sat, 11 Jan 2025 06:39:30 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Fetched Addresses\",\n    \"data\": [\n        {\n            \"id\": \"iL3GdyVltJpqL1GRrbOF\",\n            \"title\": \"Home Address\",\n            \"latitude\": 39.7817,\n            \"longitude\": -89.6501,\n            \"street\": \"123 Main St\",\n            \"city\": \"Springfield\",\n            \"state\": \"Illinois\",\n            \"phoneNumber\": \"+1 555-555-5555\",\n            \"defaultAddress\": true,\n            \"buildingNumber\": \"B-25\",\n            \"floorNumber\": \"3\",\n            \"apartmentNumber\": \"302\",\n            \"notes\": \"Near the park entrance\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add Location",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Center\",\n  \"street\": \"69 Tyar Fekry St, Imbaba\",\n  \"cityId\": \"u3EoNBJPmfDUiWGo4ajM\",\n  \"stateId\": \"LSSD2FrFbtOAUgYz2zUS\",\n  \"phoneNumber\": \"01114077125\",\n  \"latitude\": 30.083987512157467,\n  \"longitude\": 31.2190472672826,\n  \"defaultAddress\": true,\n  \"buildingNumber\": \"69\",\n  \"floorNumber\": \"1\",\n  \"apartmentNumber\": \"1\",\n  \"notes\": \"Near the park entrance\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{customerUrl}}/locations",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "locations"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Home Address\",\n  \"street\": \"123 Main St\",\n  \"city\": \"Springfield\",\n  \"state\": \"Illinois\",\n  \"phoneNumber\": \"+1 555-555-5555\",\n  \"latitude\": 39.7817,\n  \"longitude\": -89.6501,\n  \"defaultAddress\": true,\n  \"buildingNumber\": \"B-25\",\n  \"floorNumber\": \"3\",\n  \"apartmentNumber\": \"302\",\n  \"notes\": \"Near the park entrance\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{customerUrl}}/locations",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "locations"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Sun, 11 Jan 2026 06:39:41 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "358"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"166-OYNnMfeg88w/Z8UMED4gIYeU+p0\""
+                },
+                {
+                  "key": "date",
+                  "value": "Sat, 11 Jan 2025 06:39:41 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Address created\",\n    \"data\": {\n        \"id\": \"j8vLb30Z4Ok7RcpWR3sf\",\n        \"title\": \"Home Address\",\n        \"latitude\": 39.7817,\n        \"longitude\": -89.6501,\n        \"street\": \"123 Main St\",\n        \"city\": \"Springfield\",\n        \"state\": \"Illinois\",\n        \"phoneNumber\": \"+1 555-555-5555\",\n        \"defaultAddress\": true,\n        \"buildingNumber\": \"B-25\",\n        \"floorNumber\": \"3\",\n        \"apartmentNumber\": \"302\",\n        \"notes\": \"Near the park entrance\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Home Address\",\n  \"street\": \"123 Main St\",\n  \"cityId\": \"\",\n  \"stateId\": \"\",\n  \"phoneNumber\": \"+1 555-555-5555\",\n  \"latitude\": 39.7817,\n  \"longitude\": -89.6501,\n  \"defaultAddress\": false,\n  \"buildingNumber\": \"B-25\",\n  \"floorNumber\": \"3\",\n  \"apartmentNumber\": \"0200\",\n  \"notes\": \"Near the park entrance\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{customerUrl}}/locations/:id",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "locations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "j8vLb30Z4Ok7RcpWR3sf"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Home Address\",\n  \"street\": \"123 Main St\",\n  \"city\": \"Springfield\",\n  \"state\": \"Illinois\",\n  \"phoneNumber\": \"+1 555-555-5555\",\n  \"latitude\": 39.7817,\n  \"longitude\": -89.6501,\n  \"defaultAddress\": true,\n  \"buildingNumber\": \"B-25\",\n  \"floorNumber\": \"3\",\n  \"apartmentNumber\": \"302\",\n  \"notes\": \"Near the park entrance\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{customerUrl}}/locations",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "locations"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Sun, 11 Jan 2026 06:39:41 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "358"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"166-OYNnMfeg88w/Z8UMED4gIYeU+p0\""
+                },
+                {
+                  "key": "date",
+                  "value": "Sat, 11 Jan 2025 06:39:41 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Address created\",\n    \"data\": {\n        \"id\": \"j8vLb30Z4Ok7RcpWR3sf\",\n        \"title\": \"Home Address\",\n        \"latitude\": 39.7817,\n        \"longitude\": -89.6501,\n        \"street\": \"123 Main St\",\n        \"city\": \"Springfield\",\n        \"state\": \"Illinois\",\n        \"phoneNumber\": \"+1 555-555-5555\",\n        \"defaultAddress\": true,\n        \"buildingNumber\": \"B-25\",\n        \"floorNumber\": \"3\",\n        \"apartmentNumber\": \"302\",\n        \"notes\": \"Near the park entrance\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Location",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{customerUrl}}/locations/:id",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "locations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "j8vLb30Z4Ok7RcpWR3sf"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/locations/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "locations",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "j8vLb30Z4Ok7RcpWR3sf"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Sun, 11 Jan 2026 06:42:58 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "67"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"43-lyowxsy3jRpsIMmiOTJ1Ld/w/3I\""
+                },
+                {
+                  "key": "date",
+                  "value": "Sat, 11 Jan 2025 06:42:59 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Address deleted successfully\",\n    \"data\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Single",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerUrl}}/locations/:id",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "locations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "iL3GdyVltJpqL1GRrbOF"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/locations/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "locations",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "iL3GdyVltJpqL1GRrbOF"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Sun, 11 Jan 2026 06:43:51 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "352"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"160-ywRUhyxIMg5v3vHeQtGu8yYvbMg\""
+                },
+                {
+                  "key": "date",
+                  "value": "Sat, 11 Jan 2025 06:43:51 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Addresses\",\n    \"data\": {\n        \"id\": \"iL3GdyVltJpqL1GRrbOF\",\n        \"title\": \"Home Address\",\n        \"latitude\": 39.7817,\n        \"longitude\": -89.6501,\n        \"street\": \"123 Main St\",\n        \"city\": \"Springfield\",\n        \"state\": \"Illinois\",\n        \"phoneNumber\": \"+1 555-555-5555\",\n        \"defaultAddress\": true,\n        \"buildingNumber\": \"B-25\",\n        \"floorNumber\": \"3\",\n        \"apartmentNumber\": \"302\",\n        \"notes\": \"Near the park entrance\"\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+  ],

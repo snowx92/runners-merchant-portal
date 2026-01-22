@@ -1,0 +1,942 @@
+{
+  "info": {
+    "_postman_id": "090b5e67-dec6-4d21-a0df-6fa0ed61fe88",
+    "name": "Common",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51294049",
+    "_collection_link": "https://go.postman.co/collection/40774306-090b5e67-dec6-4d21-a0df-6fa0ed61fe88?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/common/notifications?pageNo=2&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "common",
+                "notifications"
+              ],
+              "query": [
+                {
+                  "key": "pageNo",
+                  "value": "2"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/common/notifications?pageNo=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "common",
+                    "notifications"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNo",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 22 Jan 2026 13:11:34 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "357"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"165-j/U9cley5cWcf1XvIxkETkFS1Pc\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 22 Jan 2025 13:11:44 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Notifications retrieved successfully\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"ZE1gBid7J7GsEHrMOW6q\",\n                \"title\": \"Title Arabic\",\n                \"body\": \"Body Arabic\",\n                \"payload\": {},\n                \"date\": {\n                    \"_seconds\": 1737550890,\n                    \"_nanoseconds\": 74000000\n                },\n                \"isRead\": false,\n                \"iconType\": \"none\"\n            }\n        ],\n        \"pageItems\": 1,\n        \"totalItems\": 1,\n        \"isLastPage\": true,\n        \"nextPageNumber\": null,\n        \"currentPage\": 1,\n        \"totalPages\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Read All notifications",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/common/notifications/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "common",
+                "notifications",
+                "read"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/common/notifications/read",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "common",
+                    "notifications",
+                    "read"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Tue, 20 Jan 2026 20:12:52 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "71"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"47-MuKm+nMO7k7037GiRXlYenXv3Mw\""
+                },
+                {
+                  "key": "date",
+                  "value": "Mon, 20 Jan 2025 20:12:54 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"All notifications marked as read\",\n    \"data\": null\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wallet",
+      "item": [
+        {
+          "name": "Get Transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/common/payments/transactions?pageNo=2&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "common",
+                "payments",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "pageNo",
+                  "value": "2"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/common/payments/transactions?pageNo=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "common",
+                    "payments",
+                    "transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNo",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 22 Jan 2026 12:32:26 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "335"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"14f-QpUasu9dnFp6i1iGRWnF2+z+Abw\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 22 Jan 2025 12:32:32 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Transactions retrieved successfully\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"rg5r4EdHCWhxfkUNTxt7\",\n                \"amount\": -10,\n                \"currency\": \"EGP\",\n                \"method\": \"payout\",\n                \"type\": \"WITHDRAWAL\",\n                \"date\": {\n                    \"_seconds\": 1736580145,\n                    \"_nanoseconds\": 427000000\n                }\n            }\n        ],\n        \"pageItems\": 1,\n        \"totalItems\": 1,\n        \"isLastPage\": true,\n        \"nextPageNumber\": null,\n        \"currentPage\": 1,\n        \"totalPages\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Single Transaction",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/common/payments/transactions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "common",
+                "payments",
+                "transactions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "rg5r4EdHCWhxfkUNTxt7"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/common/payments/transactions/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "common",
+                    "payments",
+                    "transactions",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "rg5r4EdHCWhxfkUNTxt7"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 22 Jan 2026 12:36:22 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "222"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"de-n4x9vxuz+QF7KXOkrIZ42t6Liw4\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 22 Jan 2025 12:36:25 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Transaction retrieved successfully\",\n    \"data\": {\n        \"id\": \"rg5r4EdHCWhxfkUNTxt7\",\n        \"amount\": -10,\n        \"currency\": \"EGP\",\n        \"method\": \"payout\",\n        \"type\": \"WITHDRAWAL\",\n        \"date\": {\n            \"_seconds\": 1736580145,\n            \"_nanoseconds\": 427000000\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Payout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"amount\": 15,\n    \"method\": \"vodafone\", // 'vodafone', 'etisalat', 'orange', 'aman', 'bank_wallet', 'bank_card'\n    \"accountNumber\": \"01020759697\"\n    //\"bank_card_number\": \"5229600166495011\",\n    //\"bank_method\": \"credit_card\", //credit_card,prepaid_card,cash_transfer\n    //\"bank_code\": \"CIB\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/common/payments/payout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "common",
+                "payments",
+                "payout"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"amount\": 5,\n    \"method\": \"INSTAPAY\",\n    \"accountNumber\": \"01114077125\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/common/payments/payout",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "common",
+                    "payments",
+                    "payout"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 22 Jan 2026 12:38:10 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "239"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"ef-0v9E0COJ80VbIdySzkyPHwwPfo0\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 22 Jan 2025 12:38:19 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Payout Requested Successfully\",\n    \"data\": {\n        \"id\": \"j6KOuDqXxYpiNVPhn5iP\",\n        \"userId\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n        \"accountId\": \"01114077125\",\n        \"amount\": 5,\n        \"method\": \"INSTAPAY\",\n        \"status\": \"PENDING\",\n        \"type\": \"WITHDRAWAL\",\n        \"date\": {}\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Payouts",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"amount\": 15,\n    \"method\": \"bank_card\", // 'vodafone', 'etisalat', 'orange', 'aman', 'bank_wallet', 'bank_card'\n    \"accountNumber\": \"\",\n    \"bank_card_number\": \"5229600166495011\",\n    \"bank_method\": \"credit_card\", //credit_card,prepaid_card,cash_transfer\n    \"bank_code\": \"CIB\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/common/payments/payouts?pageNo=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "common",
+                "payments",
+                "payouts"
+              ],
+              "query": [
+                {
+                  "key": "pageNo",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"amount\": 5,\n    \"method\": \"INSTAPAY\",\n    \"accountNumber\": \"01114077125\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/common/payments/payout",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "common",
+                    "payments",
+                    "payout"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 22 Jan 2026 12:38:10 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "239"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"ef-0v9E0COJ80VbIdySzkyPHwwPfo0\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 22 Jan 2025 12:38:19 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Payouts retrieved successfully\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"qKQO9pdKd8pj6TwvxWGZ\",\n                \"trxId\": \"7aa78b4d-b677-4a53-8908-c64fcdaa7246\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755048868,\n                    \"_nanoseconds\": 97000000\n                },\n                \"method\": \"bank_card\",\n                \"status\": \"FAILED\",\n                \"metaData\": {\n                    \"cardNumber\": \"5229600166495011\",\n                    \"bankCode\": \"CIB\",\n                    \"bankMethod\": \"credit_card\",\n                    \"accountNumber\": \"\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"Transaction received and validated successfully. Dispatched for being processed by the bank\"\n            },\n            {\n                \"id\": \"8Hkg13sN3x7DpJR3iOEl\",\n                \"trxId\": \"44ef1bb4-ceae-45b3-9f69-e34b7ffb3476\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755022868,\n                    \"_nanoseconds\": 970000000\n                },\n                \"method\": \"bank_card\",\n                \"status\": \"SUCCESS\",\n                \"metaData\": {\n                    \"cardNumber\": \"5229600166495011\",\n                    \"bankCode\": \"CIB\",\n                    \"bankMethod\": \"credit_card\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"“برجاء التوجه إلى فرع أمان. اسأل على خدمة مدفوعات أكسبت. اسخدم الكود الخاص 3943627 . لصرف مبلغ 20.50 جنيه . شكراً لاختيارك مدفوعات أكسبت.“\"\n            },\n            {\n                \"id\": \"Nw6WWsZG4jHUXH3hfTPx\",\n                \"trxId\": \"df0abf93-63d9-4a2a-aace-ff5852f9fe86\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755022822,\n                    \"_nanoseconds\": 730000000\n                },\n                \"method\": \"bank_card\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"5229600166495011\",\n                    \"bankCode\": \"CIB\",\n                    \"bankMethod\": \"credit_card\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"Transaction received and validated successfully. Dispatched for being processed by the bank\"\n            },\n            {\n                \"id\": \"ya2F1KB57sKkPdpy6lhj\",\n                \"trxId\": \"63789dd7-b80e-40a7-bcd3-3ba48096c977\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755021039,\n                    \"_nanoseconds\": 894000000\n                },\n                \"method\": \"bank_card\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"5229600166495011\",\n                    \"bankCode\": \"CIB\",\n                    \"bankMethod\": \"credit_card\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"Transaction received and validated successfully. Dispatched for being processed by the bank\"\n            },\n            {\n                \"id\": \"hsyRMKogR1oFwHWz39g6\",\n                \"trxId\": \"c27d1536-bed9-4cdd-98f0-a5db94f77d9e\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755020298,\n                    \"_nanoseconds\": 392000000\n                },\n                \"method\": \"bank_card\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"5229600166495011\",\n                    \"bankCode\": \"CIB\",\n                    \"bankMethod\": \"credit_card\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"Transaction received and validated successfully. Dispatched for being processed by the bank\"\n            },\n            {\n                \"id\": \"SbCt315CN5dBSzxPExQW\",\n                \"trxId\": \"e4516ee7-9566-485d-95d3-da067f758983\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755011437,\n                    \"_nanoseconds\": 987000000\n                },\n                \"method\": \"vodafone\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"\",\n                    \"bankCode\": \"\",\n                    \"bankMethod\": \"credit_card\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"تم إيداع 5.0 جنيه إلى رقم 01064229249 بنجاح\"\n            },\n            {\n                \"id\": \"xkvWk39MSv5MYe5NB5jB\",\n                \"trxId\": \"53aeff03-e55f-4047-88fc-f6c3f5825033\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755006135,\n                    \"_nanoseconds\": 943000000\n                },\n                \"method\": \"vodafone\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"\",\n                    \"bankCode\": \"\",\n                    \"bankMethod\": \"\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"تم إيداع 5.0 جنيه إلى رقم 01020759697 بنجاح\"\n            },\n            {\n                \"id\": \"EIGA8Y13DZMhsQFfxTqU\",\n                \"trxId\": \"7b0b6443-cd56-4fdf-865d-9e951d834851\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755005990,\n                    \"_nanoseconds\": 611000000\n                },\n                \"method\": \"vodafone\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"\",\n                    \"bankCode\": \"\",\n                    \"bankMethod\": \"\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"تم إيداع 5.0 جنيه إلى رقم 01020759697 بنجاح\"\n            },\n            {\n                \"id\": \"UUx977zfrEeXe5xSoXnq\",\n                \"trxId\": \"\",\n                \"amount\": 200,\n                \"createdAt\": {\n                    \"_seconds\": 1753966928,\n                    \"_nanoseconds\": 708000000\n                },\n                \"method\": \"WALLET\",\n                \"status\": \"PENDING\",\n                \"metaData\": {},\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"\"\n            }\n        ],\n        \"pageItems\": 9,\n        \"totalItems\": 9,\n        \"isLastPage\": true,\n        \"nextPageNumber\": 1,\n        \"currentPage\": 1,\n        \"totalPages\": 1,\n        \"docsReaded\": 10\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Single Payout",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"amount\": 15,\n    \"method\": \"bank_card\", // 'vodafone', 'etisalat', 'orange', 'aman', 'bank_wallet', 'bank_card'\n    \"accountNumber\": \"\",\n    \"bank_card_number\": \"5229600166495011\",\n    \"bank_method\": \"credit_card\", //credit_card,prepaid_card,cash_transfer\n    \"bank_code\": \"CIB\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/common/payments/payout/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "common",
+                "payments",
+                "payout",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"amount\": 5,\n    \"method\": \"INSTAPAY\",\n    \"accountNumber\": \"01114077125\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/common/payments/payout",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "common",
+                    "payments",
+                    "payout"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 22 Jan 2026 12:38:10 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "239"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"ef-0v9E0COJ80VbIdySzkyPHwwPfo0\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 22 Jan 2025 12:38:19 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Payouts retrieved successfully\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"qKQO9pdKd8pj6TwvxWGZ\",\n                \"trxId\": \"7aa78b4d-b677-4a53-8908-c64fcdaa7246\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755048868,\n                    \"_nanoseconds\": 97000000\n                },\n                \"method\": \"bank_card\",\n                \"status\": \"FAILED\",\n                \"metaData\": {\n                    \"cardNumber\": \"5229600166495011\",\n                    \"bankCode\": \"CIB\",\n                    \"bankMethod\": \"credit_card\",\n                    \"accountNumber\": \"\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"Transaction received and validated successfully. Dispatched for being processed by the bank\"\n            },\n            {\n                \"id\": \"8Hkg13sN3x7DpJR3iOEl\",\n                \"trxId\": \"44ef1bb4-ceae-45b3-9f69-e34b7ffb3476\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755022868,\n                    \"_nanoseconds\": 970000000\n                },\n                \"method\": \"bank_card\",\n                \"status\": \"SUCCESS\",\n                \"metaData\": {\n                    \"cardNumber\": \"5229600166495011\",\n                    \"bankCode\": \"CIB\",\n                    \"bankMethod\": \"credit_card\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"“برجاء التوجه إلى فرع أمان. اسأل على خدمة مدفوعات أكسبت. اسخدم الكود الخاص 3943627 . لصرف مبلغ 20.50 جنيه . شكراً لاختيارك مدفوعات أكسبت.“\"\n            },\n            {\n                \"id\": \"Nw6WWsZG4jHUXH3hfTPx\",\n                \"trxId\": \"df0abf93-63d9-4a2a-aace-ff5852f9fe86\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755022822,\n                    \"_nanoseconds\": 730000000\n                },\n                \"method\": \"bank_card\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"5229600166495011\",\n                    \"bankCode\": \"CIB\",\n                    \"bankMethod\": \"credit_card\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"Transaction received and validated successfully. Dispatched for being processed by the bank\"\n            },\n            {\n                \"id\": \"ya2F1KB57sKkPdpy6lhj\",\n                \"trxId\": \"63789dd7-b80e-40a7-bcd3-3ba48096c977\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755021039,\n                    \"_nanoseconds\": 894000000\n                },\n                \"method\": \"bank_card\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"5229600166495011\",\n                    \"bankCode\": \"CIB\",\n                    \"bankMethod\": \"credit_card\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"Transaction received and validated successfully. Dispatched for being processed by the bank\"\n            },\n            {\n                \"id\": \"hsyRMKogR1oFwHWz39g6\",\n                \"trxId\": \"c27d1536-bed9-4cdd-98f0-a5db94f77d9e\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755020298,\n                    \"_nanoseconds\": 392000000\n                },\n                \"method\": \"bank_card\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"5229600166495011\",\n                    \"bankCode\": \"CIB\",\n                    \"bankMethod\": \"credit_card\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"Transaction received and validated successfully. Dispatched for being processed by the bank\"\n            },\n            {\n                \"id\": \"SbCt315CN5dBSzxPExQW\",\n                \"trxId\": \"e4516ee7-9566-485d-95d3-da067f758983\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755011437,\n                    \"_nanoseconds\": 987000000\n                },\n                \"method\": \"vodafone\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"\",\n                    \"bankCode\": \"\",\n                    \"bankMethod\": \"credit_card\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"تم إيداع 5.0 جنيه إلى رقم 01064229249 بنجاح\"\n            },\n            {\n                \"id\": \"xkvWk39MSv5MYe5NB5jB\",\n                \"trxId\": \"53aeff03-e55f-4047-88fc-f6c3f5825033\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755006135,\n                    \"_nanoseconds\": 943000000\n                },\n                \"method\": \"vodafone\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"\",\n                    \"bankCode\": \"\",\n                    \"bankMethod\": \"\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"تم إيداع 5.0 جنيه إلى رقم 01020759697 بنجاح\"\n            },\n            {\n                \"id\": \"EIGA8Y13DZMhsQFfxTqU\",\n                \"trxId\": \"7b0b6443-cd56-4fdf-865d-9e951d834851\",\n                \"amount\": 15,\n                \"createdAt\": {\n                    \"_seconds\": 1755005990,\n                    \"_nanoseconds\": 611000000\n                },\n                \"method\": \"vodafone\",\n                \"status\": \"PENDING\",\n                \"metaData\": {\n                    \"cardNumber\": \"\",\n                    \"bankCode\": \"\",\n                    \"bankMethod\": \"\"\n                },\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"تم إيداع 5.0 جنيه إلى رقم 01020759697 بنجاح\"\n            },\n            {\n                \"id\": \"UUx977zfrEeXe5xSoXnq\",\n                \"trxId\": \"\",\n                \"amount\": 200,\n                \"createdAt\": {\n                    \"_seconds\": 1753966928,\n                    \"_nanoseconds\": 708000000\n                },\n                \"method\": \"WALLET\",\n                \"status\": \"PENDING\",\n                \"metaData\": {},\n                \"fees\": 0,\n                \"amountAfterFees\": 0,\n                \"statusDescription\": \"\"\n            }\n        ],\n        \"pageItems\": 9,\n        \"totalItems\": 9,\n        \"isLastPage\": true,\n        \"nextPageNumber\": 1,\n        \"currentPage\": 1,\n        \"totalPages\": 1,\n        \"docsReaded\": 10\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Deposit",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "courier1@runners.co",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"amount\": 100,\n    \"method\": \"card\" // wallet, card\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/common/payments/pay",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "common",
+                "payments",
+                "pay"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"amount\": 10\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/common/payments/pay",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "common",
+                    "payments",
+                    "pay"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 22 Jan 2026 12:39:15 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "606"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"25e-KI9FgMshEeXHI9amyckMv8NGstE\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 22 Jan 2025 12:39:15 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Payment link created successfully\",\n    \"data\": {\n        \"link\": \"https://accept.paymob.com/api/acceptance/iframes/381569?payment_token=undefined\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Balance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/common/payments/balance",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "common",
+                "payments",
+                "balance"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/common/payments/balance",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "common",
+                    "payments",
+                    "balance"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 22 Jan 2026 12:36:58 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "59"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"3b-gAJMQckE/CoOINnWHMpXtP4Ev40\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 22 Jan 2025 12:36:58 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Fetched User's Balance\",\n    \"data\": {\n        \"balance\": 0,\n        \"heldAmount\": 0,\n        \"acceptedAmount\": 0\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+  ],

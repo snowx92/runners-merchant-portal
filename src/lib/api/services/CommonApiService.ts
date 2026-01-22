@@ -18,8 +18,8 @@ export class CommonApiService {
   constructor() {
     // Use dedicated common API base URL from environment
     this.baseURL = process.env.NEXT_PUBLIC_COMMON_API_BASE_URL ||
-                   process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/dashboard', '/common') ||
-                   '/api/common';
+      process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/dashboard', '/common') ||
+      '/api/common';
 
     console.log('🔧 CommonApiService: Using common API base URL:', this.baseURL);
 
@@ -29,7 +29,7 @@ export class CommonApiService {
   async request<T>(
     url: string,
     method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
-    body: Record<string, unknown> | null = null,
+    body: any | null = null,
     queryParams: Record<string, string> = {},
     customHeaders: Record<string, string> = {}
   ): Promise<T | null> {
@@ -74,7 +74,7 @@ export class CommonApiService {
   private async makeRequest<T>(
     fullUrl: string,
     method: string,
-    body: Record<string, unknown> | null,
+    body: any | null,
     staticHeaders: Record<string, string>,
     customHeaders: Record<string, string>
   ): Promise<T | null> {
@@ -145,12 +145,28 @@ export class CommonApiService {
 
   async post<T>(
     endpoint: string,
-    body: Record<string, unknown> = {},
+    body: any = {},
     customHeaders: Record<string, string> = {}
   ): Promise<T | null> {
     const filterBody = Object.fromEntries(
       Object.entries(body).filter(([, value]) => value !== undefined)
     );
     return this.request<T>(endpoint, "POST", filterBody, {}, customHeaders);
+  }
+
+  async put<T>(
+    endpoint: string,
+    body: any | null = null,
+    customHeaders: Record<string, string> = {}
+  ): Promise<T | null> {
+    return this.request<T>(endpoint, "PUT", body, {}, customHeaders);
+  }
+
+  async delete<T>(
+    endpoint: string,
+    body: any | null = null,
+    customHeaders: Record<string, string> = {}
+  ): Promise<T | null> {
+    return this.request<T>(endpoint, "DELETE", body, {}, customHeaders);
   }
 }
