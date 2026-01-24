@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import styles from "@/styles/home/notifications.module.css";
 import { commonService } from "@/lib/api/services/commonService";
 import { Notification } from "@/lib/api/types/common.types";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { useNotificationCount } from "@/lib/hooks/useNotificationCount";
+import { doc, updateDoc } from "firebase/firestore";
+import { getFirebaseDb } from "@/lib/firebase";
 
 // Notification icon component
 const NotificationIcon = ({ iconType }: { iconType: string }) => {
@@ -54,6 +57,7 @@ const NotificationIcon = ({ iconType }: { iconType: string }) => {
 };
 
 export const NotificationDrawer = () => {
+  const router = useRouter();
   const { isLoggedIn } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -62,17 +66,19 @@ export const NotificationDrawer = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   // Use real-time notification count from Firestore
-  const { unreadCount: realTimeUnreadCount } = useNotificationCount();
+  const { unreadCount: realTimeUnreadCount, loading: realTimeLoading } = useNotificationCount();
   
   // Local state for unread count (synced with real-time updates)
   const [unreadCount, setUnreadCount] = useState(0);
 
   // Sync real-time count to local state
+  // Priority: use API count on initial load, then real-time updates
   useEffect(() => {
-    if (realTimeUnreadCount > 0 || realTimeUnreadCount === 0) {
+    // If we have a real-time count and we're still loading API, use real-time
+    if (realTimeUnreadCount >= 0 && !realTimeLoading) {
       setUnreadCount(realTimeUnreadCount);
     }
-  }, [realTimeUnreadCount]);
+  }, [realTimeUnreadCount, realTimeLoading]);
 
   const fetchNotifications = async (page: number = 1, append: boolean = false) => {
     if (!isLoggedIn) return;
@@ -91,9 +97,10 @@ export const NotificationDrawer = () => {
         } else {
           setNotifications(response.data.items);
         }
-        // Update local count from API, but real-time count comes from Firestore
-        const apiUnread = response.data.totalItems - response.data.docsReaded;
-        setUnreadCount(prev => prev > 0 ? prev : apiUnread);
+        // Calculate unread count from API response: totalItems - docsReaded
+        // This is the authoritative count from the backend
+        const apiUnread = Math.max(0, response.data.totalItems - response.data.docsReaded);
+        setUnreadCount(apiUnread);
         setHasMore(!response.data.isLastPage);
         setCurrentPage(page);
       }
@@ -128,7 +135,25 @@ export const NotificationDrawer = () => {
   const handleMarkAsRead = async (notification: Notification) => {
     if (!notification.isRead) {
       try {
+        // Call API to mark as read
         await commonService.markNotificationRead(notification.id);
+        
+        // Also update Firestore to sync with the real-time listener
+        const userData = localStorage.getItem("user");
+        if (userData) {
+          const user = JSON.parse(userData);
+          if (user && user.uid) {
+            try {
+              const db = getFirebaseDb();
+              const notificationDocRef = doc(db, "users", user.uid, "notifications", notification.id);
+              await updateDoc(notificationDocRef, { isRead: true });
+            } catch (firestoreError) {
+              console.error("Failed to update Firestore:", firestoreError);
+              // Continue even if Firestore update fails - the API call succeeded
+            }
+          }
+        }
+        
         setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, isRead: true } : n));
         // Decrement count (Firestore listener will update it, but we update locally too)
         setUnreadCount(prev => Math.max(0, prev - 1));
@@ -140,7 +165,29 @@ export const NotificationDrawer = () => {
 
   const handleMarkAllAsRead = async () => {
     try {
+      // Call API to mark all as read
       await commonService.markAllNotificationsRead();
+      
+      // Also update Firestore to sync with the real-time listener
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        const user = JSON.parse(userData);
+        if (user && user.uid) {
+          try {
+            const db = getFirebaseDb();
+            // Get all unread notifications from local state and update them in Firestore
+            const unreadNotifications = notifications.filter(n => !n.isRead);
+            for (const notification of unreadNotifications) {
+              const notificationDocRef = doc(db, "users", user.uid, "notifications", notification.id);
+              await updateDoc(notificationDocRef, { isRead: true });
+            }
+          } catch (firestoreError) {
+            console.error("Failed to update Firestore:", firestoreError);
+            // Continue even if Firestore update fails - the API call succeeded
+          }
+        }
+      }
+      
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
       setUnreadCount(0);
     } catch (error) {
@@ -151,6 +198,27 @@ export const NotificationDrawer = () => {
   const handleLoadMore = () => {
     if (!isLoadingMore && hasMore) {
       fetchNotifications(currentPage + 1, true);
+    }
+  };
+
+  const handleNotificationClick = (notification: Notification) => {
+    // Mark as read
+    handleMarkAsRead(notification);
+
+    // Navigate based on notification type
+    if (notification.payload && notification.payload.type) {
+      const { type, relatedId } = notification.payload;
+
+      if (type === "order" && relatedId) {
+        // Navigate to order details
+        router.push(`/orders/${relatedId}`);
+        handleCloseDrawer();
+      } else if (type === "transaction" && relatedId) {
+        // Navigate to transaction page with ref parameter
+        router.push(`/transaction?ref=${relatedId}`);
+        handleCloseDrawer();
+      }
+      // For other types or empty payload, do nothing
     }
   };
 
@@ -205,13 +273,16 @@ export const NotificationDrawer = () => {
               <>
                 {notifications.map((notification) => {
                   const { date, time } = formatDate(notification.date);
+                  // Check if notification has navigation payload
+                  const hasNavigationPayload = notification.payload && 
+                    (notification.payload.type === "order" || notification.payload.type === "transaction");
                   return (
                     <div
                       key={notification.id}
                       className={`${styles.notificationItem} ${!notification.isRead ? styles.unread : ""
                         }`}
-                      onClick={() => handleMarkAsRead(notification)}
-                      style={{ cursor: !notification.isRead ? 'pointer' : 'default' }}
+                      onClick={() => handleNotificationClick(notification)}
+                      style={{ cursor: hasNavigationPayload ? 'pointer' : 'default' }}
                     >
                       <div className={styles.notificationRight}>
                         <div className={`${styles.iconCircle} ${!notification.isRead ? styles.iconCircleUnread : ""}`}>

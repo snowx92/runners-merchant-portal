@@ -7,6 +7,7 @@ import { HeroBanner } from "@/components/home/HeroBanner";
 import { StatsRow } from "@/components/home/StatsRow";
 import { RecentOrders } from "@/components/home/RecentOrders";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
+import { LoadingOverlay } from "@/components/common/LoadingOverlay";
 import styles from "@/styles/home/home.module.css";
 import { Cairo } from "next/font/google";
 import { homeService, bannerService } from "@/lib/api/services/homeService";
@@ -158,6 +159,7 @@ export default function Home() {
       </div>
 
       <MessageDrawer />
+      <LoadingOverlay isLoading={dataLoading && orders.length === 0} />
     </main>
   );
 }

@@ -176,7 +176,7 @@
     position: absolute;
     left: 1.25rem;
     top: 50%;
-    transform: translateY(-50%) rotate(180deg);
+    transform: translateY(-50%);
     pointer-events: none;
     color: #999;
     font-size: 1.25rem;

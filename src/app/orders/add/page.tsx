@@ -458,8 +458,8 @@ export default function AddOrder() {
                       {city.name}
                     </option>
                   ))}
-                </select>
-                <span className={styles.selectArrow}>›</span>
+                 </select>
+                <span className={styles.selectArrow}> › </span>
               </div>
               {errors[`${order.id}_city`] && (
                 <span className={styles.errorText}>{errors[`${order.id}_city`]}</span>
@@ -712,8 +712,8 @@ export default function AddOrder() {
             </button>
           </div>
           <h1 className={styles.pageTitle}>
-            <span className={styles.backArrow} onClick={() => router.push("/orders")}>
-              ←
+<span className={styles.backArrow} onClick={() => router.push("/orders")}>
+              →
             </span>
             اضافة طلب
           </h1>

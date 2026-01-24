@@ -46,6 +46,12 @@ export default function Orders() {
   const [toGovSearch, setToGovSearch] = useState("");
   const [toCitySearch, setToCitySearch] = useState("");
 
+  // Dropdown visibility states
+  const [fromGovOpen, setFromGovOpen] = useState(false);
+  const [fromCityOpen, setFromCityOpen] = useState(false);
+  const [toGovOpen, setToGovOpen] = useState(false);
+  const [toCityOpen, setToCityOpen] = useState(false);
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
@@ -153,6 +159,7 @@ export default function Orders() {
   };
 
   const resetFilters = () => {
+    // Reset all filter states
     setFilters({
       keyword: "",
       status: "all",
@@ -172,7 +179,11 @@ export default function Orders() {
     setToCitySearch("");
     setShowFilterModal(false);
     setCurrentPage(1);
-    fetchOrders(true);
+    
+    // Fetch orders after state updates
+    setTimeout(() => {
+      fetchOrders(true);
+    }, 0);
   };
 
   // Get display name for selected governorate/city
@@ -522,17 +533,17 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.fromGovId ? getGovName(filters.fromGovId) : "ابحث عن المحافظة..."}
+                      placeholder={filters.fromGovId ? getGovName(filters.fromGovId) : "اختر المحافظة..."}
                       className={styles.filterInput}
                       value={fromGovSearch}
-                      onChange={(e) => setFromGovSearch(e.target.value)}
-                      onFocus={() => {
-                        if (filters.fromGovId && !fromGovSearch) {
-                          setFromGovSearch(getGovName(filters.fromGovId));
-                        }
+                      onChange={(e) => {
+                        setFromGovSearch(e.target.value);
+                        setFromGovOpen(true);
                       }}
+                      onFocus={() => setFromGovOpen(true)}
+                      onBlur={() => setTimeout(() => setFromGovOpen(false), 200)}
                     />
-                    {fromGovSearch && (
+                    {fromGovOpen && (
                       <div className={styles.searchResults}>
                         {getFilteredFromGovs().length > 0 ? (
                           getFilteredFromGovs().map((zone) => (
@@ -542,6 +553,7 @@ export default function Orders() {
                               onClick={() => {
                                 setFilters((prev) => ({ ...prev, fromGovId: zone.id, fromCityId: "" }));
                                 setFromGovSearch("");
+                                setFromGovOpen(false);
                               }}
                             >
                               {zone.name}
@@ -558,18 +570,18 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.fromCityId ? getCityName(filters.fromGovId, filters.fromCityId) : "ابحث عن المدينة..."}
+                      placeholder={filters.fromCityId ? getCityName(filters.fromGovId, filters.fromCityId) : "اختر المدينة..."}
                       className={styles.filterInput}
                       value={fromCitySearch}
-                      onChange={(e) => setFromCitySearch(e.target.value)}
-                      onFocus={() => {
-                        if (filters.fromCityId && !fromCitySearch) {
-                          setFromCitySearch(getCityName(filters.fromGovId, filters.fromCityId));
-                        }
+                      onChange={(e) => {
+                        setFromCitySearch(e.target.value);
+                        setFromCityOpen(true);
                       }}
+                      onFocus={() => setFromCityOpen(true)}
+                      onBlur={() => setTimeout(() => setFromCityOpen(false), 200)}
                       disabled={!filters.fromGovId}
                     />
-                    {fromCitySearch && filters.fromGovId && (
+                    {fromCityOpen && filters.fromGovId && (
                       <div className={styles.searchResults}>
                         {getFilteredFromCities().length > 0 ? (
                           getFilteredFromCities().map((city) => (
@@ -579,6 +591,7 @@ export default function Orders() {
                               onClick={() => {
                                 setFilters((prev) => ({ ...prev, fromCityId: city.id }));
                                 setFromCitySearch("");
+                                setFromCityOpen(false);
                               }}
                             >
                               {city.name}
@@ -603,17 +616,17 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.toGovId ? getGovName(filters.toGovId) : "ابحث عن المحافظة..."}
+                      placeholder={filters.toGovId ? getGovName(filters.toGovId) : "اختر المحافظة..."}
                       className={styles.filterInput}
                       value={toGovSearch}
-                      onChange={(e) => setToGovSearch(e.target.value)}
-                      onFocus={() => {
-                        if (filters.toGovId && !toGovSearch) {
-                          setToGovSearch(getGovName(filters.toGovId));
-                        }
+                      onChange={(e) => {
+                        setToGovSearch(e.target.value);
+                        setToGovOpen(true);
                       }}
+                      onFocus={() => setToGovOpen(true)}
+                      onBlur={() => setTimeout(() => setToGovOpen(false), 200)}
                     />
-                    {toGovSearch && (
+                    {toGovOpen && (
                       <div className={styles.searchResults}>
                         {getFilteredToGovs().length > 0 ? (
                           getFilteredToGovs().map((zone) => (
@@ -623,6 +636,7 @@ export default function Orders() {
                               onClick={() => {
                                 setFilters((prev) => ({ ...prev, toGovId: zone.id, toCityId: "" }));
                                 setToGovSearch("");
+                                setToGovOpen(false);
                               }}
                             >
                               {zone.name}
@@ -639,18 +653,18 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.toCityId ? getCityName(filters.toGovId, filters.toCityId) : "ابحث عن المدينة..."}
+                      placeholder={filters.toCityId ? getCityName(filters.toGovId, filters.toCityId) : "اختر المدينة..."}
                       className={styles.filterInput}
                       value={toCitySearch}
-                      onChange={(e) => setToCitySearch(e.target.value)}
-                      onFocus={() => {
-                        if (filters.toCityId && !toCitySearch) {
-                          setToCitySearch(getCityName(filters.toGovId, filters.toCityId));
-                        }
+                      onChange={(e) => {
+                        setToCitySearch(e.target.value);
+                        setToCityOpen(true);
                       }}
+                      onFocus={() => setToCityOpen(true)}
+                      onBlur={() => setTimeout(() => setToCityOpen(false), 200)}
                       disabled={!filters.toGovId}
                     />
-                    {toCitySearch && filters.toGovId && (
+                    {toCityOpen && filters.toGovId && (
                       <div className={styles.searchResults}>
                         {getFilteredToCities().length > 0 ? (
                           getFilteredToCities().map((city) => (
@@ -660,6 +674,7 @@ export default function Orders() {
                               onClick={() => {
                                 setFilters((prev) => ({ ...prev, toCityId: city.id }));
                                 setToCitySearch("");
+                                setToCityOpen(false);
                               }}
                             >
                               {city.name}

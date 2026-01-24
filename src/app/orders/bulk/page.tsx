@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Navbar } from "@/components/home/Navbar";
@@ -202,8 +204,10 @@ export default function BulkOrder() {
             →
           </span>
           <h1 className={styles.pageTitle}>انشاء طلب مجمع</h1>
-          <button className={styles.confirmButton}>
-
+          <button 
+            className={`${styles.confirmButton} ${orders.length === 0 ? styles.disabledButton : ""}`}
+            disabled={orders.length === 0}
+          >
             تأكيد الطلب
           </button>
         </div>

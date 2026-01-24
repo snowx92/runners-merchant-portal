@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { AddAddressModal } from "@/components/profile/AddAddressModal";
+import { LoadingOverlay } from "@/components/common/LoadingOverlay";
 import styles from "@/styles/profile/profile.module.css";
 import { Cairo } from "next/font/google";
 import Image from "next/image";
@@ -188,13 +189,14 @@ export default function ProfilePage() {
             >
               تعديل الحساب
             </button>
-            <button
-              className={styles.verifyButton}
-              onClick={() => router.push("/profile/verify")}
-            >
-              توثيق الحساب
-            </button>
-            {user?.verified && <span style={{ color: 'green', marginRight: '10px' }}>موثق</span>}
+            {!user?.verified && (
+              <button
+                className={styles.verifyButton}
+                onClick={() => router.push("/profile/verify")}
+              >
+                توثيق الحساب
+              </button>
+            )}
           </div>
         </div>
 
@@ -214,7 +216,22 @@ export default function ProfilePage() {
                 />
               </div>
               <div className={styles.userDetails}>
-                <h2 className={styles.userName}>{displayName}</h2>
+                <h2 className={styles.userName}>
+                  {displayName}
+                  {user?.verified && (
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style={{ marginRight: '8px', verticalAlign: 'middle' }}
+                    >
+                      <circle cx="12" cy="12" r="10" fill="#10B981" />
+                      <path d="M8 12L11 15L16 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </h2>
                 <p className={styles.userId}>{user?.id || ''}</p>
               </div>
             </div>
@@ -371,6 +388,8 @@ export default function ProfilePage() {
         onSave={handleSaveAddress}
         initialData={getInitialAddressData()}
       />
+      <LoadingOverlay isLoading={loading || isReviewsLoading || isLocationsLoading} />
     </main>
   );
 }
+

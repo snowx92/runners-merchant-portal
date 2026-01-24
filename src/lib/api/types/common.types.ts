@@ -120,13 +120,21 @@ export interface TransactionDetail {
 export interface Transaction {
     id: string;
     amount: number;
-    type: "COMMISSION" | "COD" | "PENALTY" ; // Added WITHDRAWAL based on API response
-    status?: string; // made optional as it wasn't in the example item
-    description?: string | TransactionDetail; // made optional
+    type: "COMMISSION" | "COD" | "PENALTY" | "BOUNS" | "WITHDRAWAL" | "DEPOSIT";
+    status?: string;
+    description?: string | TransactionDetail;
     date: string | { _seconds: number; _nanoseconds: number };
     currency?: string;
     method?: string;
     createdAt?: string;
+    // Additional fields from API
+    orignal?: string;
+    balanceBefore?: number;
+    balanceAfter?: number;
+    cardNumberMasked?: string;
+    cardType?: string;
+    walletNumber?: string;
+    reason?: string | null;
 }
 
 export interface TransactionsResponse {
@@ -162,4 +170,21 @@ export interface PayoutRequest {
 
 export interface PayoutResponse {
     message: string;
+}
+
+export interface ApiKey {
+    id: string;
+    userId: string;
+    name: string;
+    lastUsedAt: string | null;
+    isActive: boolean;
+    createdAt: {
+        _seconds: number;
+        _nanoseconds: number;
+    };
+    apiKeyMasked: string;
+}
+
+export interface CreateApiKeyRequest {
+    name: string;
 }

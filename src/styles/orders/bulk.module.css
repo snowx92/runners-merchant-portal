@@ -61,6 +61,15 @@
     background-color: #333;
 }
 
+.disabledButton {
+    background-color: #CCCCCC !important;
+    cursor: not-allowed !important;
+}
+
+.disabledButton:hover {
+    background-color: #CCCCCC !important;
+}
+
 .buttonIcon {
     font-size: 1.1rem;
 }

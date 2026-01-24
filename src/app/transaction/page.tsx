@@ -5,9 +5,11 @@ import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { WithdrawModal } from "@/components/transaction/WithdrawModal";
 import { DepositModal } from "@/components/transaction/DepositModal";
+import { TransactionDetailsModal } from "@/components/transaction/TransactionDetailsModal";
 import styles from "@/styles/transaction/transaction.module.css";
 import { Cairo } from "next/font/google";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { commonService } from "@/lib/api/services/commonService";
 import { Transaction } from "@/lib/api/types/common.types";
 
@@ -18,11 +20,14 @@ const cairo = Cairo({
 });
 
 export default function TransactionPage() {
+  const searchParams = useSearchParams();
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [balance, setBalance] = useState<number | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   const fetchWalletData = async () => {
     setIsLoading(true);
@@ -41,6 +46,19 @@ export default function TransactionPage() {
     }
   };
 
+  // Handle ref parameter from URL
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref && transactions.length > 0) {
+      const transaction = transactions.find(t => t.id === ref || t.orignal === ref);
+      if (transaction) {
+        setSelectedTransaction(transaction);
+        setIsDetailsModalOpen(true);
+      }
+    }
+     
+  }, [searchParams, transactions]);
+
   useEffect(() => {
     fetchWalletData();
   }, []);
@@ -57,6 +75,18 @@ export default function TransactionPage() {
     } catch (error) {
       return "error in date" + error;
     }
+  };
+
+  const handleTransactionClick = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setIsDetailsModalOpen(false);
+    setSelectedTransaction(null);
+    // Clear the ref parameter from URL
+    window.history.replaceState({}, "", "/transaction");
   };
 
 
@@ -158,7 +188,12 @@ export default function TransactionPage() {
               <div style={{ textAlign: "center", padding: "20px" }}>لا توجد عمليات</div>
             ) : (
               transactions.map((transaction) => (
-                <div key={transaction.id} className={styles.transactionCard}>
+                <div
+                  key={transaction.id}
+                  className={styles.transactionCard}
+                  onClick={() => handleTransactionClick(transaction)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className={styles.transactionLeft}>
                     <div className={`${styles.iconWrapper} ${getTransactionClass(transaction.type)}`}>
                       <Image
@@ -200,6 +235,11 @@ export default function TransactionPage() {
         currentBalance={balance || 0}
       />
       <DepositModal isOpen={isDepositModalOpen} onClose={() => setIsDepositModalOpen(false)} />
+      <TransactionDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={handleCloseDetailsModal}
+        transaction={selectedTransaction}
+      />
     </main>
   );
 }

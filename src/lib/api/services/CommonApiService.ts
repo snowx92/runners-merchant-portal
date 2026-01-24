@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SessionManager } from "@/lib/utils/session";
 
 export const printLogs = true; // Enable logging for debugging
@@ -12,7 +14,7 @@ interface ApiResponse<T = unknown> {
  * Uses /v1/common base path instead of /v1/dashboard
  */
 export class CommonApiService {
-  private baseURL: string;
+  protected baseURL: string;
   protected sessionManager: SessionManager;
 
   constructor() {

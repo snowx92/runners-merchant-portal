@@ -712,7 +712,7 @@ export default function OrderDetailsPage() {
           <div className={styles.orderInfoCard}>
             <div className={styles.orderTop}>
               <span className={styles.orderDate}>{formatDate(order.createdAt._seconds)}</span>
-              <span className={styles.statusBadge}>{getStatusLabel(order.status)}</span>
+<span className={`${styles.statusBadge} ${order.status === "CANCELLED" ? styles.statusBadgeCancelled : ""}`}>{getStatusLabel(order.status)}</span>
             </div>
 
             <div className={styles.orderMain}>
@@ -731,7 +731,8 @@ export default function OrderDetailsPage() {
           </div>
         </div>
 
-        {/* Offers Section */}
+{/* Offers Section - Only show for PENDING status */}
+        {order.status === "PENDING" && (
         <div className={styles.offersSection}>
           <div className={styles.offersSectionHeader}>
             <h2 className={styles.offersTitle}>
@@ -822,6 +823,7 @@ export default function OrderDetailsPage() {
             )}
           </div>
         </div>
+        )}
 
         {/* Cancel Modal */}
         {showCancelModal && (

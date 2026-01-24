@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
+import { LoadingOverlay } from "@/components/common/LoadingOverlay";
 import styles from "@/styles/setting/setting.module.css";
 import { Cairo } from "next/font/google";
 import { commonService } from "@/lib/api/services";
@@ -150,7 +151,7 @@ export default function SettingPage() {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M12.5 5L7.5 10L12.5 15"
+                  d="M7.5 5L12.5 10L7.5 15"
                   stroke="currentColor"
                   strokeWidth="1.5"
                   strokeLinecap="round"
@@ -172,7 +173,29 @@ export default function SettingPage() {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M12.5 5L7.5 10L12.5 15"
+                  d="M7.5 5L12.5 10L7.5 15"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+
+            <button
+              className={styles.menuItem}
+              onClick={() => router.push("/setting/api-keys")}
+            >
+              <span>مفاتيح API</span>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7.5 5L12.5 10L7.5 15"
                   stroke="currentColor"
                   strokeWidth="1.5"
                   strokeLinecap="round"
@@ -200,26 +223,7 @@ export default function SettingPage() {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M12.5 5L7.5 10L12.5 15"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-
-            <button className={styles.menuItem}>
-              <span>عن التطبيق</span>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12.5 5L7.5 10L12.5 15"
+                  d="M7.5 5L12.5 10L7.5 15"
                   stroke="currentColor"
                   strokeWidth="1.5"
                   strokeLinecap="round"
@@ -241,7 +245,7 @@ export default function SettingPage() {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M12.5 5L7.5 10L12.5 15"
+                  d="M7.5 5L12.5 10L7.5 15"
                   stroke="currentColor"
                   strokeWidth="1.5"
                   strokeLinecap="round"
@@ -263,7 +267,7 @@ export default function SettingPage() {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M12.5 5L7.5 10L12.5 15"
+                  d="M7.5 5L12.5 10L7.5 15"
                   stroke="currentColor"
                   strokeWidth="1.5"
                   strokeLinecap="round"
@@ -285,7 +289,7 @@ export default function SettingPage() {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M12.5 5L7.5 10L12.5 15"
+                  d="M7.5 5L12.5 10L7.5 15"
                   stroke="currentColor"
                   strokeWidth="1.5"
                   strokeLinecap="round"
@@ -370,6 +374,7 @@ export default function SettingPage() {
       )}
 
       <MessageDrawer />
+      <LoadingOverlay isLoading={loading || isUpdating} />
     </main>
   );
 }

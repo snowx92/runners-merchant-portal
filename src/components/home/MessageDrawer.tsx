@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -6,7 +7,6 @@ import Image from "next/image";
 import styles from "@/styles/home/messages.module.css";
 import { useChatCount } from "@/lib/hooks/useChatCount";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { LoadingOverlay } from "@/components/common/LoadingOverlay";
 import { 
   collection, 
   query, 
@@ -572,9 +572,6 @@ export const MessageDrawer = () => {
 
   return (
     <>
-      {/* Loading Overlay when checking balance */}
-      <LoadingOverlay isLoading={isCheckingBalance} />
-      
       {/* Floating Button */}
       <div className={styles.messageButtonWrapper}>
         <button
