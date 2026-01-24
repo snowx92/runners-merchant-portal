@@ -12,7 +12,7 @@ import { locationService } from "@/lib/api/services/locationService";
 import type { UserAddress } from "@/lib/api/types/address.types";
 import type { Zone } from "@/lib/api/types/zone.types";
 import type { CreateOrderRequest } from "@/lib/api/types/order.types";
-import * as XLSX from "xlsx";
+
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -30,7 +30,7 @@ interface OrderForm {
   recipientAddress: string;
   recipientName: string;
   recipientPhone: string;
-  clientAddressId: string; // Changed to store address ID
+  clientAddressId: string; // pickupId - اختيار عنوان الاستلام
   governorate: string; // المحافظة
   governorateId: string;
   city: string; // المدينة
@@ -84,8 +84,8 @@ export default function AddOrder() {
           zoneService.getZones(),
         ]);
 
-        if (addressesRes.status === "fulfilled" && addressesRes.value && addressesRes.value.data) {
-          setUserAddresses(addressesRes.value.data);
+        if (addressesRes.status === "fulfilled" && addressesRes.value) {
+          setUserAddresses(addressesRes.value);
         }
 
         if (zonesRes.status === "fulfilled" && zonesRes.value && zonesRes.value.data) {
@@ -249,21 +249,17 @@ export default function AddOrder() {
       if (orders.length === 1) {
         const order = orders[0];
         const orderData: CreateOrderRequest = {
-          clientName: order.recipientName,
-          clientPhone: order.recipientPhone,
-          clientOtherPhone: "", // Optional field - empty for now
-          clientAddress: order.recipientAddress,
-          clientAddressId: order.clientAddressId,
-          gov: order.governorate,
-          govId: order.governorateId,
-          city: order.city,
+          name: order.recipientName,
+          phone: order.recipientPhone,
+          address: order.recipientAddress,
           cityId: order.cityId,
+          govId: order.governorateId,
+          pickupId: order.clientAddressId,
           cash: Number(order.packagePrice),
-          type: order.paymentType,
-          notes: order.notes,
+          fees: Number(order.deliveryPrice),
           content: order.packageDescription,
-          attachment: order.image || "",
-          requiredSupplierFailedAmount: Number(order.deliveryPrice),
+          notes: order.notes,
+          type: order.paymentType,
         };
 
         const response = await orderService.createOrder(orderData);
@@ -278,21 +274,17 @@ export default function AddOrder() {
         // Create bulk orders
         const bulkOrdersData = {
           orders: orders.map((order) => ({
-            clientName: order.recipientName,
-            clientPhone: order.recipientPhone,
-            clientOtherPhone: "",
-            clientAddress: order.recipientAddress,
-            clientAddressId: order.clientAddressId,
-            gov: order.governorate,
-            govId: order.governorateId,
-            city: order.city,
+            name: order.recipientName,
+            phone: order.recipientPhone,
+            address: order.recipientAddress,
             cityId: order.cityId,
+            govId: order.governorateId,
+            pickupId: order.clientAddressId,
             cash: Number(order.packagePrice),
-            type: order.paymentType as "COD" | "PREPAID",
-            notes: order.notes,
+            fees: Number(order.deliveryPrice),
             content: order.packageDescription,
-            attachment: order.image || "",
-            requiredSupplierFailedAmount: Number(order.deliveryPrice),
+            notes: order.notes,
+            type: order.paymentType as "COD" | "PREPAID",
           })),
         };
 
@@ -636,17 +628,13 @@ export default function AddOrder() {
 
           <div className={styles.formGroup}>
             <label className={styles.label}>عنوان المستلم</label>
-            <div className={styles.selectWrapper}>
-              <select
-                className={`${styles.select} ${errors[`${order.id}_recipientAddress`] ? styles.inputError : ""}`}
-                value={order.recipientAddress}
-                onChange={(e) => updateOrder(order.id, "recipientAddress", e.target.value)}
-              >
-                <option value="">اختر العنوان</option>
-                <option value="القاهرة، شارع الأزهر">القاهرة، شارع الأزهر</option>
-              </select>
-              <span className={styles.selectArrow}>›</span>
-            </div>
+            <input
+              type="text"
+              className={`${styles.input} ${errors[`${order.id}_recipientAddress`] ? styles.inputError : ""}`}
+              placeholder="ادخل عنوان المستلم"
+              value={order.recipientAddress}
+              onChange={(e) => updateOrder(order.id, "recipientAddress", e.target.value)}
+            />
             {errors[`${order.id}_recipientAddress`] && (
               <span className={styles.errorText}>{errors[`${order.id}_recipientAddress`]}</span>
             )}

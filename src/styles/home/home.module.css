@@ -184,7 +184,7 @@
     display: flex;
     justify-content: center;
     gap: 0.5rem;
-    margin-top: -1rem;
+    margin-top: 1rem;
     /* Visual adjustment */
     margin-bottom: 2rem;
 }
@@ -264,6 +264,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-left: 1rem;
     color: #111;
 }
 
@@ -357,4 +358,16 @@
         grid-template-columns: 1fr;
         gap: 1rem;
     }
+}
+.orderLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.orderCard {
+  cursor: pointer;
+}
+.orderCard:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
 }

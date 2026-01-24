@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import styles from "@/styles/setting/setting.module.css";
 import { Cairo } from "next/font/google";
+import { commonService } from "@/lib/api/services";
+import { getFirebaseAuth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
+import { SessionManager } from "@/lib/utils/session";
+import { useToast } from "@/lib/contexts/ToastContext";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -13,17 +18,58 @@ const cairo = Cairo({
   variable: "--font-cairo",
 });
 
-import { commonService } from "@/lib/api/services/commonService";
-import { getFirebaseAuth } from "@/lib/firebase";
-import { signOut } from "firebase/auth";
-import { SessionManager } from "@/lib/utils/session";
-
 export default function SettingPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [acceptOrdersAuto, setAcceptOrdersAuto] = useState(true);
+  const [isSupplier, setIsSupplier] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [nightMode, setNightMode] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true);
+      const response = await commonService.getUserProfile();
+      if (response && response.data) {
+        // Check if user is a supplier
+        const userType = response.data.type?.toUpperCase();
+        setIsSupplier(userType === "SUPPLIER" || userType === "MERCHANT");
+        
+        // Set initial autoAccept value (only for suppliers)
+        if (userType === "SUPPLIER" || userType === "MERCHANT") {
+          setAcceptOrdersAuto(response.data.autoAccept || false);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAutoAcceptToggle = async (enabled: boolean) => {
+    setAcceptOrdersAuto(enabled);
+    setIsUpdating(true);
+
+    try {
+      await commonService.updateUserProfile({ autoAccept: enabled });
+      showToast("تم تحديث الإعداد بنجاح", "success");
+    } catch (error) {
+      console.error("Error updating autoAccept:", error);
+      // Revert the toggle on error
+      setAcceptOrdersAuto(!enabled);
+      showToast("فشل في تحديث الإعداد", "error");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
@@ -57,17 +103,21 @@ export default function SettingPage() {
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>اعدادات عامة</h2>
           <div className={styles.card}>
-            <div className={styles.settingItem}>
-              <span className={styles.settingLabel}>قبول الطلبات تلقائيا</span>
-              <label className={styles.toggleSwitch}>
-                <input
-                  type="checkbox"
-                  checked={acceptOrdersAuto}
-                  onChange={(e) => setAcceptOrdersAuto(e.target.checked)}
-                />
-                <span className={styles.toggleSlider}></span>
-              </label>
-            </div>
+            {/* Auto Accept Orders - Only for suppliers */}
+            {isSupplier && (
+              <div className={styles.settingItem}>
+                <span className={styles.settingLabel}>قبول الطلبات تلقائيا</span>
+                <label className={styles.toggleSwitch}>
+                  <input
+                    type="checkbox"
+                    checked={acceptOrdersAuto}
+                    onChange={(e) => handleAutoAcceptToggle(e.target.checked)}
+                    disabled={loading || isUpdating}
+                  />
+                  <span className={styles.toggleSlider}></span>
+                </label>
+              </div>
+            )}
 
             <div className={styles.settingItem}>
               <span className={styles.settingLabel}>الوضع الليلي</span>

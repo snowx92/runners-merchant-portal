@@ -8,6 +8,714 @@
   },
   "item": [
     {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Actions",
+          "item": [
+            {
+              "name": "Mark As Returned",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"hash\": \"eyJlbmNyeXB0ZWREYXRhIjoiOGFhZjJiZDRkZmY5ODZhZDM2YWRiNTk2ZjljN2YzMDYiLCJpdiI6IjYzMmQwYmFhNTljMjE1NTQwZWMyYjJkN2RhZWQ3NGIyIn0=\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{customerUrl}}/orders/return/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "return",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "00000174"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Re List Order",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/orders/relist/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "relist",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Re List Order Copy",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/orders/relist/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "relist",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Cancel Current Courier",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"reason\" : \"\",\n    \"explain\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{customerUrl}}/orders/cancel/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "cancel",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Get Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerUrl}}/orders/?pageNo=1&limit=10",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "orders",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "pageNo",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "keyword",
+                  "value": "00000100",
+                  "description": "Something to search with",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Array of Values",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "priceFrom",
+                  "value": "",
+                  "description": "Filter option",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "priceTo",
+                  "value": "20",
+                  "description": "Filter option",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "fromGovId",
+                  "value": "",
+                  "description": "Filter option",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "toGovId",
+                  "value": "",
+                  "description": "Filter option",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "fromCityId",
+                  "value": "",
+                  "description": "Filter option",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "toCityId",
+                  "value": "",
+                  "description": "Filter option",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "shippingPriceFrom",
+                  "value": "10",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "shippingPriceTo",
+                  "value": "50",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/orders/?pageNo=1&limit=10",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    ""
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNo",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Sun, 11 Jan 2026 07:23:58 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"ac6-jRUgdtciU5eQ1Aj0B/jwaGx2FCY\""
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "date",
+                  "value": "Sat, 11 Jan 2025 07:24:01 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Fetched Orders\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"00000003\",\n                \"customer\": {\n                    \"name\": \"John Doe\",\n                    \"phone\": \"+1 555-555-5555\",\n                    \"address\": \"123 Main St, Apt 302\",\n                    \"city\": \"Springfield\"\n                },\n                \"pickup\": {\n                    \"title\": \"Home Address\",\n                    \"street\": \"123 Main St\",\n                    \"city\": \"Springfield\",\n                    \"state\": \"Illinois\",\n                    \"phoneNumber\": \"+1 555-555-5555\",\n                    \"latitude\": 39.7817,\n                    \"longitude\": -89.6501,\n                    \"geoPoint\": {\n                        \"lat\": 39.7817,\n                        \"lng\": -89.6501,\n                        \"hash\": \"dp04rfnc1q\"\n                    },\n                    \"defaultAddress\": true,\n                    \"buildingNumber\": \"B-25\",\n                    \"floorNumber\": \"3\",\n                    \"apartmentNumber\": \"302\",\n                    \"notes\": \"Near the park entrance\",\n                    \"id\": \"iL3GdyVltJpqL1GRrbOF\"\n                },\n                \"cash\": \"100.00\",\n                \"fees\": \"5.00\",\n                \"merchantId\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n                \"courierId\": null,\n                \"content\": \"Electronics - TV, Laptop\",\n                \"cashStatus\": \"PENDING\",\n                \"attachment\": null,\n                \"notes\": \"Leave the package at the front door.\",\n                \"status\": \"PENDING\",\n                \"createdAt\": {\n                    \"_seconds\": 1736579607,\n                    \"_nanoseconds\": 152000000\n                },\n                \"updatedAt\": {\n                    \"_seconds\": 1736579607,\n                    \"_nanoseconds\": 152000000\n                }\n            },\n            {\n                \"id\": \"00000002\",\n                \"customer\": {\n                    \"name\": \"John Doe\",\n                    \"phone\": \"+1 555-555-5555\",\n                    \"address\": \"123 Main St, Apt 302\",\n                    \"city\": \"Springfield\"\n                },\n                \"pickup\": {\n                    \"title\": \"Home Address\",\n                    \"street\": \"123 Main St\",\n                    \"city\": \"Springfield\",\n                    \"state\": \"Illinois\",\n                    \"phoneNumber\": \"+1 555-555-5555\",\n                    \"latitude\": 39.7817,\n                    \"longitude\": -89.6501,\n                    \"geoPoint\": {\n                        \"lat\": 39.7817,\n                        \"lng\": -89.6501,\n                        \"hash\": \"dp04rfnc1q\"\n                    },\n                    \"defaultAddress\": true,\n                    \"buildingNumber\": \"B-25\",\n                    \"floorNumber\": \"3\",\n                    \"apartmentNumber\": \"302\",\n                    \"notes\": \"Near the park entrance\",\n                    \"id\": \"iL3GdyVltJpqL1GRrbOF\"\n                },\n                \"cash\": \"100.00\",\n                \"fees\": \"5.00\",\n                \"merchantId\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n                \"courierId\": null,\n                \"content\": \"Electronics - TV, Laptop\",\n                \"cashStatus\": \"PENDING\",\n                \"attachment\": null,\n                \"notes\": \"Leave the package at the front door.\",\n                \"status\": \"PENDING\",\n                \"createdAt\": {\n                    \"_seconds\": 1736579550,\n                    \"_nanoseconds\": 758000000\n                },\n                \"updatedAt\": {\n                    \"_seconds\": 1736579550,\n                    \"_nanoseconds\": 758000000\n                }\n            },\n            {\n                \"id\": \"00000001\",\n                \"customer\": {\n                    \"name\": \"John Doe\",\n                    \"phone\": \"+1 555-555-5555\",\n                    \"address\": \"123 Main St, Apt 302\",\n                    \"city\": \"Springfield\"\n                },\n                \"pickup\": {\n                    \"title\": \"Home Address\",\n                    \"street\": \"123 Main St\",\n                    \"city\": \"Springfield\",\n                    \"state\": \"Illinois\",\n                    \"phoneNumber\": \"+1 555-555-5555\",\n                    \"latitude\": 39.7817,\n                    \"longitude\": -89.6501,\n                    \"geoPoint\": {\n                        \"lat\": 39.7817,\n                        \"lng\": -89.6501,\n                        \"hash\": \"dp04rfnc1q\"\n                    },\n                    \"defaultAddress\": true,\n                    \"buildingNumber\": \"B-25\",\n                    \"floorNumber\": \"3\",\n                    \"apartmentNumber\": \"302\",\n                    \"notes\": \"Near the park entrance\",\n                    \"id\": \"iL3GdyVltJpqL1GRrbOF\"\n                },\n                \"cash\": \"100.00\",\n                \"fees\": \"5.00\",\n                \"merchantId\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n                \"courierId\": null,\n                \"content\": \"Electronics - TV, Laptop\",\n                \"cashStatus\": \"PENDING\",\n                \"attachment\": null,\n                \"notes\": \"Leave the package at the front door.\",\n                \"status\": \"PENDING\",\n                \"createdAt\": {\n                    \"_seconds\": 1736579498,\n                    \"_nanoseconds\": 430000000\n                },\n                \"updatedAt\": {\n                    \"_seconds\": 1736579498,\n                    \"_nanoseconds\": 430000000\n                }\n            }\n        ],\n        \"pageItems\": 3,\n        \"totalItems\": 3,\n        \"isLastPage\": true,\n        \"nextPageNumber\": null,\n        \"currentPage\": 1,\n        \"totalPages\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Shreif Customer\",\n  \"phone\": \"01114077125\",\n  \"address\": \"1 Asia St, Nile Cornish, Maadi\",\n  \"cityId\": \"UXgOcotYrdYDdXFUA32D\",\n  \"govId\": \"P4u8oppR5537YIFyRwfa\",\n  \"pickupId\": \"vcfzOuBApL11w2jJGvNu\",\n  \"cash\": 100.00,\n  \"fees\": 65.00,\n  \"content\": \"Electronics - TV, Laptop\",\n  \"notes\": \"Leave the package at the front door.\",\n  \"type\": \"COD\" // COD, PREPAID\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{customerUrl}}/orders/",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "orders",
+                ""
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John Doe\",\n  \"phone\": \"+1 555-555-5555\",\n  \"address\": \"123 Main St, Apt 302\",\n  \"city\": \"Springfield\",\n  \"pickupId\": \"iL3GdyVltJpqL1GRrbOF\",\n\n  \"cash\": \"100.00\",\n  \"fees\": \"5.00\",\n\n  \"content\": \"Electronics - TV, Laptop\",\n  \"notes\": \"Leave the package at the front door.\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{customerUrl}}/orders/",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    ""
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Sun, 11 Jan 2026 07:13:25 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "882"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"372-y+0c8J2rpSBkoAysxQ7+AXpgjqQ\""
+                },
+                {
+                  "key": "date",
+                  "value": "Sat, 11 Jan 2025 07:13:28 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Order created successfully\",\n    \"data\": {\n        \"id\": \"00000003\",\n        \"customer\": {\n            \"name\": \"John Doe\",\n            \"phone\": \"+1 555-555-5555\",\n            \"address\": \"123 Main St, Apt 302\",\n            \"city\": \"Springfield\"\n        },\n        \"pickup\": {\n            \"title\": \"Home Address\",\n            \"street\": \"123 Main St\",\n            \"city\": \"Springfield\",\n            \"state\": \"Illinois\",\n            \"phoneNumber\": \"+1 555-555-5555\",\n            \"latitude\": 39.7817,\n            \"longitude\": -89.6501,\n            \"geoPoint\": {\n                \"lat\": 39.7817,\n                \"lng\": -89.6501,\n                \"hash\": \"dp04rfnc1q\"\n            },\n            \"defaultAddress\": true,\n            \"buildingNumber\": \"B-25\",\n            \"floorNumber\": \"3\",\n            \"apartmentNumber\": \"302\",\n            \"notes\": \"Near the park entrance\",\n            \"id\": \"iL3GdyVltJpqL1GRrbOF\"\n        },\n        \"cash\": \"100.00\",\n        \"fees\": \"5.00\",\n        \"merchantId\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n        \"courierId\": null,\n        \"content\": \"Electronics - TV, Laptop\",\n        \"cashStatus\": \"PENDING\",\n        \"attachment\": null,\n        \"notes\": \"Leave the package at the front door.\",\n        \"status\": \"PENDING\",\n        \"createdAt\": \"2025-01-11T07:13:27.152Z\",\n        \"updatedAt\": \"2025-01-11T07:13:27.152Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PUT",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Get Latest Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerUrl}}/orders/latest",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "orders",
+                "latest"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/orders/latest",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "latest"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Fri, 30 Jan 2026 05:26:20 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"ac6-jRUgdtciU5eQ1Aj0B/jwaGx2FCY\""
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "date",
+                  "value": "Thu, 30 Jan 2025 05:26:23 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Fetched Orders\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"00000003\",\n                \"customer\": {\n                    \"name\": \"John Doe\",\n                    \"phone\": \"+1 555-555-5555\",\n                    \"address\": \"123 Main St, Apt 302\",\n                    \"city\": \"Springfield\"\n                },\n                \"pickup\": {\n                    \"title\": \"Home Address\",\n                    \"street\": \"123 Main St\",\n                    \"city\": \"Springfield\",\n                    \"state\": \"Illinois\",\n                    \"phoneNumber\": \"+1 555-555-5555\",\n                    \"latitude\": 39.7817,\n                    \"longitude\": -89.6501,\n                    \"geoPoint\": {\n                        \"lat\": 39.7817,\n                        \"lng\": -89.6501,\n                        \"hash\": \"dp04rfnc1q\"\n                    },\n                    \"defaultAddress\": true,\n                    \"buildingNumber\": \"B-25\",\n                    \"floorNumber\": \"3\",\n                    \"apartmentNumber\": \"302\",\n                    \"notes\": \"Near the park entrance\",\n                    \"id\": \"iL3GdyVltJpqL1GRrbOF\"\n                },\n                \"cash\": \"100.00\",\n                \"fees\": \"5.00\",\n                \"merchantId\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n                \"courierId\": null,\n                \"content\": \"Electronics - TV, Laptop\",\n                \"cashStatus\": \"PENDING\",\n                \"attachment\": null,\n                \"notes\": \"Leave the package at the front door.\",\n                \"status\": \"PENDING\",\n                \"createdAt\": {\n                    \"_seconds\": 1736579607,\n                    \"_nanoseconds\": 152000000\n                },\n                \"updatedAt\": {\n                    \"_seconds\": 1736579607,\n                    \"_nanoseconds\": 152000000\n                }\n            },\n            {\n                \"id\": \"00000002\",\n                \"customer\": {\n                    \"name\": \"John Doe\",\n                    \"phone\": \"+1 555-555-5555\",\n                    \"address\": \"123 Main St, Apt 302\",\n                    \"city\": \"Springfield\"\n                },\n                \"pickup\": {\n                    \"title\": \"Home Address\",\n                    \"street\": \"123 Main St\",\n                    \"city\": \"Springfield\",\n                    \"state\": \"Illinois\",\n                    \"phoneNumber\": \"+1 555-555-5555\",\n                    \"latitude\": 39.7817,\n                    \"longitude\": -89.6501,\n                    \"geoPoint\": {\n                        \"lat\": 39.7817,\n                        \"lng\": -89.6501,\n                        \"hash\": \"dp04rfnc1q\"\n                    },\n                    \"defaultAddress\": true,\n                    \"buildingNumber\": \"B-25\",\n                    \"floorNumber\": \"3\",\n                    \"apartmentNumber\": \"302\",\n                    \"notes\": \"Near the park entrance\",\n                    \"id\": \"iL3GdyVltJpqL1GRrbOF\"\n                },\n                \"cash\": \"100.00\",\n                \"fees\": \"5.00\",\n                \"merchantId\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n                \"courierId\": null,\n                \"content\": \"Electronics - TV, Laptop\",\n                \"cashStatus\": \"PENDING\",\n                \"attachment\": null,\n                \"notes\": \"Leave the package at the front door.\",\n                \"status\": \"PENDING\",\n                \"createdAt\": {\n                    \"_seconds\": 1736579550,\n                    \"_nanoseconds\": 758000000\n                },\n                \"updatedAt\": {\n                    \"_seconds\": 1736579550,\n                    \"_nanoseconds\": 758000000\n                }\n            },\n            {\n                \"id\": \"00000001\",\n                \"customer\": {\n                    \"name\": \"John Doe\",\n                    \"phone\": \"+1 555-555-5555\",\n                    \"address\": \"123 Main St, Apt 302\",\n                    \"city\": \"Springfield\"\n                },\n                \"pickup\": {\n                    \"title\": \"Home Address\",\n                    \"street\": \"123 Main St\",\n                    \"city\": \"Springfield\",\n                    \"state\": \"Illinois\",\n                    \"phoneNumber\": \"+1 555-555-5555\",\n                    \"latitude\": 39.7817,\n                    \"longitude\": -89.6501,\n                    \"geoPoint\": {\n                        \"lat\": 39.7817,\n                        \"lng\": -89.6501,\n                        \"hash\": \"dp04rfnc1q\"\n                    },\n                    \"defaultAddress\": true,\n                    \"buildingNumber\": \"B-25\",\n                    \"floorNumber\": \"3\",\n                    \"apartmentNumber\": \"302\",\n                    \"notes\": \"Near the park entrance\",\n                    \"id\": \"iL3GdyVltJpqL1GRrbOF\"\n                },\n                \"cash\": \"100.00\",\n                \"fees\": \"5.00\",\n                \"merchantId\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n                \"courierId\": null,\n                \"content\": \"Electronics - TV, Laptop\",\n                \"cashStatus\": \"PENDING\",\n                \"attachment\": null,\n                \"notes\": \"Leave the package at the front door.\",\n                \"status\": \"PENDING\",\n                \"createdAt\": {\n                    \"_seconds\": 1736579498,\n                    \"_nanoseconds\": 430000000\n                },\n                \"updatedAt\": {\n                    \"_seconds\": 1736579498,\n                    \"_nanoseconds\": 430000000\n                }\n            }\n        ],\n        \"pageItems\": 3,\n        \"totalItems\": 3,\n        \"isLastPage\": true,\n        \"nextPageNumber\": null,\n        \"currentPage\": 1,\n        \"totalPages\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Single Order",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerUrl}}/orders/single/:id",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "orders",
+                "single",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "00000141"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/orders/single/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "single",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "00000001"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Fri, 30 Jan 2026 13:11:16 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "964"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"3c4-EzimXTWMBQAlRalG7MujN/zwNNg\""
+                },
+                {
+                  "key": "date",
+                  "value": "Thu, 30 Jan 2025 13:11:18 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Fetched Order\",\n    \"data\": {\n        \"id\": \"00000001\",\n        \"cash\": \"100.00\",\n        \"shippingAmount\": \"5.00\",\n        \"courierShippingAmount\": 0,\n        \"status\": \"PENDING\",\n        \"cashStatus\": \"PENDING\",\n        \"createdAt\": {\n            \"_seconds\": 1736579498,\n            \"_nanoseconds\": 430000000\n        },\n        \"bidsCount\": 0,\n        \"bids\": [],\n        \"finalAmounts\": {\n            \"cod\": 0,\n            \"shipping\": 0,\n            \"total\": 0\n        },\n        \"cashTransactions\": [],\n        \"updates\": [],\n        \"merchant\": {\n            \"id\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n            \"name\": \"\",\n            \"avatar\": \"\"\n        },\n        \"selectedCourier\": {\n            \"name\": \"\",\n            \"avatar\": \"\"\n        },\n        \"pickup\": {\n            \"title\": \"Home Address\",\n            \"street\": \"123 Main St\",\n            \"city\": \"Springfield\",\n            \"state\": \"Illinois\",\n            \"phoneNumber\": \"+1 555-555-5555\",\n            \"latitude\": 39.7817,\n            \"longitude\": -89.6501,\n            \"geoPoint\": {\n                \"lat\": 39.7817,\n                \"lng\": -89.6501,\n                \"hash\": \"dp04rfnc1q\"\n            },\n            \"defaultAddress\": true,\n            \"buildingNumber\": \"B-25\",\n            \"floorNumber\": \"3\",\n            \"apartmentNumber\": \"302\",\n            \"notes\": \"Near the park entrance\",\n            \"id\": \"iL3GdyVltJpqL1GRrbOF\"\n        },\n        \"customer\": {\n            \"phone\": \"+1 555-555-5555\",\n            \"otherPhone\": \"\",\n            \"address\": \"123 Main St, Apt 302\",\n            \"name\": \"John Doe\",\n            \"govName\": \"\",\n            \"govId\": \"\"\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Bulk Orders",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"pickupId\": \"E6TMjOubVKi2sIEhKoO2\",\n    \"type\": \"COD\", //COD - PREPAID\n    \"items\" : [\n        {\n            \"name\": \"test\",\n            \"phone\": \"01114077125\",\n            \"address\": \"test address\",\n            \"gov\": \"Giza\", //Name of the gov in ar or en, must be excatly the same as the data\n            \"city\": \"Dokki\", //Name of the city in ar or en, must be excatly the same as the data\n            \"cash\": 10,\n            \"fees\": 5, \n            \"content\": \"Package content\",\n            \"notes\": \"\"\n        }\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{customerUrl}}/orders/bulk",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "orders",
+                "bulk"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"pickupId\": \"E6TMjOubVKi2sIEhKoO2\",\n    \"items\" : [\n        {\n            \"name\": \"test\",\n            \"phone\": \"01114077125\",\n            \"address\": \"test address\",\n            \"gov\": \"Giza\", //Name of the gov in ar or en, must be excatly the same as the data\n            \"city\": \"Dokki\", //Name of the city in ar or en, must be excatly the same as the data\n            \"cash\": 10,\n            \"fees\": 5, \n            \"content\": \"Package content\",\n            \"notes\": \"\"\n        }\n    ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{customerUrl}}/orders/bulk",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "bulk"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "ar"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "language=ar; Path=/; Expires=Mon, 16 Mar 2026 22:13:39 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"3cb-EuSzTHRrhiXSprRP44BgKszU5ic\""
+                },
+                {
+                  "key": "X-Cloud-Trace-Context",
+                  "value": "d0c2df29edabc60fb2125b5038f763a0;o=1"
+                },
+                {
+                  "key": "Date",
+                  "value": "Sun, 16 Mar 2025 22:13:40 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Google Frontend"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "971"
+                },
+                {
+                  "key": "Expires",
+                  "value": "Sun, 16 Mar 2025 22:13:40 GMT"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "private"
+                },
+                {
+                  "key": "Alt-Svc",
+                  "value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Bulk orders created successfully\",\n    \"data\": {\n        \"totalOrders\": 1,\n        \"orders\": [\n            {\n                \"id\": \"00000155\",\n                \"customer\": {\n                    \"name\": \"test\",\n                    \"phone\": \"01114077125\",\n                    \"address\": \"test address\",\n                    \"govId\": \"LSSD2FrFbtOAUgYz2zUS\",\n                    \"cityId\": \"LSSD2FrFbtOAUgYz2zUS1\",\n                    \"city\": \"الدقي\",\n                    \"gov\": \"الجيزة\"\n                },\n                \"pickup\": {\n                    \"title\": \"Home\",\n                    \"street\": \"Tyar Fekry\",\n                    \"cityId\": \"guVddc7wPpbxBXBkSpbk\",\n                    \"stateId\": \"P4u8oppR5537YIFyRwfa\",\n                    \"state\": \"القاهرة\",\n                    \"city\": \"المعادي\",\n                    \"phoneNumber\": \"01114077125\",\n                    \"latitude\": 30.0840222,\n                    \"longitude\": 31.2190276,\n                    \"geoPoint\": {\n                        \"lat\": 30.0840222,\n                        \"lng\": 31.2190276,\n                        \"hash\": \"stq5nkth0h\"\n                    },\n                    \"defaultAddress\": true,\n                    \"buildingNumber\": \"1\",\n                    \"floorNumber\": \"1\",\n                    \"apartmentNumber\": \"1\",\n                    \"notes\": \"\",\n                    \"id\": \"E6TMjOubVKi2sIEhKoO2\"\n                },\n                \"cash\": 10,\n                \"fees\": 5,\n                \"merchantId\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n                \"courierId\": null,\n                \"content\": \"Package content\",\n                \"cashStatus\": \"PENDING\",\n                \"attachment\": \"\",\n                \"notes\": \"\",\n                \"status\": \"PENDING\",\n                \"createdAt\": \"2025-03-16T22:13:40.645Z\",\n                \"updatedAt\": \"2025-03-16T22:13:40.645Z\"\n            }\n        ]\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Locations",
       "item": [
         {
@@ -490,4 +1198,815 @@
         }
       ]
     },
+    {
+      "name": "Bids",
+      "item": [
+        {
+          "name": "Get Order Bids",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerUrl}}/orders/bids/:id",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "orders",
+                "bids",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "00000001"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/orders/bids/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "bids",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "00000001"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Fri, 30 Jan 2026 15:09:38 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "762"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"2fa-Ij/7lmLvCWYhzoByiZlvy5RXLV0\""
+                },
+                {
+                  "key": "date",
+                  "value": "Thu, 30 Jan 2025 15:09:43 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Fetched Bids\",\n    \"data\": [\n        {\n            \"id\": \"GZEs2eoWtK4KAogWJEjg\",\n            \"userId\": \"sDqsomVM2COE5mu2IiNHS2CHEmH2\",\n            \"amount\": 100,\n            \"status\": \"PENDING\",\n            \"createdAt\": {\n                \"_seconds\": 1738249381,\n                \"_nanoseconds\": 949000000\n            },\n            \"courier\": {\n                \"name\": \"Shreif Courier\",\n                \"avatar\": \"https://vondera-bucket.s3.eu-north-1.amazonaws.com/avatars/ic_avatar_1.png\",\n                \"rating\": 0,\n                \"phone\": \"01114077118\",\n                \"method\": \"MOTORCYCLE\",\n                \"successCount\": 0\n            }\n        },\n        {\n            \"id\": \"qX5KcikFQomnLrkkzuOy\",\n            \"userId\": \"sDqsomVM2COE5mu2IiNHS2CHEmH2\",\n            \"amount\": 100,\n            \"status\": \"PENDING\",\n            \"createdAt\": {\n                \"_seconds\": 1738246486,\n                \"_nanoseconds\": 440000000\n            },\n            \"courier\": {\n                \"name\": \"Shreif Courier\",\n                \"avatar\": \"https://vondera-bucket.s3.eu-north-1.amazonaws.com/avatars/ic_avatar_1.png\",\n                \"rating\": 0,\n                \"phone\": \"01114077118\",\n                \"method\": \"MOTORCYCLE\",\n                \"successCount\": 0\n            }\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Bid",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"orderId\": \"00000010\",\n    \"status\": \"ACCEPTED\" //ACCEPTED, REJECTED\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{customerUrl}}/orders/bid/:id",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "orders",
+                "bid",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "DZVQsjyXDOyfglJL6yXm"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"orderId\": \"00000001\",\n    \"status\": \"ACCEPTED\" //ACCEPTED, REJECTED\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{customerUrl}}/orders/bid/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "bid",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "GZEs2eoWtK4KAogWJEjg"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Fri, 30 Jan 2026 15:14:50 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "381"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"17d-wbpUZJH6hIqcrAPDChDt+yVuFz8\""
+                },
+                {
+                  "key": "date",
+                  "value": "Thu, 30 Jan 2025 15:14:56 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Bid status updated successfully\",\n    \"data\": {\n        \"id\": \"GZEs2eoWtK4KAogWJEjg\",\n        \"createdAt\": {\n            \"_seconds\": 1738249381,\n            \"_nanoseconds\": 949000000\n        },\n        \"orderId\": \"00000001\",\n        \"amount\": 100,\n        \"note\": \"This is a note\",\n        \"merchantId\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n        \"courierId\": \"sDqsomVM2COE5mu2IiNHS2CHEmH2\",\n        \"status\": \"ACCEPTED\",\n        \"updatedAt\": {\n            \"_seconds\": 1738250095,\n            \"_nanoseconds\": 36000000\n        }\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Create a Report",
+          "request": {
+            "method": "POST",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Reports",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Couriers",
+      "item": [
+        {
+          "name": "Get Courier Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerUrl}}/courier/:id",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "courier",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "sDqsomVM2COE5mu2IiNHS2CHEmH2"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/courier/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "courier",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "AMBnhppL7GSLEKuMZGun5BliZ6H3"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 12 Feb 2026 09:31:46 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "483"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"1e3-4xhe1IcT3H8U+jqXlD4hc7LV60c\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 12 Feb 2025 09:31:49 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"OK\",\n    \"data\": {\n        \"id\": \"AMBnhppL7GSLEKuMZGun5BliZ6H3\",\n        \"email\": \"courier1@runners.co\",\n        \"fistName\": \"Courier\",\n        \"lastName\": \"1\",\n        \"fullName\": \"Courier 1\",\n        \"avatar\": \"https://vondera-bucket.s3.eu-north-1.amazonaws.com/avatars/ic_avatar_1.png\",\n        \"locations\": [],\n        \"balance\": 0,\n        \"type\": \"COURIER\",\n        \"phoneNumber\": \"01114077119\",\n        \"deliveryMethod\": \"WALKING\",\n        \"verified\": false,\n        \"reviews\": {\n            \"count\": 0,\n            \"average\": 0\n        },\n        \"authProviders\": {\n            \"emailProvider\": true,\n            \"googleProvider\": false,\n            \"appleProvider\": false\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add Review",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"stars\": 5,\n    \"review\": \"This is my honest review\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{customerUrl}}/courier/:id/review",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "courier",
+                ":id",
+                "review"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "sDqsomVM2COE5mu2IiNHS2CHEmH2"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"stars\": 5,\n    \"review\": \"This is my honest review\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{customerUrl}}/courier/:id/review",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "courier",
+                    ":id",
+                    "review"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "AMBnhppL7GSLEKuMZGun5BliZ6H3"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 12 Feb 2026 09:38:53 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "233"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"e9-u/IykLuKQQ3kGarC99lLkf4tgxs\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 12 Feb 2025 09:38:56 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Review Added\",\n    \"data\": {\n        \"id\": \"4YzlvehLPqpPKHSjfSl9\",\n        \"on\": \"AMBnhppL7GSLEKuMZGun5BliZ6H3\",\n        \"stars\": 5,\n        \"review\": \"This is my honest review\",\n        \"by\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n        \"createdAt\": \"2025-02-12T09:38:55.190Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Courier Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerUrl}}/courier/:id/reviews?pageNo=1&limit=10",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "courier",
+                ":id",
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "pageNo",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "type": "text"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "AMBnhppL7GSLEKuMZGun5BliZ6H3"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{customerUrl}}/courier/:id/reviews?pageNo=1&limit=10",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "courier",
+                    ":id",
+                    "reviews"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNo",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "AMBnhppL7GSLEKuMZGun5BliZ6H3"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Thu, 12 Feb 2026 09:34:48 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "150"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"96-5YQ9LjCcgFvie3mHfp1rOkaIR0Q\""
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 12 Feb 2025 09:34:50 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"OK\",\n    \"data\": {\n        \"items\": [],\n        \"pageItems\": 0,\n        \"totalItems\": 0,\n        \"isLastPage\": false,\n        \"nextPageNumber\": null,\n        \"currentPage\": 1,\n        \"totalPages\": 0\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Home",
+      "item": [
+        {
+          "name": "Get Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customerUrl}}/home",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "home"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{courierUrl}}/home",
+                  "host": [
+                    "{{courierUrl}}"
+                  ],
+                  "path": [
+                    "home"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Mon, 16 Feb 2026 12:57:48 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "94"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"5e-FRnLKGdGqOqFlb9u5ws/ILeyl5g\""
+                },
+                {
+                  "key": "date",
+                  "value": "Sun, 16 Feb 2025 12:57:50 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Fetched\",\n    \"data\": {\n        \"currentOrders\": 1,\n        \"finishedOrders\": 0,\n        \"netprofit\": 0\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Add a new review",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"stars\": 4,\n    \"content\": \"This is the review\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{customerUrl}}/reviews/:orderId",
+              "host": [
+                "{{customerUrl}}"
+              ],
+              "path": [
+                "reviews",
+                ":orderId"
+              ],
+              "variable": [
+                {
+                  "key": "orderId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"stars\": 4,\n    \"content\": \"This is the review\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{customerUrl}}/reviews/:id",
+                  "host": [
+                    "{{customerUrl}}"
+                  ],
+                  "path": [
+                    "reviews",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "00000011"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "x-powered-by",
+                  "value": "Express"
+                },
+                {
+                  "key": "vary",
+                  "value": "Origin, Accept-Encoding"
+                },
+                {
+                  "key": "content-language",
+                  "value": "en"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "i18next=en; Path=/; Expires=Mon, 16 Feb 2026 18:11:19 GMT; SameSite=Strict"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "content-length",
+                  "value": "222"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"de-snu5DS4pRpiHOyOO8qxiSCdfk6I\""
+                },
+                {
+                  "key": "date",
+                  "value": "Sun, 16 Feb 2025 18:11:24 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "keep-alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": 200,\n    \"message\": \"Reviews\",\n    \"data\": {\n        \"id\": \"Ai6gnjGhrfvjphK0F89g\",\n        \"on\": \"JPdD59SCBPOGUPHtwdcdxPcc52u1\",\n        \"stars\": 4,\n        \"review\": \"This is the review\",\n        \"by\": \"1UOaz55MEZOb2G0wWL7FX8izzd72\",\n        \"createdAt\": \"2025-02-16T18:11:22.753Z\"\n    }\n}"
+            }
+          ]
+        }
+      ]
+    }
   ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFjMzIxOTgzNGRhNTBlMjBmYWVhZWE3Yzg2Y2U3YjU1MzhmMTdiZTEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiU2hyZWlmIEVsIFNheWVkIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0x1MUQwbkYzdHlXWFo5U21DS2ZaRWdPUU5iazVnbWYzTzZZZ2NJWExhZG4xYkVMNVQ1eGc9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcnVubmVycy03ODQyNiIsImF1ZCI6InJ1bm5lcnMtNzg0MjYiLCJhdXRoX3RpbWUiOjE3NjkxMTQwNDYsInVzZXJfaWQiOiI2WWE5VmJReGNsT2VTb2FiQmltYWFnTHVpQzUzIiwic3ViIjoiNllhOVZiUXhjbE9lU29hYkJpbWFhZ0x1aUM1MyIsImlhdCI6MTc2OTExNDA0NiwiZXhwIjoxNzY5MTE3NjQ2LCJlbWFpbCI6ImFybWpsZHRyYWluZXJAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBob25lX251bWJlciI6IisyMDExMTQwNzcxMjUiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTE3OTUxOTk5MTU5NTY1OTczNjI1Il0sImVtYWlsIjpbImFybWpsZHRyYWluZXJAZ21haWwuY29tIl0sInBob25lIjpbIisyMDExMTQwNzcxMjUiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.jmNS6ItSqFdSd0uItmD7NBjDrvWMqnw4gJbeRDlqS1JjJV1X1N42C5NNkUukU28cJxsaow6W_Z9wYsNAi7gQlUZYoX6yhPg4A-x8xfHV-TRtpCMn7zbCJe-qMCH9GuGZzZ7xWMjQRL1wzpFsmyho-O-z6_Y__XCK2UB4JITafxXM7qSwJ-5gQEU_RZxQXBiTxq7kE6xXewbc1n4xXbk0a9l81fw3TYHv9Tqb65pAhS9x2cHpVcjvoBF5p6UzKRBPGnq3lokKrVrlyrkYeL1Yv4Ye3abC4QwH_tssi2RL0plYOoZjh1_vFKPK85AwtAdBDoFZkBtIzQBte_85YD8tLw",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}

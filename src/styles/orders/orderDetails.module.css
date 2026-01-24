@@ -15,6 +15,12 @@
 /* Header */
 .header {
     margin: 2rem 0 1.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row-reverse;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .pageTitle {
@@ -26,6 +32,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex: 1;
 }
 
 .backArrow {
@@ -600,4 +607,365 @@
     padding: 3rem 1rem;
     color: #999;
     font-size: 1rem;
+}
+
+/* Order Actions */
+.orderActions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.actionButton,
+.actionButtonWarning {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    border-radius: 50px;
+    white-space: nowrap;
+}
+
+.actionButton {
+    background-color: #1A1A1A;
+    color: white;
+}
+
+.actionButton:hover:not(:disabled) {
+    background-color: #333;
+}
+
+.actionButtonWarning {
+    background-color: #FFF3E0;
+    color: #F57C00;
+}
+
+.actionButtonWarning:hover:not(:disabled) {
+    background-color: #FFE0B2;
+}
+
+.actionButton:disabled,
+.actionButtonWarning:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Modal Variants */
+.modal {
+    background: white;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modalClose {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #999;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.modalClose:hover {
+    background-color: #F5F5F5;
+}
+
+.modalBody {
+    padding: 1.5rem;
+}
+
+.modalLabel {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 0.75rem;
+    display: block;
+    text-align: right;
+}
+
+.modalInput,
+.modalTextarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    border: 1px solid #E0E0E0;
+    border-radius: 12px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    text-align: right;
+    direction: rtl;
+}
+
+.modalInput:focus,
+.modalTextarea:focus {
+    outline: none;
+    border-color: #1A1A1A;
+}
+
+.modalTextarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.modalHint {
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 0.5rem;
+    text-align: right;
+}
+
+.modalFooter {
+    padding: 1.5rem;
+    border-top: 1px solid #F0F0F0;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-start;
+}
+
+.modalCancelBtn,
+.modalConfirmBtn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    border-radius: 50px;
+    white-space: nowrap;
+}
+
+.modalCancelBtn {
+    background-color: #F5F5F5;
+    color: #666;
+}
+
+.modalCancelBtn:hover {
+    background-color: #E8E8E8;
+}
+
+.modalConfirmBtn {
+    background-color: #1A1A1A;
+    color: white;
+}
+
+.modalConfirmBtn:hover:not(:disabled) {
+    background-color: #333;
+}
+
+.modalConfirmBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* OTP Section Styles */
+.otpSection {
+    margin-bottom: 1.5rem;
+}
+
+.otpCard {
+    background: white;
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    border: 1px solid #E5E5E5;
+}
+
+.otpIcon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    background: #F5F5F5;
+    padding: 0.75rem;
+    border-radius: 12px;
+}
+
+.otpContent {
+    flex: 1;
+}
+
+.otpTitle {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 0.25rem 0;
+}
+
+.otpDescription {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.5;
+}
+
+.otpCode {
+    background: #F8F9FA;
+    border-radius: 12px;
+    padding: 0.75rem 1.25rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    text-align: center;
+    letter-spacing: 0.3rem;
+    border: 1px solid #E5E5E5;
+    font-family: 'Courier New', monospace;
+}
+
+.priceCardOtp {
+    background: white;
+    border-radius: 16px;
+    padding: 1.25rem 1.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+    flex: 1;
+    justify-content: center;
+    border: 1px solid #E5E5E5;
+}
+
+.otpValue {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    letter-spacing: 0.3rem;
+    font-family: 'Courier New', monospace;
+}
+
+/* Map Section Styles */
+.mapSection {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.mapHeader {
+    margin-bottom: 1rem;
+}
+
+.mapTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 0.5rem 0;
+}
+
+.mapDescription {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+}
+
+.mapContainer {
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #E5E5E5;
+}
+
+.mapAddress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: #F8F9FA;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.mapAddressIcon {
+    font-size: 1.1rem;
+}
+
+/* Rating Stars Styles */
+.ratingStars {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+.starButton {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    opacity: 0.3;
+    padding: 0;
+    line-height: 1;
+}
+
+.starButton:hover {
+    transform: scale(1.1);
+}
+
+.starButton.activeStar {
+    opacity: 1;
+}
+
+/* QR Code Styles */
+.qrCodeContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+}
+
+.qrCodeImage {
+    max-width: 250px;
+    max-height: 250px;
+    width: 100%;
+    height: auto;
+}
+
+.qrCodeHint {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+    text-align: center;
+}
+
+.qrCodePlaceholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #F8F9FA;
+    border-radius: 16px;
+    color: #666;
+}
+
+.qrCodePlaceholder p {
+    margin: 0.5rem 0 0 0;
+    font-size: 0.9rem;
+}
+
+.qrCodeLoading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

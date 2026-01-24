@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { WithdrawModal } from "@/components/transaction/WithdrawModal";
@@ -10,7 +10,6 @@ import { Cairo } from "next/font/google";
 import Image from "next/image";
 import { commonService } from "@/lib/api/services/commonService";
 import { Transaction } from "@/lib/api/types/common.types";
-import { useEffect } from "react";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -30,16 +29,11 @@ export default function TransactionPage() {
     try {
       const [balanceRes, transactionsRes] = await Promise.all([
         commonService.getBalance(),
-        commonService.getTransactions()
+        commonService.getTransactions(),
       ]);
 
-      if (balanceRes && balanceRes.data) {
-        setBalance(balanceRes.data.balance);
-      }
-
-      if (transactionsRes && transactionsRes.data && transactionsRes.data.items) {
-        setTransactions(transactionsRes.data.items);
-      }
+      if (balanceRes?.data) setBalance(balanceRes.data.balance);
+      if (transactionsRes?.data?.items) setTransactions(transactionsRes.data.items);
     } catch (error) {
       console.error("Failed to fetch wallet data", error);
     } finally {
@@ -51,54 +45,84 @@ export default function TransactionPage() {
     fetchWalletData();
   }, []);
 
-  // Helper to format date
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formatDate = (date: any) => {
     try {
       if (!date) return "";
-      // Handle Firestore timestamp { _seconds, _nanoseconds }
-      if (typeof date === 'object' && date._seconds) {
+      if (typeof date === "object" && date._seconds) {
         const d = new Date(date._seconds * 1000);
-        return d.toLocaleDateString('ar-EG');
+        return d.toLocaleDateString("ar-EG");
       }
-      // Handle standard date string
-      return new Date(date).toLocaleDateString('ar-EG');
-    } catch (e) {
-      return "";
+      return new Date(date).toLocaleDateString("ar-EG");
+    } catch (error) {
+      return "error in date" + error;
     }
-  }
+  };
 
-  const getTransactionIcon = (type: string) => {
-    const lowerType = type?.toLowerCase();
-    if (lowerType === 'deposit') return "/icons/Download.png";
-    if (lowerType === 'withdraw' || lowerType === 'withdrawal') return "/icons/Upload.png";
-    return "/icons/product-money.svg"; // default/received
-  }
+
+
+  const getTransactionIcon = (type: Transaction["type"]) => {
+    switch (type) {
+      case "COMMISSION":
+        return "/icons/Upload.png";
+      case "COD":
+        return "/icons/Download.png";
+      case "PENALTY":
+        return "/icons/product-money.svg";
+      default:
+        return "/icons/product-money.svg";
+    }
+  };
 
   const getTransactionTitle = (transaction: Transaction) => {
-    if (transaction.description) {
-      if (typeof transaction.description === 'string') {
-        return transaction.description;
-      }
-      return transaction.description.ar || transaction.status || "";
+    switch (transaction.type) {
+      case "COMMISSION":
+        return "تم تطبيق عموله";
+      case "COD":
+        return "الدفع عند الاستلام";
+      case "PENALTY":
+        return "غرامة";
+      default:
+        return transaction.status || "";
     }
-    // Fallbacks if description is missing
-    if (transaction.type === 'WITHDRAWAL') return "عملية سحب";
-    return transaction.status || "عملية";
-  }
+  };
 
-  const getTransactionClass = (type: string) => {
-    const lowerType = type?.toLowerCase();
-    if (lowerType === 'deposit') return styles.iconWrapperDeposit;
-    if (lowerType === 'withdraw' || lowerType === 'withdrawal') return styles.iconWrapperWithdraw;
-    return styles.iconWrapperReceived;
-  }
+  const getTransactionClass = (type: Transaction["type"]) => {
+    switch (type) {
+      case "COD":
+        return styles.iconWrapperDeposit; // أخضر
+      case "COMMISSION":
+      case "PENALTY":
+        return styles.iconWrapperWithdraw; // أحمر
+      default:
+        return styles.iconWrapperReceived;
+    }
+  };
 
-  const getAmountClass = (type: string) => {
-    const lowerType = type?.toLowerCase();
-    if (lowerType === 'deposit') return styles.amountDeposit;
-    if (lowerType === 'withdraw' || lowerType === 'withdrawal') return styles.amountWithdraw;
-    return styles.amountReceived;
-  }
+  const getAmountClass = (type: Transaction["type"]) => {
+    switch (type) {
+      case "COD":
+        return styles.amountDeposit; // أخضر
+      case "COMMISSION":
+      case "PENALTY":
+        return styles.amountWithdraw; // أحمر
+      default:
+        return styles.amountReceived;
+    }
+  };
+
+  const getAmountSign = (type: Transaction["type"]) => {
+    switch (type) {
+      case "COD":
+        return "+";
+      case "COMMISSION":
+      case "PENALTY":
+        return "-";
+      default:
+        return "";
+    }
+  };
+
 
   return (
     <main className={`${styles.mainContainer} ${cairo.className}`}>
@@ -114,16 +138,10 @@ export default function TransactionPage() {
             <span className={styles.amount}>{balance !== null ? balance : "..."}</span> جنيه
           </h2>
           <div className={styles.buttonGroup}>
-            <button
-              className={styles.withdrawButton}
-              onClick={() => setIsWithdrawModalOpen(true)}
-            >
+            <button className={styles.withdrawButton} onClick={() => setIsWithdrawModalOpen(true)}>
               سحب
             </button>
-            <button
-              className={styles.depositButton}
-              onClick={() => setIsDepositModalOpen(true)}
-            >
+            <button className={styles.depositButton} onClick={() => setIsDepositModalOpen(true)}>
               إيداع
             </button>
           </div>
@@ -135,16 +153,14 @@ export default function TransactionPage() {
 
           <div className={styles.transactionsList}>
             {isLoading ? (
-              <div style={{ textAlign: 'center', padding: '20px' }}>جاري التحميل...</div>
+              <div style={{ textAlign: "center", padding: "20px" }}>جاري التحميل...</div>
             ) : transactions.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '20px' }}>لا توجد عمليات</div>
+              <div style={{ textAlign: "center", padding: "20px" }}>لا توجد عمليات</div>
             ) : (
               transactions.map((transaction) => (
                 <div key={transaction.id} className={styles.transactionCard}>
                   <div className={styles.transactionLeft}>
-                    <div
-                      className={`${styles.iconWrapper} ${getTransactionClass(transaction.type)}`}
-                    >
+                    <div className={`${styles.iconWrapper} ${getTransactionClass(transaction.type)}`}>
                       <Image
                         src={getTransactionIcon(transaction.type)}
                         alt={transaction.type}
@@ -154,20 +170,21 @@ export default function TransactionPage() {
                       />
                     </div>
                   </div>
+
                   <div className={styles.transactionRight}>
                     <div className={styles.transactionInfo}>
-                      <p className={styles.transactionTitle}>
-                        {getTransactionTitle(transaction)}
-                      </p>
+                      <p className={styles.transactionTitle}>{getTransactionTitle(transaction)}</p>
                       <p className={styles.transactionDate}>{formatDate(transaction.date)}</p>
                     </div>
                   </div>
+
                   <div className={styles.transactionCenter}>
-                    <p
-                      className={`${styles.transactionAmount} ${getAmountClass(transaction.type)}`}
-                    >
-                      {transaction.type === "WITHDRAWAL" || transaction.type === "withdraw" ? "-" : "+"}{Math.abs(transaction.amount)} جنيه
-                    </p>
+<p
+  className={`${styles.transactionAmount} ${getAmountClass(transaction.type)}`}
+>
+  {getAmountSign(transaction.type)}
+  {Math.abs(transaction.amount)} جنيه
+</p>
                   </div>
                 </div>
               ))
@@ -182,10 +199,7 @@ export default function TransactionPage() {
         onClose={() => setIsWithdrawModalOpen(false)}
         currentBalance={balance || 0}
       />
-      <DepositModal
-        isOpen={isDepositModalOpen}
-        onClose={() => setIsDepositModalOpen(false)}
-      />
+      <DepositModal isOpen={isDepositModalOpen} onClose={() => setIsDepositModalOpen(false)} />
     </main>
   );
 }

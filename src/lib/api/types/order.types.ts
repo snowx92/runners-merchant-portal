@@ -8,25 +8,35 @@ export type {
 } from "./home.types";
 
 /**
- * Request body for creating a single order
+ * Request body for creating a single order (new API format)
  * POST /v1/customers/orders/
+ * Body example:
+ * {
+ *   "name": "Shreif Customer",
+ *   "phone": "01114077125",
+ *   "address": "1 Asia St, Nile Cornish, Maadi",
+ *   "cityId": "UXgOcotYrdYDdXFUA32D",
+ *   "govId": "P4u8oppR5537YIFyRwfa",
+ *   "pickupId": "Fiut1jxWhn4XjLrvhVVf",
+ *   "cash": 100.00,
+ *   "fees": 65.00,
+ *   "content": "Electronics - TV, Laptop",
+ *   "notes": "Leave the package at the front door.",
+ *   "type": "COD" // COD, PREPAID
+ * }
  */
 export interface CreateOrderRequest {
-  clientName: string;
-  clientPhone: string;
-  clientOtherPhone: string;
-  clientAddress: string;
-  clientAddressId: string;
-  gov: string;
-  govId: string;
-  city: string;
+  name: string;
+  phone: string;
+  address: string;
   cityId: string;
+  govId: string;
+  pickupId: string;
   cash: number;
-  type: "COD" | "PREPAID";
-  notes: string;
+  fees: number;
   content: string;
-  attachment?: string;
-  requiredSupplierFailedAmount: number;
+  notes: string;
+  type: "COD" | "PREPAID";
 }
 
 /**
@@ -51,6 +61,7 @@ export interface CreateOrderResponse {
     shippingAmount: number;
     otp: string | null;
     receiveOTP: string;
+    cancelOTP?: string | null;
     courierShippingAmount: number;
     status: string;
     cashStatus: string;
@@ -197,4 +208,85 @@ export interface OrderBidsResponse {
 export interface UpdateBidRequest {
   orderId: string;
   status: "ACCEPTED" | "REJECTED";
+}
+
+/**
+ * Request body for marking order as returned
+ * POST /v1/customers/orders/return/:id
+ */
+export interface MarkAsReturnedRequest {
+  hash: string;
+}
+
+/**
+ * Request body for cancelling courier
+ * POST /v1/customers/orders/cancel/:id
+ */
+export interface CancelCourierRequest {
+  reason: string;
+}
+
+/**
+ * Request body for updating an order
+ * PUT /v1/customers/orders/:id
+ */
+export interface UpdateOrderRequest {
+  clientName?: string;
+  clientPhone?: string;
+  clientOtherPhone?: string;
+  clientAddress?: string;
+  clientAddressId?: string;
+  lat?: number;
+  lng?: number;
+  gov?: string;
+  govId?: string;
+  city?: string;
+  cityId?: string;
+  cash?: number;
+  type?: "COD" | "PREPAID";
+  notes?: string;
+  content?: string;
+  attachment?: string;
+  requiredSupplierFailedAmount?: number;
+}
+
+/**
+ * Request body for adjusting order location
+ * POST /v1/customers/orders/adjust-location/:id
+ */
+export interface AdjustLocationRequest {
+  lat: number;
+  lng: number;
+}
+
+/**
+ * Request body for updating a single order with new API format
+ * PUT /v1/customers/orders/single/:id
+ * Body example:
+ * {
+ *   "name": "Shreif Customer",
+ *   "phone": "01114077125",
+ *   "address": "1 Asia St, Nile Cornish, Maadi",
+ *   "cityId": "UXgOcotYrdYDdXFUA32D",
+ *   "govId": "P4u8oppR5537YIFyRwfa",
+ *   "pickupId": "Fiut1jxWhn4XjLrvhVVf",
+ *   "cash": 100.00,
+ *   "fees": 65.00,
+ *   "content": "Electronics - TV, Laptop",
+ *   "notes": "Leave the package at the front door.",
+ *   "type": "COD" // COD, PREPAID
+ * }
+ */
+export interface UpdateSingleOrderRequest {
+  name: string;
+  phone: string;
+  address: string;
+  cityId: string;
+  govId: string;
+  pickupId: string;
+  cash: number;
+  fees: number;
+  content: string;
+  notes: string;
+  type: "COD" | "PREPAID";
 }

@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: 'vondera-bucket.s3.eu-north-1.amazonaws.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        pathname: '/**',
+      },
     ],
   },
 };

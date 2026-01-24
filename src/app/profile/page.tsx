@@ -10,7 +10,9 @@ import { Cairo } from "next/font/google";
 import Image from "next/image";
 import { useUserProfile } from "@/lib/hooks/useUserProfile";
 import { commonService } from "@/lib/api/services/commonService";
-import { Review, Address } from "@/lib/api/types/common.types";
+import { locationService } from "@/lib/api/services/locationService";
+import { Review } from "@/lib/api/types/common.types";
+import type { LocationResponse } from "@/lib/api/types/location.types";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -22,9 +24,11 @@ export default function ProfilePage() {
   const router = useRouter();
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
-  const { user, loading, refetch } = useUserProfile();
+  const { user, loading } = useUserProfile();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isReviewsLoading, setIsReviewsLoading] = useState(false);
+  const [locations, setLocations] = useState<LocationResponse["data"][]>([]);
+  const [isLocationsLoading, setIsLocationsLoading] = useState(false);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -43,10 +47,33 @@ export default function ProfilePage() {
       }
     };
 
+    const fetchLocations = async () => {
+      setIsLocationsLoading(true);
+      try {
+        const response = await locationService.getLocations();
+        console.log("Locations API Response:", response);
+        if (response && Array.isArray(response)) {
+          console.log("Setting locations:", response);
+          setLocations(response);
+        } else {
+          console.log("No data in response or invalid format");
+        }
+      } catch (error) {
+        console.error("Failed to fetch locations:", error);
+      } finally {
+        setIsLocationsLoading(false);
+      }
+    };
+
     if (user) {
       fetchReviews();
+      fetchLocations();
     }
   }, [user]);
+
+  useEffect(() => {
+    console.log("Locations state updated:", locations, "Length:", locations.length);
+  }, [locations]);
 
 
 
@@ -58,11 +85,22 @@ export default function ProfilePage() {
     ));
   };
 
+  const refetchLocations = async () => {
+    try {
+      const response = await locationService.getLocations();
+      if (response && Array.isArray(response)) {
+        setLocations(response);
+      }
+    } catch (error) {
+      console.error("Failed to fetch locations:", error);
+    }
+  };
+
   const handleDeleteAddress = async (id: string) => {
     if (!confirm("هل أنت متأكد من حذف هذا العنوان؟")) return;
     try {
-      await commonService.deleteAddress(id);
-      refetch();
+      await locationService.deleteLocation(id);
+      await refetchLocations();
     } catch (error) {
       console.error("Failed to delete address", error);
       alert("فشل حذف العنوان");
@@ -75,45 +113,58 @@ export default function ProfilePage() {
   };
 
   const handleSaveAddress = async (addressData: {
-    location: string;
-    phone: string;
-    governorate: string;
-    city: string;
-    detailedAddress: string;
+    title: string;
+    street: string;
+    cityId: string;
+    stateId: string;
+    phoneNumber: string;
+    latitude: number;
+    longitude: number;
+    defaultAddress: boolean;
+    buildingNumber: string;
+    floorNumber: string;
+    apartmentNumber: string;
+    notes: string;
   }) => {
     try {
       if (editingAddressId) {
-        await commonService.updateAddress(editingAddressId, {
-          ...addressData,
-          governorateId: addressData.governorate,
-          cityId: addressData.city
-        });
+        await locationService.updateLocation(editingAddressId, addressData);
       } else {
-        await commonService.addAddress({
-          ...addressData,
-          governorateId: addressData.governorate,
-          cityId: addressData.city
-        });
+        await locationService.createLocation(addressData);
       }
-      refetch();
+      await refetchLocations();
       setIsAddAddressModalOpen(false);
       setEditingAddressId(null);
     } catch (error) {
       console.error("Failed to save address", error);
-      alert("فشل حفظ العنوان");
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes("NOT_FOUND") || errorMessage.includes("No document")) {
+        alert("هذا العنوان قديم ولا يمكن تحديثه. يرجى حذفه وإضافة عنوان جديد.");
+      } else {
+        alert("فشل حفظ العنوان: " + errorMessage);
+      }
     }
   };
 
   const getInitialAddressData = () => {
-    if (!editingAddressId || !user?.locations) return null;
-    const addr = user.locations.find(a => a.id === editingAddressId);
+    if (!editingAddressId || !locations) return null;
+    const addr = locations.find(a => a.id === editingAddressId);
     if (!addr) return null;
     return {
-      location: addr.location,
-      phone: addr.phone,
-      governorate: addr.governorateId,
-      city: addr.cityId,
-      detailedAddress: addr.detailedAddress
+      title: addr.title,
+      street: addr.street,
+      city: addr.city || "",
+      cityId: addr.cityId || "",
+      state: addr.state || "",
+      stateId: addr.stateId || "",
+      phoneNumber: addr.phoneNumber,
+      latitude: addr.latitude,
+      longitude: addr.longitude,
+      defaultAddress: addr.defaultAddress || false,
+      buildingNumber: addr.buildingNumber,
+      floorNumber: addr.floorNumber,
+      apartmentNumber: addr.apartmentNumber,
+      notes: addr.notes
     };
   };
 
@@ -186,59 +237,76 @@ export default function ProfilePage() {
             </div>
 
             <div className={styles.addressesList}>
-              {user?.locations?.length === 0 && <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>لا توجد عناوين محفوظة</div>}
-              {user?.locations?.map((address) => (
-                <div key={address.id} className={styles.addressItem}>
-                  <div className={styles.addressContent}>
-                    <div className={styles.addressInfo}>
-                      <p className={styles.addressLabel}>{address.location}</p>
-                      <p className={styles.addressText}>{address.detailedAddress}</p>
-                    </div>
-                    <div className={styles.addressActions}>
-                      <button
-                        className={styles.iconButton}
-                        onClick={() => handleEditAddress(address.id)}
-                      >
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+              {isLocationsLoading ? (
+                <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>جاري تحميل العناوين...</div>
+              ) : locations.length === 0 ? (
+                <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>لا توجد عناوين محفوظة</div>
+              ) : (
+                locations.map((address) => (
+                  <div key={address.id} className={styles.addressItem}>
+                    <div className={styles.addressContent}>
+                      <div className={styles.addressInfo}>
+                        <p className={styles.addressLabel}>
+                          {address.title}
+                          {address.defaultAddress && <span style={{ marginRight: '8px', color: '#10B981', fontSize: '0.85rem' }}>● افتراضي</span>}
+                        </p>
+                        <p className={styles.addressText}>
+                          {address.street}
+                          {address.city && `, ${address.city}`}
+                          {address.state && `, ${address.state}`}
+                          {address.buildingNumber && ` - عمارة ${address.buildingNumber}`}
+                          {address.floorNumber && ` - دور ${address.floorNumber}`}
+                          {address.apartmentNumber && ` - شقة ${address.apartmentNumber}`}
+                        </p>
+                        <p className={styles.addressText}>{address.phoneNumber}</p>
+                        {address.notes && <p className={styles.addressText} style={{ fontSize: '0.85rem', color: '#999' }}>{address.notes}</p>}
+                      </div>
+                      <div className={styles.addressActions}>
+                        <button
+                          className={styles.iconButton}
+                          onClick={() => handleEditAddress(address.id)}
                         >
-                          <path
-                            d="M14.166 2.5a2.357 2.357 0 0 1 3.333 3.333l-9.166 9.167-4.167.834.834-4.167L14.166 2.5Z"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        className={styles.iconButtonDelete}
-                        onClick={() => handleDeleteAddress(address.id)}
-                      >
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M14.166 2.5a2.357 2.357 0 0 1 3.333 3.333l-9.166 9.167-4.167.834.834-4.167L14.166 2.5Z"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          className={styles.iconButtonDelete}
+                          onClick={() => handleDeleteAddress(address.id)}
                         >
-                          <path
-                            d="M2.5 5h15M6.667 5V3.333a1.667 1.667 0 0 1 1.666-1.666h3.334a1.667 1.667 0 0 1 1.666 1.666V5m2.5 0v11.667a1.667 1.667 0 0 1-1.666 1.666H5.833a1.667 1.667 0 0 1-1.666-1.666V5h11.666Z"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M2.5 5h15M6.667 5V3.333a1.667 1.667 0 0 1 1.666-1.666h3.334a1.667 1.667 0 0 1 1.666 1.666V5m2.5 0v11.667a1.667 1.667 0 0 1-1.666 1.666H5.833a1.667 1.667 0 0 1-1.666-1.666V5h11.666Z"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>

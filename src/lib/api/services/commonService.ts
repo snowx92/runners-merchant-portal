@@ -7,7 +7,7 @@ import type {
     Review,
     VerificationRequest,
     Address,
-    Notification,
+    NotificationsResponse,
     Transaction,
     TransactionsResponse,
     BalanceResponse,
@@ -146,8 +146,11 @@ class CommonService extends CommonApiService {
      * Get Notifications
      * GET /v1/common/notifications
      */
-    async getNotifications(): Promise<ApiResponse<Notification[]>> {
-        const response = await this.get<ApiResponse<Notification[]>>("/common/notifications");
+    async getNotifications(pageNo: number = 1, limit: number = 10): Promise<ApiResponse<NotificationsResponse>> {
+        const response = await this.get<ApiResponse<NotificationsResponse>>("/common/notifications", {
+            pageNo: pageNo.toString(),
+            limit: limit.toString()
+        });
         if (!response) throw new Error("Failed to fetch notifications");
         return response;
     }
@@ -159,6 +162,16 @@ class CommonService extends CommonApiService {
     async markNotificationRead(id: string): Promise<ApiResponse<void>> {
         const response = await this.post<ApiResponse<void>>("/common/notifications/read", { id });
         if (!response) throw new Error("Failed to mark notification as read");
+        return response;
+    }
+
+    /**
+     * Mark All Notifications as Read
+     * POST /v1/common/notifications/read-all
+     */
+    async markAllNotificationsRead(): Promise<ApiResponse<void>> {
+        const response = await this.post<ApiResponse<void>>("/common/notifications/read", {});
+        if (!response) throw new Error("Failed to mark all notifications as read");
         return response;
     }
 
@@ -219,12 +232,28 @@ class CommonService extends CommonApiService {
      * Get Payouts History
      * GET /v1/common/payments/payouts
      */
-    async getPayouts(pageNo: number = 1, limit: number = 10): Promise<ApiResponse<any[]>> { // Adjust return type if Payout model exists
-        const response = await this.get<ApiResponse<any[]>>("/common/payments/payouts", {
+    async getPayouts(pageNo: number = 1, limit: number = 10): Promise<ApiResponse<unknown[]>> {
+        const response = await this.get<ApiResponse<unknown[]>>("/common/payments/payouts", {
             pageNo: pageNo.toString(),
             limit: limit.toString()
         });
         if (!response) throw new Error("Failed to fetch payouts");
+        return response;
+    }
+
+    /**
+     * Change Password
+     * PUT /v1/common/users/password
+     * @param oldPassword - Only required if user has password provider (not Google/Apple)
+     * @param newPassword - Must be at least 8 characters
+     */
+    async changePassword(oldPassword: string, newPassword: string): Promise<ApiResponse<void>> {
+        const body: { oldPassword?: string; newPassword: string } = { newPassword };
+        if (oldPassword) {
+            body.oldPassword = oldPassword;
+        }
+        const response = await this.put<ApiResponse<void>>("/common/users/password", body);
+        if (!response) throw new Error("Failed to change password");
         return response;
     }
 

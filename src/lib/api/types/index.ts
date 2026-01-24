@@ -6,3 +6,5 @@ export * from "./zone.types";
 export * from "./order.types";
 export * from "./location.types";
 export * from "./courier.types";
+export * from "./common.types";
+export * from "./chat.types";

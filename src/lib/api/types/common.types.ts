@@ -28,6 +28,7 @@ export interface UserProfile {
     storeName: string;
     phoneNumber: string;
     verified: boolean;
+    autoAccept: boolean; // Only for suppliers
     reviews: {
         count: number;
         average: number;
@@ -44,6 +45,7 @@ export interface UpdateProfileRequest {
     lastName?: string;
     storeName?: string;
     avatar?: string;
+    autoAccept?: boolean; // Only for suppliers
 }
 
 export interface HtmlContentResponse {
@@ -85,11 +87,29 @@ export interface VerificationStatusResponse {
 export interface Notification {
     id: string;
     title: string;
-    description: string;
-    date: string;
+    body: string;
+    payload: {
+        relatedId?: string;
+        type?: string;
+        action?: string;
+    };
+    date: {
+        _seconds: number;
+        _nanoseconds: number;
+    };
     isRead: boolean;
-    type: string; // "new_offer", "credit_added", etc.
-    createdAt: string;
+    iconType: string; // "order", "none", etc.
+}
+
+export interface NotificationsResponse {
+    items: Notification[];
+    pageItems: number;
+    totalItems: number;
+    isLastPage: boolean;
+    nextPageNumber?: number;
+    currentPage: number;
+    totalPages: number;
+    docsReaded: number; // Count of read notifications
 }
 
 export interface TransactionDetail {
@@ -100,7 +120,7 @@ export interface TransactionDetail {
 export interface Transaction {
     id: string;
     amount: number;
-    type: "deposit" | "withdraw" | "payout" | "order_payment" | "subscription_payment" | "refund" | "WITHDRAWAL"; // Added WITHDRAWAL based on API response
+    type: "COMMISSION" | "COD" | "PENALTY" ; // Added WITHDRAWAL based on API response
     status?: string; // made optional as it wasn't in the example item
     description?: string | TransactionDetail; // made optional
     date: string | { _seconds: number; _nanoseconds: number };

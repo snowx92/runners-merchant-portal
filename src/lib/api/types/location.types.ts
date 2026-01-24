@@ -10,9 +10,7 @@ export interface CreateLocationRequest {
   latitude: number;
   longitude: number;
   street: string;
-  city: string;
   cityId: string;
-  state: string;
   stateId: string;
   phoneNumber: string;
   buildingNumber: string;
@@ -53,11 +51,12 @@ export interface LocationResponse {
     latitude: number;
     longitude: number;
     street: string;
-    city: string;
-    cityId: string;
-    state: string;
-    stateId: string;
+    city?: string;
+    cityId?: string;
+    state?: string;
+    stateId?: string;
     phoneNumber: string;
+    defaultAddress?: boolean;
     buildingNumber: string;
     floorNumber: string;
     apartmentNumber: string;

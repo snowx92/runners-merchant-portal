@@ -191,6 +191,7 @@ export default function Orders() {
       COMPLETED: "مكتمل",
       CANCELLED: "ملغي",
       FAILED: "فشل",
+      RETURNED: "مرتجع",
     };
     return labels[status] || status;
   };
@@ -259,7 +260,7 @@ export default function Orders() {
               انشاء طلب مجمع
             </button>
             <button
-              className={styles.toggleButton}
+              className={`${styles.toggleButton} ${styles.toggleButtonActive}`}
               onClick={() => router.push("/orders/add")}
             >
               انشاء طلب جديد

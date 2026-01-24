@@ -3,9 +3,9 @@ import type {
   CreateLocationRequest,
   UpdateLocationRequest,
   LocationResponse,
-  LocationsResponse,
   DeleteLocationResponse,
 } from "../types/location.types";
+import type { UserAddress } from "../types/address.types";
 
 /**
  * LocationService for managing user addresses/locations
@@ -24,14 +24,9 @@ class LocationService extends ApiService {
    * GET /v1/customers/locations/
    * @returns All user locations
    */
-  async getLocations(): Promise<LocationsResponse | null> {
-    const response = await this.get<LocationsResponse>("/locations/");
-
-    if (!response) {
-      throw new Error("Failed to fetch locations");
-    }
-
-    return response;
+  async getLocations(): Promise<UserAddress[]> {
+    const response = await this.get<UserAddress[]>("/locations/");
+    return response || [];
   }
 
   /**

@@ -110,6 +110,15 @@
   transform: translateX(24px);
 }
 
+.toggleSwitch input:disabled + .toggleSlider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggleSwitch input:disabled + .toggleSlider:before {
+  cursor: not-allowed;
+}
+
 /* Menu Item */
 .menuItem {
   display: flex;

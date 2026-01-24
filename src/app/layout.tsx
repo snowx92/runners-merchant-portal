@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/contexts/AuthContext";
+import { ToastProvider } from "@/lib/contexts/ToastContext";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -24,7 +25,9 @@ export default function RootLayout({
         <link rel="icon" href="/navLogo.png" type="image/png" />
       </head>
       <body className={cairo.className}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </AuthProvider>
       </body>
     </html>
   );

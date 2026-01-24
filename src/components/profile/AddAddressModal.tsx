@@ -13,20 +13,36 @@ interface AddAddressModalProps {
 }
 
 interface AddressData {
-  location: string;
-  phone: string;
-  governorate: string;
+  title: string;
+  street: string;
   city: string;
-  detailedAddress: string;
+  cityId: string;
+  state: string;
+  stateId: string;
+  phoneNumber: string;
+  latitude: number;
+  longitude: number;
+  defaultAddress: boolean;
+  buildingNumber: string;
+  floorNumber: string;
+  apartmentNumber: string;
+  notes: string;
 }
 
 
 export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAddressModalProps) => {
-  const [location, setLocation] = useState("");
+  const [title, setTitle] = useState("");
+  const [street, setStreet] = useState("");
   const [phone, setPhone] = useState("");
-  const [governorate, setGovernorate] = useState("");
-  const [city, setCity] = useState("");
-  const [detailedAddress, setDetailedAddress] = useState("");
+  const [stateId, setStateId] = useState("");
+  const [cityId, setCityId] = useState("");
+  const [buildingNumber, setBuildingNumber] = useState("");
+  const [floorNumber, setFloorNumber] = useState("");
+  const [apartmentNumber, setApartmentNumber] = useState("");
+  const [notes, setNotes] = useState("");
+  const [defaultAddress, setDefaultAddress] = useState(false);
+  const [latitude, setLatitude] = useState(30.0444);
+  const [longitude, setLongitude] = useState(31.2357);
 
   const [zones, setZones] = useState<Zone[]>([]);
   const [filteredCities, setFilteredCities] = useState<City[]>([]);
@@ -35,34 +51,53 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
   // Load zones and set initial data on mount/open
   useEffect(() => {
     if (isOpen) {
-      loadZones();
-      if (initialData) {
-        setLocation(initialData.location);
-        setPhone(initialData.phone);
-        setGovernorate(initialData.governorate);
-        setCity(initialData.city);
-        setDetailedAddress(initialData.detailedAddress);
-      } else {
-        // Reset form
-        setLocation("");
-        setPhone("");
-        setGovernorate("");
-        setCity("");
-        setDetailedAddress("");
-      }
+      const loadData = async () => {
+        await loadZones();
+        if (initialData) {
+          setTitle(initialData.title);
+          setStreet(initialData.street);
+          setPhone(initialData.phoneNumber);
+          setStateId(initialData.stateId);
+          setCityId(initialData.cityId);
+          setBuildingNumber(initialData.buildingNumber);
+          setFloorNumber(initialData.floorNumber);
+          setApartmentNumber(initialData.apartmentNumber);
+          setNotes(initialData.notes);
+          setDefaultAddress(initialData.defaultAddress);
+          setLatitude(initialData.latitude);
+          setLongitude(initialData.longitude);
+        } else {
+          // Reset form
+          setTitle("");
+          setStreet("");
+          setPhone("");
+          setStateId("");
+          setCityId("");
+          setBuildingNumber("");
+          setFloorNumber("");
+          setApartmentNumber("");
+          setNotes("");
+          setDefaultAddress(false);
+          setLatitude(30.0444);
+          setLongitude(31.2357);
+        }
+      };
+      loadData();
     }
   }, [isOpen, initialData]);
 
-  // Filter cities when governorate changes
+  // Filter cities when state changes
   useEffect(() => {
-    if (governorate) {
-      const selectedZone = zones.find(z => z.id === governorate);
+    if (stateId && zones.length > 0) {
+      const selectedZone = zones.find(z => z.id === stateId);
       setFilteredCities(selectedZone?.cities || []);
-      setCity(""); // Reset city when governorate changes
     } else {
       setFilteredCities([]);
+      if (stateId === "") {
+        setCityId("");
+      }
     }
-  }, [governorate, zones]);
+  }, [stateId, zones]);
 
   const loadZones = async () => {
     setIsLoadingZones(true);
@@ -102,8 +137,8 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
 
   const handleSave = () => {
     // Validation
-    if (!location.trim()) {
-      alert("يرجى اختيار موقعك");
+    if (!title.trim()) {
+      alert("يرجى إدخال عنوان الموقع");
       return;
     }
 
@@ -112,27 +147,40 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
       return;
     }
 
-    if (!governorate) {
+    if (!stateId) {
       alert("يرجى اختيار المحافظة");
       return;
     }
 
-    if (!city) {
+    if (!cityId) {
       alert("يرجى اختيار المدينة");
       return;
     }
 
-    if (!detailedAddress.trim()) {
-      alert("يرجى إدخال العنوان بالتفصيل");
+    if (!street.trim()) {
+      alert("يرجى إدخال الشارع");
       return;
     }
 
+    // Get the state and city names
+    const selectedZone = zones.find(z => z.id === stateId);
+    const selectedCity = filteredCities.find(c => c.id === cityId);
+
     const addressData: AddressData = {
-      location,
-      phone,
-      governorate,
-      city,
-      detailedAddress,
+      title,
+      street,
+      city: selectedCity?.name || "",
+      cityId,
+      state: selectedZone?.name || "",
+      stateId,
+      phoneNumber: phone,
+      latitude,
+      longitude,
+      defaultAddress,
+      buildingNumber,
+      floorNumber,
+      apartmentNumber,
+      notes,
     };
 
     onSave(addressData);
@@ -141,11 +189,18 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
 
   const handleCancel = () => {
     // Reset form
-    setLocation("");
+    setTitle("");
+    setStreet("");
     setPhone("");
-    setGovernorate("");
-    setCity("");
-    setDetailedAddress("");
+    setStateId("");
+    setCityId("");
+    setBuildingNumber("");
+    setFloorNumber("");
+    setApartmentNumber("");
+    setNotes("");
+    setDefaultAddress(false);
+    setLatitude(30.0444);
+    setLongitude(31.2357);
     onClose();
   };
 
@@ -158,15 +213,15 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
           {/* Header */}
           <h2 className={styles.modalTitle}>{initialData ? "تعديل عنوان" : "إضافة عنوان"}</h2>
 
-          {/* Location Input */}
+          {/* Title Input */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>اختر موقعك</label>
+            <label className={styles.label}>عنوان الموقع</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="اختر موقعك من الخريطة"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              placeholder="مثال: المنزل، العمل، إلخ"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </div>
 
@@ -195,8 +250,8 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
               <div className={styles.selectWrapper}>
                 <select
                   className={styles.select}
-                  value={governorate}
-                  onChange={(e) => setGovernorate(e.target.value)}
+                  value={stateId}
+                  onChange={(e) => setStateId(e.target.value)}
                   disabled={isLoadingZones}
                 >
                   <option value="">المحافظة</option>
@@ -229,9 +284,9 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
               <div className={styles.selectWrapper}>
                 <select
                   className={styles.select}
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  disabled={!governorate || isLoadingZones}
+                  value={cityId}
+                  onChange={(e) => setCityId(e.target.value)}
+                  disabled={!stateId || isLoadingZones}
                 >
                   <option value="">المدينة</option>
                   {filteredCities.map((c) => (
@@ -258,20 +313,78 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
                 </svg>
               </div>
             </div>
-
-
           </div>
 
-          {/* Detailed Address */}
+          {/* Street */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>العنوان بالتفصيل</label>
+            <label className={styles.label}>الشارع</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="اسم المكان"
-              value={detailedAddress}
-              onChange={(e) => setDetailedAddress(e.target.value)}
+              placeholder="أدخل اسم الشارع"
+              value={street}
+              onChange={(e) => setStreet(e.target.value)}
             />
+          </div>
+
+          {/* Building, Floor, Apartment */}
+          <div className={styles.formRow}>
+            <div className={styles.formGroupHalf}>
+              <label className={styles.label}>رقم العمارة</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="رقم العمارة"
+                value={buildingNumber}
+                onChange={(e) => setBuildingNumber(e.target.value)}
+              />
+            </div>
+            <div className={styles.formGroupHalf}>
+              <label className={styles.label}>رقم الدور</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="رقم الدور"
+                value={floorNumber}
+                onChange={(e) => setFloorNumber(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.label}>رقم الشقة</label>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="رقم الشقة"
+              value={apartmentNumber}
+              onChange={(e) => setApartmentNumber(e.target.value)}
+            />
+          </div>
+
+          {/* Notes */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>ملاحظات إضافية</label>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="أي ملاحظات تساعد في الوصول"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+          </div>
+
+          {/* Default Address Checkbox */}
+          <div className={styles.formGroup}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={defaultAddress}
+                onChange={(e) => setDefaultAddress(e.target.checked)}
+                style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+              />
+              <span className={styles.label} style={{ margin: 0 }}>تعيين كعنوان افتراضي</span>
+            </label>
           </div>
 
           {/* Action Buttons */}

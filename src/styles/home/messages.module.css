@@ -36,6 +36,31 @@
   color: #333;
 }
 
+/* Badge for unread count on floating button */
+.messageBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #dc2626;
+  color: white;
+  border-radius: 50%;
+  min-width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 2px solid white;
+  padding: 0 4px;
+}
+
+.messageButtonWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 /* Overlay */
 .overlay {
   position: fixed;
@@ -204,6 +229,12 @@
   white-space: nowrap;
 }
 
+.messageTime {
+  font-size: 0.75rem;
+  color: #999;
+  flex-shrink: 0;
+}
+
 /* Chat Drawer (separate from messages list) */
 .chatDrawer {
   position: fixed;
@@ -249,11 +280,9 @@
 
 .chatHeaderCenter {
   display: flex;
-
   gap: 12px;
   flex: 1;
   justify-content: flex-start;
-
 }
 
 .chatAvatar {
@@ -354,6 +383,19 @@
   border-bottom-left-radius: 4px;
 }
 
+/* Attachment message bubbles with transparent backgrounds */
+.ownMessageBubbleAttachment {
+  background: transparent !important;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.otherMessageBubbleAttachment {
+  background: transparent !important;
+  color: #111;
+  border-bottom-left-radius: 4px;
+}
+
 .chatMessageText {
   margin: 0;
   font-size: 0.9rem;
@@ -376,6 +418,7 @@
   background: white;
   border-top: 1px solid #f0f0f0;
   direction: rtl;
+  position: relative;
 }
 
 .messageInput {
@@ -443,6 +486,367 @@
   background: #ccc;
 }
 
+/* Attachment Menu */
+.attachmentMenu {
+  position: absolute;
+  bottom: 70px;
+  left: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 8px;
+  z-index: 10;
+}
+
+.attachmentMenuItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: opacity 0.2s ease;
+  color: #333;
+}
+
+.attachmentMenuItem:hover {
+  background-color: transparent;
+  opacity: 0.7;
+}
+
+.attachmentMenuItem span {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Voice Recording */
+.recordingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: #fff0f0;
+  border-radius: 24px;
+  flex: 1;
+}
+
+.recordingDot {
+  width: 12px;
+  height: 12px;
+  background: #dc2626;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+/* Loading Spinner */
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loadingSpinnerDark {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading Overlay */
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+/* Sending Button States */
+.sendingButton {
+  background: #9ca3af !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+/* Recording Button Pulse Animation */
+.stopRecordingButton {
+  background: #dc2626;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.stopRecordingButton:hover {
+  background: #b91c1c;
+  transform: scale(1.05);
+}
+
+.stopRecordingButton:active {
+  transform: scale(0.95);
+}
+
+.recordingLabel {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.stopRecordingButton {
+  background: #dc2626;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+}
+
+.stopRecordingButton:hover {
+  background: #b91c1c;
+}
+
+/* Voice Preview */
+.voicePreview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: #f0f8ff;
+  border-radius: 24px;
+  flex: 1;
+}
+
+.playAudioButton {
+  background: #2d2d2d;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+}
+
+.playAudioButton:hover {
+  background: #1a1a1a;
+}
+
+.recordingTime {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.cancelRecordingButton {
+  background: #e0e0e0;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666;
+}
+
+.cancelRecordingButton:hover {
+  background: #d0d0d0;
+  color: #333;
+}
+
+.sendVoiceButton {
+  background: #4caf50;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  margin-right: auto;
+}
+
+.sendVoiceButton:hover {
+  background: #43a047;
+}
+
+/* Location Modal */
+.locationModal {
+  position: absolute;
+  bottom: 80px;
+  left: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 10;
+  min-width: 250px;
+}
+
+.locationModalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.locationModalContent h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111;
+  text-align: right;
+}
+
+.locationAddress {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  text-align: right;
+}
+
+.locationActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.locationSendButton {
+  background: #4caf50;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+}
+
+.locationSendButton:hover {
+  background: #43a047;
+}
+
+.locationCancelButton {
+  background: #e0e0e0;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+}
+
+.locationCancelButton:hover {
+  background: #d0d0d0;
+  color: #333;
+}
+
+/* Image Preview Modal */
+.imagePreviewModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.imagePreviewContent {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imagePreviewImage {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.imagePreviewClose {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.imagePreviewClose:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   .chatDrawer {
@@ -485,4 +889,16 @@
     padding: 10px 20px;
     min-width: 140px;
   }
+
+  .attachmentMenu {
+    left: 16px;
+    right: 16px;
+  }
+
+  .locationModal {
+    left: 16px;
+    right: 16px;
+    min-width: auto;
+  }
 }
+
