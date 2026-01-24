@@ -252,7 +252,7 @@ export const LoginForm = () => {
         )}
 
         <button type="submit" className={styles.button} disabled={isLoading}>
-          {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+          {isLoading ? "" : "تسجيل الدخول"}
         </button>
 
         <div className={styles.divider}>أو</div>

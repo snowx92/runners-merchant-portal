@@ -43,7 +43,7 @@ export const StatsRow = ({ analytics }: StatsRowProps) => {
                 {/* Card 3: Profit (Leftmost) */}
                 <div className={styles.statCard} dir="rtl">
                     <div className={styles.statIconLarge}>
-                        <Image src="/icons/vector.svg" alt="Profit" width={48} height={48} style={{ filter: 'brightness(0)' }} />
+                        <Image src="/icons/Vector.svg" alt="Profit" width={48} height={48} style={{ filter: 'brightness(0)' }} />
                     </div>
                     <div className={styles.statInfo} style={{textAlign: 'right'}} dir="rtl">
                         <span className={styles.statValue}>
