@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -146,7 +147,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
       markerRef.current = marker;
 
       // Marker drag event
-      marker.addListener("dragend", async (event: google.maps.MapMouseEvent) => {
+      marker.addListener("dragend", async () => {
         const position = marker.getPosition();
         if (position) {
           const lat = position.lat();

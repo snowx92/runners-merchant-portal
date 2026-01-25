@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -17,6 +18,8 @@ import {
     getFirebaseIdToken
 } from "@/lib/auth/socialAuth";
 import { SessionManager } from "@/lib/utils/session";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { getFirebaseDb } from "@/lib/firebase";
 
 type SignupStep = "form" | "otp" | "completed" | "social-form";
 
@@ -181,9 +184,10 @@ export const RegisterForm = () => {
                     // Social auth flow - Firebase account already exists
                     console.log("📝 Completing social auth signup...");
                     const credentialData = JSON.parse(googleCredential || appleCredential || "{}");
+                    const provider = googleCredential ? "google" : "apple";
 
                     // Create backend account with secretCode + idToken
-                    await createAccount(secret, credentialData.uid, true, credentialData.idToken);
+                    await createAccount(secret, credentialData.uid, provider, credentialData.idToken);
 
                     // Clean up session storage
                     sessionStorage.removeItem("googleUserCredential");
@@ -227,40 +231,99 @@ export const RegisterForm = () => {
         }
     };
 
-    const createAccount = async (secret: string, uid: string, isSocialAuth: boolean = false, idToken?: string) => {
+    /**
+     * Create Firestore user document for supplier users
+     * This document is required for login authorization check
+     */
+    const createFirestoreUserDoc = async (
+        uid: string,
+        provider: "google" | "apple" | "email"
+    ): Promise<void> => {
+        const db = getFirebaseDb();
+        const userDocRef = doc(db, "users", uid);
+
+        // Generate a unique ID for the user (format: 019xxx)
+        const uniqueId = `019${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`;
+
+        const userData = {
+            id: uid,
+            email: formData.email,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            fullName: `${formData.firstName} ${formData.lastName}`.trim(),
+            storeName: formData.storeName,
+            phone: formData.phone,
+            type: "SUPPLIER",
+            balance: 0,
+            verificationStatus: "VERIFIED",
+            isGoogle: provider === "google",
+            isApple: provider === "apple",
+            avatar: "https://vondera-bucket.s3.eu-north-1.amazonaws.com/avatars/ic_avatar_1.png",
+            deliveryMethod: "",
+            gov: "",
+            govName: null,
+            password: "",
+            uniqueId: uniqueId,
+            date: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            lastActive: serverTimestamp(),
+            tokens: [],
+        };
+
+        await setDoc(userDocRef, userData);
+        console.log("✅ Firestore user document created for uid:", uid);
+    };
+
+    const createAccount = async (secret: string, uid: string, provider: "google" | "apple" | "email" = "email", idToken?: string) => {
         setIsLoading(true);
 
         try {
             console.log("📝 Creating backend account...");
+            const isSocialAuth = provider !== "email";
 
-            const requestData: any = {
-                email: formData.email,
-                phone: formData.phone,
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                storeName: formData.storeName,
-                type: "SUPPLIER",
-                uid: uid,
-                secretCode: secret, // Always include secretCode from OTP verification
-            };
+            let requestData: Record<string, unknown>;
 
             if (isSocialAuth) {
-                // For social auth, also include idToken
-                requestData.idToken = idToken;
+                // For social auth, include idToken instead of password
+                requestData = {
+                    email: formData.email,
+                    phone: formData.phone,
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    storeName: formData.storeName,
+                    type: "SUPPLIER",
+                    uid: uid,
+                    secretCode: secret,
+                    idToken: idToken!,
+                };
                 console.log("🔐 Using social auth (Firebase ID token + secretCode)...");
             } else {
                 // For email/password auth, include password
-                requestData.password = formData.password;
+                requestData = {
+                    email: formData.email,
+                    phone: formData.phone,
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    storeName: formData.storeName,
+                    type: "SUPPLIER",
+                    uid: uid,
+                    secretCode: secret,
+                    password: formData.password,
+                };
                 console.log("🔐 Using email/password auth with OTP secret...");
             }
 
             // Call backend API to complete profile
-            const response = await authService.signup(requestData);
+             
+            const response = await authService.signup(requestData as unknown as any);
 
             console.log("✅ Backend signup response:", response);
 
             if (response.status === 200 && response.data) {
                 console.log("🎉 Account created successfully!");
+
+                // Create Firestore user document (required for login authorization)
+                await createFirestoreUserDoc(uid, provider);
 
                 // Store session for social auth users
                 if (isSocialAuth) {
@@ -282,9 +345,10 @@ export const RegisterForm = () => {
             } else {
                 setError(response.message || "فشل في إكمال التسجيل");
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error("❌ Backend registration error:", err);
-            setError(err.message || "حدث خطأ أثناء إكمال التسجيل");
+            const errorMessage = err instanceof Error ? err.message : "حدث خطأ أثناء إكمال التسجيل";
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }
