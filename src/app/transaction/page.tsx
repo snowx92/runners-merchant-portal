@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { WithdrawModal } from "@/components/transaction/WithdrawModal";
@@ -19,7 +19,7 @@ const cairo = Cairo({
   variable: "--font-cairo",
 });
 
-export default function TransactionPage() {
+function TransactionContent() {
   const searchParams = useSearchParams();
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
@@ -241,5 +241,18 @@ export default function TransactionPage() {
         transaction={selectedTransaction}
       />
     </main>
+  );
+}
+
+export default function TransactionPage() {
+  return (
+    <Suspense fallback={
+      <main className={`${styles.mainContainer} ${cairo.className}`}>
+        <Navbar />
+        <div style={{ textAlign: "center", padding: "50px" }}>جاري التحميل...</div>
+      </main>
+    }>
+      <TransactionContent />
+    </Suspense>
   );
 }
