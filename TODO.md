@@ -1,35 +1,50 @@
-# Fix: Create Firestore User Document on Registration
+# Fix: Merchant Login Authorization for Apple/Google Users
 
-## Issue
-When users register via Google/Apple or email/password, the registration flow creates:
-1. Firebase Auth account ✓
-2. Backend account via API ✓
+## Original Issue
+When a merchant logs in by Apple or Google and their type is "supplier", it says "this type is not authorized".
 
-But it does NOT create the Firestore document (`users/{uid}` with `type: "SUPPLIER"`), which is required for login authorization.
+## Root Cause Analysis
+The backend API was failing because the `gov` field was not included in the signup request body. The backend tries to create a Firestore document with the provided data, but `undefined` values are not allowed in Firestore documents.
 
-## Fix Summary
-Modified `src/components/auth/RegisterForm.tsx`:
-1. Added Firestore imports (`doc`, `setDoc`, `serverTimestamp` from `firebase/firestore` and `getFirebaseDb`)
-2. Added `createFirestoreUserDoc` function that creates a user document in Firestore with all required fields
-3. Called `createFirestoreUserDoc` in `createAccount` function after successful backend signup
+## Solution Applied
 
-## Fields included in Firestore document:
-- id: uid
-- email, firstName, lastName, fullName
-- storeName, phone
-- type: "SUPPLIER"
-- balance: 0
-- verificationStatus: "VERIFIED"
-- isGoogle: boolean (based on auth method)
-- isApple: boolean (based on auth method)
-- avatar: default avatar URL
-- deliveryMethod: "", gov: "", govName: null
-- password: ""
-- uniqueId: generated (format: 019xxx)
-- date, updatedAt, lastActive: serverTimestamp()
-- tokens: []
+### Modified `src/components/auth/RegisterForm.tsx`:
+
+1. **Added `gov: ""` field to the signup request body** for both social auth and email/password flows
+
+```typescript
+// For social auth:
+requestData = {
+    email: formData.email,
+    phone: formData.phone,
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    storeName: formData.storeName,
+    type: "SUPPLIER",
+    uid: uid,
+    secretCode: secret,
+    idToken: idToken!,
+    gov: "",  // Added this field
+};
+
+// For email/password:
+requestData = {
+    email: formData.email,
+    phone: formData.phone,
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    storeName: formData.storeName,
+    type: "SUPPLIER",
+    uid: uid,
+    secretCode: secret,
+    password: formData.password,
+    gov: "",  // Added this field
+};
+```
 
 ## Status
-✅ All tasks completed - TypeScript compiles successfully
+✅ TypeScript compiles successfully
+✅ Added `gov: ""` to API request body
+
 
 
