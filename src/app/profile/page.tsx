@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { AddAddressModal } from "@/components/profile/AddAddressModal";
@@ -22,6 +23,8 @@ const cairo = Cairo({
 });
 
 export default function ProfilePage() {
+  const t = useTranslations('profile');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
@@ -98,13 +101,13 @@ export default function ProfilePage() {
   };
 
   const handleDeleteAddress = async (id: string) => {
-    if (!confirm("هل أنت متأكد من حذف هذا العنوان؟")) return;
+    if (!confirm(t('deleteAddressConfirm'))) return;
     try {
       await locationService.deleteLocation(id);
       await refetchLocations();
     } catch (error) {
       console.error("Failed to delete address", error);
-      alert("فشل حذف العنوان");
+      alert(t('deleteAddressFailed'));
     }
   };
 
@@ -140,9 +143,9 @@ export default function ProfilePage() {
       console.error("Failed to save address", error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       if (errorMessage.includes("NOT_FOUND") || errorMessage.includes("No document")) {
-        alert("هذا العنوان قديم ولا يمكن تحديثه. يرجى حذفه وإضافة عنوان جديد.");
+        alert(t('addressOldError'));
       } else {
-        alert("فشل حفظ العنوان: " + errorMessage);
+        alert(t('saveAddressFailed') + ": " + errorMessage);
       }
     }
   };
@@ -169,9 +172,9 @@ export default function ProfilePage() {
     };
   };
 
-  if (loading) return <div className={styles.mainContainer}><Navbar /><div className={styles.container} style={{ display: 'flex', justifyContent: 'center', padding: '50px' }}>جاري التحميل...</div></div>;
+  if (loading) return <div className={styles.mainContainer}><Navbar /><div className={styles.container} style={{ display: 'flex', justifyContent: 'center', padding: '50px' }}>{tCommon('loading')}</div></div>;
 
-  const displayName = user?.fullName || user?.storeName || (user?.fistName ? `${user.fistName} ${user.lastName}` : "المستخدم");
+  const displayName = user?.fullName || user?.storeName || (user?.fistName ? `${user.fistName} ${user.lastName}` : tCommon('user'));
   const displayAvatar = user?.avatar || "/icons/User.svg";
 
   return (
@@ -181,20 +184,20 @@ export default function ProfilePage() {
       <div className={styles.container}>
         {/* Page Title and Buttons */}
         <div className={styles.headerSection}>
-          <h1 className={styles.pageTitle}>الملف الشخصي</h1>
+          <h1 className={styles.pageTitle}>{t('title')}</h1>
           <div className={styles.headerButtons}>
             <button
               className={styles.reviewsButton}
               onClick={() => router.push("/profile/edit")}
             >
-              تعديل الحساب
+              {t('editAccount')}
             </button>
             {!user?.verified && (
               <button
                 className={styles.verifyButton}
                 onClick={() => router.push("/profile/verify")}
               >
-                توثيق الحساب
+                {t('verifyAccount')}
               </button>
             )}
           </div>
@@ -241,7 +244,7 @@ export default function ProfilePage() {
           {/* Addresses Section */}
           <div className={styles.addressesSection}>
             <div className={styles.addressesHeader}>
-              <h3 className={styles.addressesTitle}>عناوين الاستلام</h3>
+              <h3 className={styles.addressesTitle}>{t('addresses')}</h3>
               <button
                 className={styles.addAddressButton}
                 onClick={() => {
@@ -249,15 +252,15 @@ export default function ProfilePage() {
                   setIsAddAddressModalOpen(true);
                 }}
               >
-                إضافة عنوان
+                {t('addAddress')}
               </button>
             </div>
 
             <div className={styles.addressesList}>
               {isLocationsLoading ? (
-                <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>جاري تحميل العناوين...</div>
+                <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>{t('loadingAddresses')}</div>
               ) : locations.length === 0 ? (
-                <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>لا توجد عناوين محفوظة</div>
+                <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>{t('noAddresses')}</div>
               ) : (
                 locations.map((address) => (
                   <div key={address.id} className={styles.addressItem}>
@@ -265,15 +268,15 @@ export default function ProfilePage() {
                       <div className={styles.addressInfo}>
                         <p className={styles.addressLabel}>
                           {address.title}
-                          {address.defaultAddress && <span style={{ marginRight: '8px', color: '#10B981', fontSize: '0.85rem' }}>● افتراضي</span>}
+                          {address.defaultAddress && <span style={{ marginRight: '8px', color: '#10B981', fontSize: '0.85rem' }}>{"● " + tCommon('default')}</span>}
                         </p>
                         <p className={styles.addressText}>
                           {address.street}
                           {address.city && `, ${address.city}`}
                           {address.state && `, ${address.state}`}
-                          {address.buildingNumber && ` - عمارة ${address.buildingNumber}`}
-                          {address.floorNumber && ` - دور ${address.floorNumber}`}
-                          {address.apartmentNumber && ` - شقة ${address.apartmentNumber}`}
+                          {address.buildingNumber && ` - ${t('building')} ${address.buildingNumber}`}
+                          {address.floorNumber && ` - ${t('floor')} ${address.floorNumber}`}
+                          {address.apartmentNumber && ` - ${t('apartment')} ${address.apartmentNumber}`}
                         </p>
                         <p className={styles.addressText}>{address.phoneNumber}</p>
                         {address.notes && <p className={styles.addressText} style={{ fontSize: '0.85rem', color: '#999' }}>{address.notes}</p>}
@@ -330,10 +333,10 @@ export default function ProfilePage() {
 
         {/* Reviews Section */}
         <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>تقييماتك</h3>
+          <h3 className={styles.sectionTitle}>{t('reviews')}</h3>
 
           {isReviewsLoading ? (
-            <div style={{ textAlign: 'center', padding: '20px' }}>جاري تحميل التقييمات...</div>
+            <div style={{ textAlign: 'center', padding: '20px' }}>{t('loadingReviews')}</div>
           ) : (
             <div className={styles.reviewsGrid}>
               {reviews.map((review) => {
@@ -371,7 +374,7 @@ export default function ProfilePage() {
                 );
               })}
               {!isReviewsLoading && reviews.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>لا توجد تقييمات</div>
+                <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>{t('noReviews')}</div>
               )}
             </div>
           )}

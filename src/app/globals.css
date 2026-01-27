@@ -123,3 +123,107 @@ a {
 .fade-in {
     animation: fadeIn 0.8s ease-out forwards;
 }
+
+/* ===== RTL/LTR Directional Support ===== */
+
+/* Base direction settings */
+[dir="rtl"] {
+    text-align: right;
+}
+
+[dir="ltr"] {
+    text-align: left;
+}
+
+/* Arrow icons - flip for LTR */
+[dir="ltr"] .arrow-icon,
+[dir="ltr"] .chevron-icon {
+    transform: scaleX(-1);
+}
+
+/* Back arrow icons */
+[dir="ltr"] .back-arrow {
+    transform: rotate(180deg);
+}
+
+/* Margin/Padding adjustments for LTR */
+[dir="ltr"] .margin-start {
+    margin-left: var(--spacing);
+    margin-right: 0;
+}
+
+[dir="rtl"] .margin-start {
+    margin-right: var(--spacing);
+    margin-left: 0;
+}
+
+[dir="ltr"] .margin-end {
+    margin-right: var(--spacing);
+    margin-left: 0;
+}
+
+[dir="rtl"] .margin-end {
+    margin-left: var(--spacing);
+    margin-right: 0;
+}
+
+/* Drawer positioning */
+[dir="ltr"] .drawer-end {
+    right: 0;
+    left: auto;
+}
+
+[dir="rtl"] .drawer-end {
+    left: 0;
+    right: auto;
+}
+
+/* Flex direction adjustments */
+[dir="ltr"] .flex-row-reverse-ltr {
+    flex-direction: row;
+}
+
+[dir="rtl"] .flex-row-reverse-ltr {
+    flex-direction: row-reverse;
+}
+
+/* Border radius adjustments */
+[dir="ltr"] .rounded-start {
+    border-radius: 0.5rem 0 0 0.5rem;
+}
+
+[dir="rtl"] .rounded-start {
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+[dir="ltr"] .rounded-end {
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+[dir="rtl"] .rounded-end {
+    border-radius: 0.5rem 0 0 0.5rem;
+}
+
+/* Input and form element adjustments */
+[dir="ltr"] input,
+[dir="ltr"] textarea,
+[dir="ltr"] select {
+    text-align: left;
+}
+
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+    text-align: right;
+}
+
+/* Badge positioning */
+[dir="ltr"] .badge-position {
+    right: auto;
+    left: -5px;
+}
+
+[dir="rtl"] .badge-position {
+    left: auto;
+    right: -5px;
+}

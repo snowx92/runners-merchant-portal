@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/profile/addAddressModal.module.css";
 import { zoneService } from "@/lib/api/services/zoneService";
 import type { Zone, City } from "@/lib/api/types/zone.types";
@@ -31,6 +32,9 @@ interface AddressData {
 }
 
 export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAddressModalProps) => {
+  const t = useTranslations('address');
+  const tCommon = useTranslations('common');
+
   const [title, setTitle] = useState("");
   const [street, setStreet] = useState("");
   const [phone, setPhone] = useState("");
@@ -98,7 +102,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
       script.onerror = (error) => {
         console.error("Failed to load Google Maps script:", error);
         setGoogleMapsLoaded(false);
-        setMapError("فشل في تحميل الخريطة. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.");
+        setMapError(t('mapLoadError'));
       };
       document.head.appendChild(script);
     };
@@ -140,7 +144,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
         position: { lat: latitude, lng: longitude },
         map: map,
         draggable: true,
-        title: "موقع التوصيل",
+        title: t('deliveryMarker'),
         animation: google.maps.Animation.DROP,
       });
 
@@ -418,7 +422,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
       }
     } catch (error) {
       console.error("Error loading zones:", error);
-      alert("فشل تحميل المحافظات والمدن. يرجى المحاولة مرة أخرى.");
+      alert(t('loadZonesFailed'));
     } finally {
       setIsLoadingZones(false);
     }
@@ -469,27 +473,27 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
   const handleSave = () => {
     // Validation
     if (!title.trim()) {
-      alert("يرجى إدخال عنوان الموقع");
+      alert(t('validation.titleRequired'));
       return;
     }
 
     if (!validatePhone(phone)) {
-      alert("يرجى إدخال رقم هاتف صحيح (11 رقم يبدأ بـ 01)");
+      alert(t('validation.phoneInvalid'));
       return;
     }
 
     if (!stateId) {
-      alert("يرجى اختيار المحافظة");
+      alert(t('validation.governorateRequired'));
       return;
     }
 
     if (!cityId) {
-      alert("يرجى اختيار المدينة");
+      alert(t('validation.cityRequired'));
       return;
     }
 
     if (!street.trim()) {
-      alert("يرجى إدخال الشارع");
+      alert(t('validation.streetRequired'));
       return;
     }
 
@@ -544,15 +548,15 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
       <div className={styles.modal}>
         <div className={styles.modalContent}>
           {/* Header */}
-          <h2 className={styles.modalTitle}>{initialData ? "تعديل عنوان" : "إضافة عنوان"}</h2>
+          <h2 className={styles.modalTitle}>{initialData ? t('editTitle') : t('addTitle')}</h2>
 
           {/* Title Input */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>عنوان الموقع</label>
+            <label className={styles.label}>{t('locationTitle')}</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="مثال: المنزل، العمل، إلخ"
+              placeholder={t('locationTitlePlaceholder')}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -560,31 +564,31 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
 
           {/* Phone Input */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>رقم الهاتف</label>
+            <label className={styles.label}>{t('phone')}</label>
             <input
               type="tel"
               className={styles.input}
-              placeholder="ادخل رقم الهاتف"
+              placeholder={t('phonePlaceholder')}
               value={phone}
               onChange={(e) => handlePhoneChange(e.target.value)}
               maxLength={11}
             />
             {phone.length > 0 && !validatePhone(phone) && (
               <p className={styles.errorText}>
-                {phone.length !== 11 ? "يجب أن يكون الرقم 11 رقم" : "يجب أن يبدأ الرقم بـ 01"}
+                {phone.length !== 11 ? t('phoneValidation.mustBe11Digits') : t('phoneValidation.mustStartWith01')}
               </p>
             )}
           </div>
 
           {/* Location Search */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>البحث عن الموقع</label>
+            <label className={styles.label}>{t('searchLocation')}</label>
             <div className={styles.searchWrapper}>
               <input
                 ref={searchInputRef}
                 type="text"
                 className={styles.searchInput}
-                placeholder="ابحث عن عنوان..."
+                placeholder={t('searchPlaceholder')}
                 value={searchQuery}
                 onChange={handleSearchChange}
               />
@@ -607,19 +611,19 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
 
           {/* Map */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>موقع التوصيل (اسحب العلامة أو انقر على الخريطة)</label>
+            <label className={styles.label}>{t('deliveryLocation')}</label>
             <div className={styles.mapContainer}>
               {!googleMapsLoaded && !mapError && (
                 <div className={styles.mapLoading}>
                   <div className={styles.loadingSpinner}></div>
-                  <p>جاري تحميل الخريطة...</p>
+                  <p>{t('loadingMap')}</p>
                 </div>
               )}
               {mapError && (
                 <div className={styles.mapError}>
                   <p>{mapError}</p>
                   <button className={styles.retryButton} onClick={retryLoadMap}>
-                    إعادة المحاولة
+                    {t('retry')}
                   </button>
                 </div>
               )}
@@ -633,7 +637,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
           {/* Governorate and City */}
           <div className={styles.formRow}>
             <div className={styles.formGroupHalf}>
-              <label className={styles.label}>المحافظة</label>
+              <label className={styles.label}>{t('governorate')}</label>
               <div className={styles.selectWrapper}>
                 <select
                   className={styles.select}
@@ -641,7 +645,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
                   onChange={(e) => setStateId(e.target.value)}
                   disabled={isLoadingZones}
                 >
-                  <option value="">المحافظة</option>
+                  <option value="">{t('governorate')}</option>
                   {zones.map((zone) => (
                     <option key={zone.id} value={zone.id}>
                       {zone.name}
@@ -667,7 +671,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
               </div>
             </div>
             <div className={styles.formGroupHalf}>
-              <label className={styles.label}>المدينة</label>
+              <label className={styles.label}>{t('city')}</label>
               <div className={styles.selectWrapper}>
                 <select
                   className={styles.select}
@@ -675,7 +679,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
                   onChange={(e) => setCityId(e.target.value)}
                   disabled={!stateId || isLoadingZones}
                 >
-                  <option value="">المدينة</option>
+                  <option value="">{t('city')}</option>
                   {filteredCities.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -704,11 +708,11 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
 
           {/* Street */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>الشارع</label>
+            <label className={styles.label}>{t('street')}</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="أدخل اسم الشارع"
+              placeholder={t('streetPlaceholder')}
               value={street}
               onChange={(e) => setStreet(e.target.value)}
             />
@@ -717,21 +721,21 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
           {/* Building, Floor, Apartment */}
           <div className={styles.formRow}>
             <div className={styles.formGroupHalf}>
-              <label className={styles.label}>رقم العمارة</label>
+              <label className={styles.label}>{t('building')}</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="رقم العمارة"
+                placeholder={t('building')}
                 value={buildingNumber}
                 onChange={(e) => setBuildingNumber(e.target.value)}
               />
             </div>
             <div className={styles.formGroupHalf}>
-              <label className={styles.label}>رقم الدور</label>
+              <label className={styles.label}>{t('floor')}</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="رقم الدور"
+                placeholder={t('floor')}
                 value={floorNumber}
                 onChange={(e) => setFloorNumber(e.target.value)}
               />
@@ -739,11 +743,11 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>رقم الشقة</label>
+            <label className={styles.label}>{t('apartment')}</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="رقم الشقة"
+              placeholder={t('apartment')}
               value={apartmentNumber}
               onChange={(e) => setApartmentNumber(e.target.value)}
             />
@@ -751,11 +755,11 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
 
           {/* Notes */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>ملاحظات إضافية</label>
+            <label className={styles.label}>{t('notes')}</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="أي ملاحظات تساعد في الوصول"
+              placeholder={t('notesPlaceholder')}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
@@ -770,17 +774,17 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
                 onChange={(e) => setDefaultAddress(e.target.checked)}
                 style={{ width: '18px', height: '18px', cursor: 'pointer' }}
               />
-              <span className={styles.label} style={{ margin: 0 }}>تعيين كعنوان افتراضي</span>
+              <span className={styles.label} style={{ margin: 0 }}>{t('defaultAddress')}</span>
             </label>
           </div>
 
           {/* Action Buttons */}
           <div className={styles.buttonGroup}>
             <button className={styles.cancelButton} onClick={handleCancel}>
-              رجوع
+              {t('cancel')}
             </button>
             <button className={styles.saveButton} onClick={handleSave}>
-              حفظ
+              {tCommon('save')}
             </button>
           </div>
         </div>

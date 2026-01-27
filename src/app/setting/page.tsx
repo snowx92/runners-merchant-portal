@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
@@ -22,6 +23,8 @@ const cairo = Cairo({
 export default function SettingPage() {
   const router = useRouter();
   const { showToast } = useToast();
+  const t = useTranslations('settings');
+  const tCommon = useTranslations('common');
   const [acceptOrdersAuto, setAcceptOrdersAuto] = useState(true);
   const [isSupplier, setIsSupplier] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -61,12 +64,12 @@ export default function SettingPage() {
 
     try {
       await commonService.updateUserProfile({ autoAccept: enabled });
-      showToast("تم تحديث الإعداد بنجاح", "success");
+      showToast(t('settingUpdated'), "success");
     } catch (error) {
       console.error("Error updating autoAccept:", error);
       // Revert the toggle on error
       setAcceptOrdersAuto(!enabled);
-      showToast("فشل في تحديث الإعداد", "error");
+      showToast(t('settingUpdateFailed'), "error");
     } finally {
       setIsUpdating(false);
     }
@@ -97,17 +100,17 @@ export default function SettingPage() {
 
       <div className={styles.container}>
         <div className={styles.header}>
-          <h1 className={styles.pageTitle}>الاعدادات</h1>
+          <h1 className={styles.pageTitle}>{t('title')}</h1>
         </div>
 
         {/* General Settings */}
         <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>اعدادات عامة</h2>
+          <h2 className={styles.sectionTitle}>{t('general')}</h2>
           <div className={styles.card}>
             {/* Auto Accept Orders - Only for suppliers */}
             {isSupplier && (
               <div className={styles.settingItem}>
-                <span className={styles.settingLabel}>قبول الطلبات تلقائيا</span>
+                <span className={styles.settingLabel}>{t('autoAcceptOrders')}</span>
                 <label className={styles.toggleSwitch}>
                   <input
                     type="checkbox"
@@ -121,7 +124,7 @@ export default function SettingPage() {
             )}
 
             <div className={styles.settingItem}>
-              <span className={styles.settingLabel}>الوضع الليلي</span>
+              <span className={styles.settingLabel}>{t('nightMode')}</span>
               <label className={styles.toggleSwitch}>
                 <input
                   type="checkbox"
@@ -136,13 +139,13 @@ export default function SettingPage() {
 
         {/* Account Settings */}
         <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>حسابك</h2>
+          <h2 className={styles.sectionTitle}>{t('account')}</h2>
           <div className={styles.card}>
             <button
               className={styles.menuItem}
               onClick={() => router.push("/setting/change-password")}
             >
-              <span>تعديل كلمة المرور</span>
+              <span>{t('changePassword')}</span>
               <svg
                 width="20"
                 height="20"
@@ -164,7 +167,7 @@ export default function SettingPage() {
               className={styles.menuItem}
               onClick={() => router.push("/setting/change-contact")}
             >
-              <span>تعديل معلومات التواصل</span>
+              <span>{t('changeContact')}</span>
               <svg
                 width="20"
                 height="20"
@@ -186,7 +189,7 @@ export default function SettingPage() {
               className={styles.menuItem}
               onClick={() => router.push("/setting/api-keys")}
             >
-              <span>مفاتيح API</span>
+              <span>{t('apiKeys')}</span>
               <svg
                 width="20"
                 height="20"
@@ -208,13 +211,13 @@ export default function SettingPage() {
 
         {/* About App */}
         <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>عن التطبيق</h2>
+          <h2 className={styles.sectionTitle}>{t('about')}</h2>
           <div className={styles.card}>
             <button
               className={styles.menuItem}
               onClick={() => router.push("/setting/contact")}
             >
-              <span>تواصل معنا</span>
+              <span>{t('contactUs')}</span>
               <svg
                 width="20"
                 height="20"
@@ -236,7 +239,7 @@ export default function SettingPage() {
               className={styles.menuItem}
               onClick={() => router.push("/setting/faq")}
             >
-              <span>اسئلة شائعة</span>
+              <span>{t('faq')}</span>
               <svg
                 width="20"
                 height="20"
@@ -258,7 +261,7 @@ export default function SettingPage() {
               className={styles.menuItem}
               onClick={() => router.push("/setting/privacy")}
             >
-              <span>سياسة الخصوصية</span>
+              <span>{t('privacy')}</span>
               <svg
                 width="20"
                 height="20"
@@ -280,7 +283,7 @@ export default function SettingPage() {
               className={styles.menuItem}
               onClick={() => router.push("/setting/terms")}
             >
-              <span>الشروط والاحكام</span>
+              <span>{t('terms')}</span>
               <svg
                 width="20"
                 height="20"
@@ -324,7 +327,7 @@ export default function SettingPage() {
               strokeLinejoin="round"
             />
           </svg>
-          حذف الحساب
+          {t('deleteAccount')}
         </button>
       </div>
 
@@ -350,23 +353,23 @@ export default function SettingPage() {
                 />
               </svg>
             </div>
-            <h2 className={styles.modalTitle}>تحذير</h2>
+            <h2 className={styles.modalTitle}>{t('deleteAccountWarning')}</h2>
             <p className={styles.modalMessage}>
-              هل أنت متأكد من حذف حسابك؟ سيتم حذف جميع بياناتك بشكل نهائي ولن تتمكن من استرجاعها.
+              {t('deleteAccountMessage')}
             </p>
             <div className={styles.modalButtons}>
               <button
                 className={styles.cancelButton}
                 onClick={() => setShowDeleteModal(false)}
               >
-                إلغاء
+                {tCommon('cancel')}
               </button>
               <button
                 className={styles.confirmDeleteButton}
                 onClick={handleDeleteAccount}
                 disabled={isDeleting}
               >
-                {isDeleting ? "جاري الحذف..." : "حذف الحساب"}
+                {isDeleting ? t('deleting') : t('deleteAccount')}
               </button>
             </div>
           </div>

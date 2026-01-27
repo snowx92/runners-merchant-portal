@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/home/home.module.css";
 import type { Order } from "@/lib/api/types/home.types";
 
@@ -6,23 +9,20 @@ interface RecentOrdersProps {
   orders: Order[];
 }
 
-// Status mapping from English to Arabic
-const getStatusInfo = (status: string) => {
-  const statusMap: Record<string, { text: string; className: string }> = {
-    PENDING: { text: "قيد الانتظار", className: styles.badgePending },
-    ACCEPTED: { text: "مقبول", className: styles.badgeNew },
-    PICKED_UP: { text: "تم الاستلام", className: styles.badgePending },
-    DELIVERED: { text: "تم التوصيل", className: styles.badgeNew },
-    COMPLETED: { text: "مكتمل", className: styles.badgeCompleted },
-    CANCELLED: { text: "ملغي", className: styles.badgeCancelled },
-    FAILED: { text: "فشل", className: styles.badgeCancelled },
-    RETURNED: { text: "مرتجع", className: styles.badgeCancelled },
+// Status className mapping
+const getStatusClassName = (status: string) => {
+  const classMap: Record<string, string> = {
+    PENDING: styles.badgePending,
+    ACCEPTED: styles.badgeNew,
+    PICKED_UP: styles.badgePending,
+    DELIVERED: styles.badgeNew,
+    COMPLETED: styles.badgeCompleted,
+    CANCELLED: styles.badgeCancelled,
+    FAILED: styles.badgeCancelled,
+    RETURNED: styles.badgeCancelled,
   };
 
-  return statusMap[status] || {
-    text: status,
-    className: styles.badgePending,
-  };
+  return classMap[status] || styles.badgePending;
 };
 
 // Format price
@@ -35,21 +35,34 @@ const formatPrice = (price: number) => {
 };
 
 export const RecentOrders = ({ orders }: RecentOrdersProps) => {
+  const t = useTranslations("home");
+  const tOrders = useTranslations("orders");
+  const tCommon = useTranslations("common");
+
   return (
     <>
       <div className={styles.ordersHeader}>
         <h3 className={styles.sectionTitle} style={{ marginBottom: 0 }}>
-          الطلبات الحديثة
+          {t("recentOrders")}
         </h3>
         <Link href="/orders" className={styles.viewAll}>
-          عرض الكل
+          {t("viewAll")}
         </Link>
       </div>
 
       <div className={styles.ordersList}>
         {orders && orders.length > 0 ? (
           orders.map((order) => {
-            const statusInfo = getStatusInfo(order.status);
+            const statusClassName = getStatusClassName(order.status);
+            const statusKey = order.status.toLowerCase() as
+              | "pending"
+              | "accepted"
+              | "picked_up"
+              | "delivered"
+              | "completed"
+              | "cancelled"
+              | "failed"
+              | "returned";
 
             return (
               <Link
@@ -64,19 +77,17 @@ export const RecentOrders = ({ orders }: RecentOrdersProps) => {
                     style={{ textAlign: "right" }}
                   >
                     <span className={styles.orderTitle}>
-                      طلب #{order.id}
+                      {tOrders("orderNumber", { id: order.id })}
                     </span>
                     <span className={styles.orderSub}>
-                      العميل: {order.customer.name} •{" "}
-                      {formatPrice(order.cash)}
+                      {tOrders("customer")}: {order.customer.name} •{" "}
+                      {formatPrice(order.cash)} {tCommon("currency")}
                     </span>
                   </div>
 
                   {/* Status Badge */}
-                  <span
-                    className={`${styles.badge} ${statusInfo.className}`}
-                  >
-                    {statusInfo.text}
+                  <span className={`${styles.badge} ${statusClassName}`}>
+                    {tOrders(`status.${statusKey}`)}
                   </span>
                 </div>
               </Link>
@@ -90,7 +101,7 @@ export const RecentOrders = ({ orders }: RecentOrdersProps) => {
               color: "#999",
             }}
           >
-            لا توجد طلبات حديثة
+            {t("noOrders")}
           </div>
         )}
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/auth/auth.module.css";
 import otpStyles from "@/styles/auth/otp.module.css";
 
@@ -21,6 +22,8 @@ export const OTPVerification = ({
   isLoading = false,
   error = null,
 }: OTPVerificationProps) => {
+  const t = useTranslations('otp');
+  const tCommon = useTranslations('common');
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [resendTimer, setResendTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
@@ -97,9 +100,9 @@ export const OTPVerification = ({
   return (
     <>
       <div className={styles.header}>
-        <h1 className={styles.title}>التحقق من رقم الهاتف</h1>
+        <h1 className={styles.title}>{t('title')}</h1>
         <p className={styles.subtitle}>
-          أدخل الرمز المرسل إلى {phoneNumber}
+          {t('subtitle', { phoneNumber })}
         </p>
       </div>
 
@@ -139,11 +142,11 @@ export const OTPVerification = ({
               className={otpStyles.resendButton}
               disabled={isLoading}
             >
-              إعادة إرسال الرمز
+              {t('resend')}
             </button>
           ) : (
             <p className={otpStyles.timerText}>
-              إعادة الإرسال بعد {resendTimer} ثانية
+              {t('resendIn', { seconds: resendTimer })}
             </p>
           )}
         </div>
@@ -154,7 +157,7 @@ export const OTPVerification = ({
           className={styles.button}
           disabled={isLoading || otp.some((digit) => !digit)}
         >
-          {isLoading ? "جاري التحقق..." : "تحقق"}
+          {isLoading ? t('verifying') : t('verify')}
         </button>
 
         <button
@@ -163,7 +166,7 @@ export const OTPVerification = ({
           className={`${styles.button} ${otpStyles.backButton}`}
           disabled={isLoading}
         >
-          رجوع
+          {tCommon('back')}
         </button>
       </div>
     </>

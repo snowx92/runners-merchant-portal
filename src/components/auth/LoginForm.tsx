@@ -5,6 +5,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/auth/auth.module.css";
 import loginStyles from "@/styles/auth/login.module.css";
 import {
@@ -34,6 +35,8 @@ const db = getFirebaseDb();
 
 export const LoginForm = () => {
   const router = useRouter();
+  const t = useTranslations('auth');
+  const tCommon = useTranslations('common');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -95,12 +98,12 @@ export const LoginForm = () => {
     setError(null);
 
     if (!formData.identifier.trim()) {
-      setError("الرجاء إدخال البريد الإلكتروني");
+      setError(t('errors.emailRequired'));
       return;
     }
 
     if (!formData.password) {
-      setError("الرجاء إدخال كلمة المرور");
+      setError(t('errors.passwordRequired'));
       return;
     }
 
@@ -127,18 +130,18 @@ export const LoginForm = () => {
 
       if (err.message === "NOT_SUPPLIER") {
         await clearSessionAndSignOut();
-        setError("هذا الحساب غير مصرح له بالدخول");
+        setError(t('errors.accountNotAuthorized'));
       } else if (err.message === "USER_DOC_NOT_FOUND") {
         await clearSessionAndSignOut();
-        setError("بيانات المستخدم غير مكتملة");
+        setError(t('errors.userDataIncomplete'));
       } else if (err.code === "auth/user-not-found") {
-        setError("البريد الإلكتروني غير مسجل");
+        setError(t('errors.emailNotRegistered'));
       } else if (err.code === "auth/wrong-password") {
-        setError("كلمة المرور غير صحيحة");
+        setError(t('errors.wrongPassword'));
       } else if (err.code === "auth/invalid-email") {
-        setError("البريد الإلكتروني غير صالح");
+        setError(t('errors.invalidEmail'));
       } else {
-        setError("حدث خطأ أثناء تسجيل الدخول");
+        setError(t('errors.loginError'));
       }
     } finally {
       setIsLoading(false);
@@ -162,7 +165,7 @@ export const LoginForm = () => {
       router.push(redirectUrl);
     } catch (err: any) {
       await clearSessionAndSignOut();
-      setError("هذا الحساب غير مصرح له بالدخول");
+      setError(t('errors.accountNotAuthorized'));
     } finally {
       setIsLoading(false);
     }
@@ -185,7 +188,7 @@ export const LoginForm = () => {
       router.push(redirectUrl);
     } catch (err: any) {
       await clearSessionAndSignOut();
-      setError("هذا الحساب غير مصرح له بالدخول");
+      setError(t('errors.accountNotAuthorized'));
     } finally {
       setIsLoading(false);
     }
@@ -196,19 +199,19 @@ export const LoginForm = () => {
   return (
     <>
       <div className={styles.header}>
-        <h1 className={styles.title}>تسجيل الدخول</h1>
+        <h1 className={styles.title}>{t('loginTitle')}</h1>
         <p className={styles.subtitle}>
-          قم بإدخال بياناتك للوصول إلى حسابك والتمتع بجميع خدمات التطبيق بسهولة
+          {t('loginSubtitle')}
         </p>
       </div>
 
       <form onSubmit={handleLogin}>
         <div className={styles.formGroup}>
-          <label className={styles.label}>البريد الالكتروني</label>
+          <label className={styles.label}>{t('email')}</label>
           <input
             type="email"
             className={styles.input}
-            placeholder="ادخل البريد الالكتروني هنا"
+            placeholder={t('emailPlaceholder')}
             value={formData.identifier}
             onChange={(e) =>
               handleInputChange("identifier", e.target.value)
@@ -218,12 +221,12 @@ export const LoginForm = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.label}>كلمة المرور</label>
+          <label className={styles.label}>{t('password')}</label>
           <div className={styles.inputWrapper}>
             <input
               type={showPassword ? "text" : "password"}
               className={styles.input}
-              placeholder="ادخل كلمة المرور"
+              placeholder={t('passwordPlaceholder')}
               value={formData.password}
               onChange={(e) =>
                 handleInputChange("password", e.target.value)
@@ -242,7 +245,7 @@ export const LoginForm = () => {
         </div>
 
         <Link href="#" className={loginStyles.forgotPassword}>
-          نسيت كلمة المرور
+          {t('forgotPassword')}
         </Link>
 
         {error && (
@@ -252,10 +255,10 @@ export const LoginForm = () => {
         )}
 
         <button type="submit" className={styles.button} disabled={isLoading}>
-          {isLoading ? "" : "تسجيل الدخول"}
+          {isLoading ? "" : t('login')}
         </button>
 
-        <div className={styles.divider}>أو</div>
+        <div className={styles.divider}>{tCommon('or')}</div>
 
         <div className={styles.socialButtons}>
           <button
@@ -265,7 +268,7 @@ export const LoginForm = () => {
             disabled={isLoading}
           >
             <AppleIcon />
-            ابل
+            {t('apple')}
           </button>
 
           <button
@@ -275,13 +278,13 @@ export const LoginForm = () => {
             disabled={isLoading}
           >
             <GoogleIcon />
-            جوجل
+            {t('google')}
           </button>
         </div>
 
         <AuthFooter
-          label="ليس لديك حساب؟"
-          linkText="إنشاء حساب"
+          label={t('noAccount')}
+          linkText={t('register')}
           href="/auth/register"
         />
       </form>

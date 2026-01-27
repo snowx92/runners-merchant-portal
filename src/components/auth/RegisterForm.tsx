@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/auth/auth.module.css";
 import registerStyles from "@/styles/auth/register.module.css";
 import { EyeIcon, EyeOffIcon, GoogleIcon, AppleIcon } from "@/components/ui/Icons";
@@ -38,6 +39,8 @@ const validatePhone = (phone: string): boolean => {
 
 export const RegisterForm = () => {
     const router = useRouter();
+    const t = useTranslations('auth');
+    const tCommon = useTranslations('common');
     const [currentStep, setCurrentStep] = useState<SignupStep>("form");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -65,39 +68,39 @@ export const RegisterForm = () => {
     const validateForm = (isSocialAuth: boolean = false): boolean => {
         if (!isSocialAuth) {
             if (!formData.firstName.trim()) {
-                setError("الرجاء إدخال الاسم الأول");
+                setError(t('errors.firstNameRequired'));
                 return false;
             }
             if (!formData.lastName.trim()) {
-                setError("الرجاء إدخال الاسم الأخير");
+                setError(t('errors.lastNameRequired'));
                 return false;
             }
         }
         if (!formData.storeName.trim()) {
-            setError("الرجاء إدخال اسم المتجر");
+            setError(t('errors.storeNameRequired'));
             return false;
         }
         if (!isSocialAuth) {
             if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-                setError("الرجاء إدخال بريد إلكتروني صحيح");
+                setError(t('errors.emailInvalid'));
                 return false;
             }
         }
         if (!validatePhone(formData.phone)) {
-            setError("رقم الهاتف يجب أن يتكون من 11 رقماً ويبدأ بـ 0");
+            setError(t('errors.phoneInvalid'));
             return false;
         }
         if (!isSocialAuth) {
             if (!formData.password || formData.password.length < 6) {
-                setError("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
+                setError(t('errors.passwordWeak'));
                 return false;
             }
             if (formData.password !== formData.confirmPassword) {
-                setError("كلمة المرور غير متطابقة");
+                setError(t('errors.passwordMismatch'));
                 return false;
             }
             if (!formData.acceptedTerms) {
-                setError("يجب الموافقة على الشروط والأحكام");
+                setError(t('errors.termsRequired'));
                 return false;
             }
         }
@@ -136,17 +139,17 @@ export const RegisterForm = () => {
                 setOtpCode(codeValue);
                 setCurrentStep("otp");
             } else {
-                throw new Error(response.message || "فشل في إرسال رمز التحقق");
+                throw new Error(response.message || t('errors.otpSendFailed'));
             }
         } catch (err: any) {
             console.error("❌ Signup error:", err);
 
             if (err.code === "auth/weak-password") {
-                setError("كلمة المرور ضعيفة جداً");
+                setError(t('errors.weakPassword'));
             } else if (err.code === "auth/invalid-email") {
-                setError("البريد الإلكتروني غير صالح");
+                setError(t('errors.invalidEmail'));
             } else {
-                setError(err.message || "حدث خطأ أثناء التسجيل");
+                setError(err.message || t('errors.registerError'));
             }
         } finally {
             setIsLoading(false);
@@ -215,14 +218,14 @@ export const RegisterForm = () => {
                     await createAccount(secret, userCredential.user.uid);
                 }
             } else {
-                setError(response.message || "رمز التحقق غير صحيح");
+                setError(response.message || t('errors.otpInvalid'));
             }
         } catch (err: any) {
             console.error("❌ OTP verification error:", err);
             if (err.code === "auth/email-already-in-use") {
-                setError("البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول بدلاً من ذلك");
+                setError(t('errors.emailInUse'));
             } else {
-                setError(err.message || "رمز التحقق غير صحيح");
+                setError(err.message || t('errors.otpInvalid'));
             }
         } finally {
             setIsLoading(false);
@@ -271,7 +274,7 @@ export const RegisterForm = () => {
             }
 
             // Call backend API to complete profile
-             
+
             const response = await authService.signup(requestData as unknown as any);
 
             console.log("✅ Backend signup response:", response);
@@ -297,11 +300,11 @@ export const RegisterForm = () => {
                     router.push("/");
                 }, 1500);
             } else {
-                setError(response.message || "فشل في إكمال التسجيل");
+                setError(response.message || t('errors.registrationFailed'));
             }
         } catch (err: unknown) {
             console.error("❌ Backend registration error:", err);
-            const errorMessage = err instanceof Error ? err.message : "حدث خطأ أثناء إكمال التسجيل";
+            const errorMessage = err instanceof Error ? err.message : t('errors.registrationFailed');
             setError(errorMessage);
         } finally {
             setIsLoading(false);
@@ -321,10 +324,10 @@ export const RegisterForm = () => {
                 const codeValue = typeof response.data === 'string' ? response.data : response.data.code;
                 setOtpCode(codeValue);
             } else {
-                setError(response.message || "فشل في إعادة إرسال رمز التحقق");
+                setError(response.message || t('errors.otpResendFailed'));
             }
         } catch (err) {
-            setError(err instanceof Error ? err.message : "حدث خطأ أثناء إعادة إرسال رمز التحقق");
+            setError(err instanceof Error ? err.message : t('errors.otpResendFailed'));
         }
     };
 
@@ -371,7 +374,7 @@ export const RegisterForm = () => {
             // Show simplified form to collect store name and phone
             setCurrentStep("social-form");
         } catch (err) {
-            setError(err instanceof Error ? err.message : "حدث خطأ أثناء التسجيل عبر جوجل");
+            setError(err instanceof Error ? err.message : t('errors.googleRegisterError'));
         } finally {
             setIsLoading(false);
         }
@@ -414,7 +417,7 @@ export const RegisterForm = () => {
             // Show simplified form to collect store name and phone
             setCurrentStep("social-form");
         } catch (err) {
-            setError(err instanceof Error ? err.message : "حدث خطأ أثناء التسجيل عبر أبل");
+            setError(err instanceof Error ? err.message : t('errors.appleRegisterError'));
         } finally {
             setIsLoading(false);
         }
@@ -438,9 +441,9 @@ export const RegisterForm = () => {
     if (currentStep === "completed") {
         return (
             <div className={styles.header} style={{ textAlign: 'center', marginTop: '3rem' }}>
-                <h1 className={styles.title}>تم إنشاء الحساب بنجاح!</h1>
+                <h1 className={styles.title}>{t('accountCreatedTitle')}</h1>
                 <p className={styles.subtitle}>
-                    جاري تحويلك إلى لوحة التحكم...
+                    {t('redirectingToDashboard')}
                 </p>
             </div>
         );
@@ -451,18 +454,18 @@ export const RegisterForm = () => {
         return (
             <>
                 <div className={styles.header}>
-                    <h1 className={styles.title}>أكمل بيانات حسابك</h1>
+                    <h1 className={styles.title}>{t('completeAccountTitle')}</h1>
                     <p className={styles.subtitle}>
-                        الرجاء إدخال اسم المتجر ورقم الهاتف لإكمال التسجيل
+                        {t('completeAccountSubtitle')}
                     </p>
                 </div>
 
                 <form onSubmit={handleSubmitForm}>
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>الاسم</label>
+                        <label className={styles.label}>{t('name')}</label>
                         <input
                             type="text"
-                            placeholder="الاسم"
+                            placeholder={t('name')}
                             className={styles.input}
                             value={`${formData.firstName} ${formData.lastName}`.trim() || ""}
                             disabled={true}
@@ -470,10 +473,10 @@ export const RegisterForm = () => {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>البريد الإلكتروني</label>
+                        <label className={styles.label}>{t('email')}</label>
                         <input
                             type="email"
-                            placeholder="البريد الإلكتروني"
+                            placeholder={t('emailPlaceholder')}
                             className={styles.input}
                             value={formData.email}
                             disabled={true}
@@ -481,10 +484,10 @@ export const RegisterForm = () => {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>اسم المتجر *</label>
+                        <label className={styles.label}>{t('storeName')} *</label>
                         <input
                             type="text"
-                            placeholder="ادخل اسم المتجر هنا"
+                            placeholder={t('storeNamePlaceholder')}
                             className={styles.input}
                             value={formData.storeName}
                             onChange={(e) => handleInputChange("storeName", e.target.value)}
@@ -494,10 +497,10 @@ export const RegisterForm = () => {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>رقم الهاتف *</label>
+                        <label className={styles.label}>{t('phone')} *</label>
                         <input
                             type="tel"
-                            placeholder="أدخل رقم الهاتف (01xxxxxxxxx)"
+                            placeholder={t('phonePlaceholder')}
                             className={styles.input}
                             dir="ltr"
                             value={formData.phone}
@@ -521,7 +524,7 @@ export const RegisterForm = () => {
                         className={styles.submitButton}
                         disabled={isLoading}
                     >
-                        {isLoading ? "جاري التحميل..." : "إنشاء الحساب"}
+                        {isLoading ? tCommon('loading') : t('createAccount')}
                     </button>
                 </form>
             </>
@@ -532,9 +535,9 @@ export const RegisterForm = () => {
     return (
         <>
             <div className={styles.header}>
-                <h1 className={styles.title}>انشاء حساب التاجر</h1>
+                <h1 className={styles.title}>{t('registerTitle')}</h1>
                 <p className={styles.subtitle}>
-                    قم بإنشاء حسابك ك تاجر لإضافة منتجاتك وإدارتها بكل سهولة، وتنسيق عملية التوصيل لعملائك
+                    {t('registerSubtitle')}
                 </p>
             </div>
 
@@ -542,10 +545,10 @@ export const RegisterForm = () => {
                 <div className={registerStyles.row}>
                     <div className={registerStyles.col}>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>الاسم الاول</label>
+                            <label className={styles.label}>{t('firstName')}</label>
                             <input
                                 type="text"
-                                placeholder="ادخل الاسم الاول هنا"
+                                placeholder={t('firstNamePlaceholder')}
                                 className={styles.input}
                                 value={formData.firstName}
                                 onChange={(e) => handleInputChange("firstName", e.target.value)}
@@ -555,10 +558,10 @@ export const RegisterForm = () => {
                     </div>
                     <div className={registerStyles.col}>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>الاسم الاخير</label>
+                            <label className={styles.label}>{t('lastName')}</label>
                             <input
                                 type="text"
-                                placeholder="ادخل الاسم الاخير هنا"
+                                placeholder={t('lastNamePlaceholder')}
                                 className={styles.input}
                                 value={formData.lastName}
                                 onChange={(e) => handleInputChange("lastName", e.target.value)}
@@ -569,10 +572,10 @@ export const RegisterForm = () => {
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label className={styles.label}>اسم المتجر</label>
+                    <label className={styles.label}>{t('storeName')}</label>
                     <input
                         type="text"
-                        placeholder="ادخل اسم المتجر هنا"
+                        placeholder={t('storeNamePlaceholder')}
                         className={styles.input}
                         value={formData.storeName}
                         onChange={(e) => handleInputChange("storeName", e.target.value)}
@@ -581,10 +584,10 @@ export const RegisterForm = () => {
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label className={styles.label}>البريد الالكتروني</label>
+                    <label className={styles.label}>{t('email')}</label>
                     <input
                         type="email"
-                        placeholder="ادخل البريد الالكتروني هنا"
+                        placeholder={t('emailPlaceholder')}
                         className={styles.input}
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
@@ -593,10 +596,10 @@ export const RegisterForm = () => {
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label className={styles.label}>رقم الهاتف</label>
+                    <label className={styles.label}>{t('phone')}</label>
                     <input
                         type="tel"
-                        placeholder="أدخل رقم الهاتف (01xxxxxxxxx)"
+                        placeholder={t('phonePlaceholder')}
                         className={styles.input}
                         dir="ltr"
                         value={formData.phone}
@@ -609,11 +612,11 @@ export const RegisterForm = () => {
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label className={styles.label}>كلمة المرور</label>
+                    <label className={styles.label}>{t('password')}</label>
                     <div className={styles.inputWrapper}>
                         <input
                             type={showPassword ? "text" : "password"}
-                            placeholder="ادخل كلمة المرور"
+                            placeholder={t('passwordPlaceholder')}
                             className={styles.input}
                             value={formData.password}
                             onChange={(e) => handleInputChange("password", e.target.value)}
@@ -630,11 +633,11 @@ export const RegisterForm = () => {
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label className={styles.label}>تأكيد كلمة المرور</label>
+                    <label className={styles.label}>{t('confirmPassword')}</label>
                     <div className={styles.inputWrapper}>
                         <input
                             type={showConfirmPassword ? "text" : "password"}
-                            placeholder="ادخل كلمة المرور"
+                            placeholder={t('passwordPlaceholder')}
                             className={styles.input}
                             value={formData.confirmPassword}
                             onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
@@ -660,7 +663,7 @@ export const RegisterForm = () => {
                         disabled={isLoading}
                     />
                     <label htmlFor="terms" className={registerStyles.checkboxLabel}>
-                        بالنقر هنا فإنك توافق على الشروط والأحكام
+                        {t('termsAgreement')}
                     </label>
                 </div>
 
@@ -671,10 +674,10 @@ export const RegisterForm = () => {
                 )}
 
                 <button type="submit" className={styles.button} disabled={isLoading}>
-                    {isLoading ? "جاري الإرسال..." : "التالي"}
+                    {isLoading ? t('sending') : t('next')}
                 </button>
 
-                <div className={styles.divider}>أو</div>
+                <div className={styles.divider}>{tCommon('or')}</div>
 
                 <div className={styles.socialButtons}>
                     <button
@@ -684,7 +687,7 @@ export const RegisterForm = () => {
                         disabled={isLoading}
                     >
                         <AppleIcon />
-                        ابل
+                        {t('apple')}
                     </button>
                     <button
                         type="button"
@@ -693,14 +696,14 @@ export const RegisterForm = () => {
                         disabled={isLoading}
                     >
                         <GoogleIcon />
-                        جوجل
+                        {t('google')}
                     </button>
                 </div>
 
                 <div style={{ marginTop: '1.5rem' }}>
                     <AuthFooter
-                        label="لدي حساب بالفعل؟"
-                        linkText="تسجيل الدخول"
+                        label={t('hasAccount')}
+                        linkText={t('login')}
                         href="/auth/login"
                     />
                 </div>

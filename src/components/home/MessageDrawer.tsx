@@ -4,6 +4,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/home/messages.module.css";
 import { useChatCount } from "@/lib/hooks/useChatCount";
 import { useAuth } from "@/lib/hooks/useAuth";
@@ -50,6 +51,7 @@ const mockMessages: Message[] = [];
 
 export const MessageDrawer = () => {
   const { isLoggedIn } = useAuth();
+  const t = useTranslations('messages');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState<Message | null>(null);
   const [messages, setMessages] = useState<Message[]>(mockMessages);
@@ -175,8 +177,8 @@ export const MessageDrawer = () => {
           return {
             id: doc.id,
             chatId: doc.id,
-            name: otherUserInfo?.name || "مستخدم",
-            text: data['lastMessage'] || "لا توجد رسائل",
+            name: otherUserInfo?.name || t('user'),
+            text: data['lastMessage'] || t('noMessagesDefault'),
             avatar: otherUserInfo?.avatar || "/icons/Profile.svg",
             time: formattedTime,
             unread: chatUnread > 0,
@@ -220,7 +222,7 @@ export const MessageDrawer = () => {
         setMessages(chatsData.length > 0 ? chatsData : mockMessages);
         setIsLoading(false);
         if (snapshot.size === 0) {
-          setError("لا توجد محادثات");
+          setError(t('noConversations'));
         } else {
           setError(null);
         }
@@ -338,7 +340,7 @@ export const MessageDrawer = () => {
         const balance = response.data.balance;
         
         if (balance < 5) {
-          alert('لا يمكنك فتح الدردشة برصيد أقل من 5 جنيهات. يرجى شحن حسابك.');
+          alert(t('balanceError'));
           setIsCheckingBalance(false);
           return false;
         }
@@ -471,7 +473,7 @@ export const MessageDrawer = () => {
     if (!file || !selectedChat?.chatId || !currentUserIdRef.current) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('يرجى اختيار ملف صورة');
+      alert(t('selectImageFile'));
       return;
     }
 
@@ -503,7 +505,7 @@ export const MessageDrawer = () => {
   // ============ Location Sharing ============
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert('المتصفح لا يدعم تحديد الموقع');
+      alert(t('browserNotSupported'));
       return;
     }
 
@@ -530,7 +532,7 @@ export const MessageDrawer = () => {
       },
       (error) => {
         console.error("Error getting location:", error);
-        alert('فشل في تحديد الموقع');
+        alert(t('locationFailed'));
         setIsSendingLocation(false);
       }
     );
@@ -577,9 +579,9 @@ export const MessageDrawer = () => {
         <button
           className={styles.floatingButton}
           onClick={handleToggleDrawer}
-          aria-label="الرسائل"
+          aria-label={t('title')}
         >
-          <span className={styles.floatingButtonText}>الرسائل</span>
+          <span className={styles.floatingButtonText}>{t('title')}</span>
           <svg
             className={styles.chevron}
             width="24"
@@ -615,11 +617,11 @@ export const MessageDrawer = () => {
       <div className={`${styles.drawer} ${isOpen && !selectedChat ? styles.drawerOpen : ""}`}>
         <div className={styles.drawerContent}>
           <div className={styles.drawerHeader}>
-            <h2 className={styles.drawerTitle}>الرسائل</h2>
+            <h2 className={styles.drawerTitle}>{t('title')}</h2>
             <button
               className={styles.closeButton}
               onClick={handleCloseDrawer}
-              aria-label="إغلاق"
+              aria-label={t('close')}
             >
               <svg
                 width="24"
@@ -641,9 +643,9 @@ export const MessageDrawer = () => {
 
           <div className={styles.messagesList}>
             {isLoading ? (
-              <div style={{ padding: '20px', textAlign: 'center' }}>جاري التحميل...</div>
+              <div style={{ padding: '20px', textAlign: 'center' }}>{t('loading')}</div>
             ) : messages.length === 0 ? (
-              <div style={{ padding: '20px', textAlign: 'center' }}>لا توجد محادثات</div>
+              <div style={{ padding: '20px', textAlign: 'center' }}>{t('noConversations')}</div>
             ) : (
               messages.map((message) => (
                 <div
@@ -724,21 +726,21 @@ export const MessageDrawer = () => {
                 </div>
                 <div className={styles.chatUserInfo}>
                   <h3 className={styles.chatUserName}>{selectedChat.name}</h3>
-                  <p className={styles.chatUserStatus}>متواجد الآن</p>
+                  <p className={styles.chatUserStatus}>{t('onlineNow')}</p>
                 </div>
               </div>
             </div>
 
             <div className={styles.chatMessages}>
               {chatMessages.length === 0 ? (
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  alignItems: 'center', 
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   height: '100%',
                   color: '#888'
                 }}>
-                  لا توجد رسائل بعد
+                  {t('noMessagesYet')}
                 </div>
               ) : (
                 chatMessages.map((msg) => (
@@ -815,9 +817,9 @@ export const MessageDrawer = () => {
                               position: 'relative',
                               overflow: 'hidden'
                             }}>
-                              <img 
+                              <img
                                 src={`https://static-maps.yandex.ru/1.x/?lang=ar-SA&size=200,100&z=15&l=map&pt=${msg.location.longitude},${msg.location.latitude},pm2rdm`}
-                                alt="خريطة"
+                                alt={t('map')}
                                 style={{
                                   width: '100%',
                                   height: '100%',
@@ -948,7 +950,7 @@ export const MessageDrawer = () => {
                 <div className={styles.recordingIndicator}>
                   <div className={styles.recordingDot}></div>
                   <span className={styles.recordingLabel}>
-                    جاري التسجيل... {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
+                    {t('recording')} {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
                   </span>
                   <button className={styles.stopRecordingButton} onClick={stopRecording}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -995,7 +997,7 @@ export const MessageDrawer = () => {
                             <polyline points="21 15 16 10 5 21"/>
                           </svg>
                         )}
-                        <span>صورة</span>
+                        <span>{t('image')}</span>
                         <input 
                           type="file" 
                           accept="image/*" 
@@ -1004,8 +1006,8 @@ export const MessageDrawer = () => {
                           style={{ display: 'none' }}
                         />
                       </label>
-                      <button 
-                        className={styles.attachmentMenuItem} 
+                      <button
+                        className={styles.attachmentMenuItem}
                         onClick={() => {
                           setShowAttachmentMenu(false);
                           startRecording();
@@ -1018,9 +1020,9 @@ export const MessageDrawer = () => {
                           <line x1="12" y1="19" x2="12" y2="23"/>
                           <line x1="8" y1="23" x2="16" y2="23"/>
                         </svg>
-                        <span>رسالة صوتية</span>
+                        <span>{t('voiceMessage')}</span>
                       </button>
-                      <button 
+                      <button
                         className={`${styles.attachmentMenuItem} ${isSendingLocation ? styles.sendingButton : ''}`}
                         onClick={() => {
                           setShowAttachmentMenu(false);
@@ -1038,7 +1040,7 @@ export const MessageDrawer = () => {
                             <circle cx="12" cy="10" r="3"/>
                           </svg>
                         )}
-                        <span>موقع</span>
+                        <span>{t('location')}</span>
                       </button>
                     </div>
                   )}
@@ -1046,8 +1048,7 @@ export const MessageDrawer = () => {
                   <input
                     type="text"
                     className={styles.messageInput}
-                    placeholder="اكتب رسالتك هنا.."
-                    dir="rtl"
+                    placeholder={t('typeMessage')}
                     value={messageInput}
                     onChange={(e) => setMessageInput(e.target.value)}
                     onKeyPress={handleKeyPress}
@@ -1081,12 +1082,12 @@ export const MessageDrawer = () => {
             {locationModalOpen && (
               <div className={styles.locationModal}>
                 <div className={styles.locationModalContent}>
-                  <h4>مشاركة الموقع</h4>
+                  <h4>{t('shareLocation')}</h4>
                   {userLocation ? (
                     <>
                       <p className={styles.locationAddress}>{userLocation.address}</p>
                       <div className={styles.locationActions}>
-                        <button 
+                        <button
                           className={`${styles.locationSendButton} ${isSendingLocation ? styles.sendingButton : ''}`}
                           onClick={sendLocation}
                           disabled={isSendingLocation}
@@ -1094,10 +1095,10 @@ export const MessageDrawer = () => {
                           {isSendingLocation ? (
                             <div className={styles.loadingSpinner}></div>
                           ) : (
-                            'إرسال الموقع'
+                            t('sendLocation')
                           )}
                         </button>
-                        <button 
+                        <button
                           className={styles.locationCancelButton}
                           onClick={() => {
                             setLocationModalOpen(false);
@@ -1105,24 +1106,24 @@ export const MessageDrawer = () => {
                           }}
                           disabled={isSendingLocation}
                         >
-                          إلغاء
+                          {t('close')}
                         </button>
                       </div>
                     </>
                   ) : (
                     <>
-                      <p>جاري تحديد موقعك...</p>
+                      <p>{t('locatingPosition')}</p>
                       {isSendingLocation && (
                         <div className={styles.loadingOverlay}>
                           <div className={styles.loadingSpinnerDark}></div>
                         </div>
                       )}
-                      <button 
+                      <button
                         className={styles.locationCancelButton}
                         onClick={() => setLocationModalOpen(false)}
                         disabled={isSendingLocation}
                       >
-                        إلغاء
+                        {t('close')}
                       </button>
                     </>
                   )}

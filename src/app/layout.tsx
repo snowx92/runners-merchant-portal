@@ -3,6 +3,9 @@ import { Cairo } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/contexts/AuthContext";
 import { ToastProvider } from "@/lib/contexts/ToastContext";
+import { LocaleProvider } from "@/lib/contexts/LocaleContext";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -14,20 +17,28 @@ export const metadata: Metadata = {
   description: "Premium portal for merchants",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+  const direction = locale === 'ar' ? 'rtl' : 'ltr';
+
   return (
-    <html lang="ar" dir="rtl">
+    <html lang={locale} dir={direction}>
       <head>
         <link rel="icon" href="/navLogo.png" type="image/png" />
       </head>
       <body className={cairo.className}>
-        <AuthProvider>
-          <ToastProvider>{children}</ToastProvider>
-        </AuthProvider>
+        <NextIntlClientProvider messages={messages}>
+          <LocaleProvider>
+            <AuthProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </AuthProvider>
+          </LocaleProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

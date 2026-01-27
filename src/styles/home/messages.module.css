@@ -2,7 +2,6 @@
 .floatingButton {
   position: fixed;
   bottom: 0;
-  right: 32px;
   background: white;
   border: none;
   border-radius: 24px 24px 0 0;
@@ -19,7 +18,16 @@
   font-weight: 600;
   color: #333;
   min-width: 160px;
-  direction: rtl;
+}
+
+[dir="rtl"] .floatingButton {
+  right: 32px;
+  left: auto;
+}
+
+[dir="ltr"] .floatingButton {
+  left: 32px;
+  right: auto;
 }
 
 .floatingButton:hover {
@@ -86,7 +94,6 @@
 .drawer {
   position: fixed;
   bottom: 0;
-  right: 32px;
   width: 450px;
   background: white;
   border-radius: 24px 24px 0 0;
@@ -95,6 +102,16 @@
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[dir="rtl"] .drawer {
+  right: 32px;
+  left: auto;
+}
+
+[dir="ltr"] .drawer {
+  left: 32px;
+  right: auto;
 }
 
 .drawerOpen {
@@ -114,7 +131,6 @@
   justify-content: space-between;
   padding: 20px 24px;
   border-bottom: none;
-  direction: rtl;
 }
 
 .drawerTitle {
@@ -155,7 +171,6 @@
   padding: 16px 24px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  direction: rtl;
   gap: 16px;
 }
 
@@ -209,7 +224,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  text-align: right;
   min-width: 0;
 }
 
@@ -239,7 +253,6 @@
 .chatDrawer {
   position: fixed;
   bottom: 0;
-  right: 514px; /* 450px drawer width + 32px position + 32px gap */
   width: 450px;
   background: white;
   border-radius: 24px 24px 0 0;
@@ -248,6 +261,16 @@
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[dir="rtl"] .chatDrawer {
+  right: 514px; /* 450px drawer width + 32px position + 32px gap */
+  left: auto;
+}
+
+[dir="ltr"] .chatDrawer {
+  left: 514px; /* 450px drawer width + 32px position + 32px gap */
+  right: auto;
 }
 
 .chatDrawerOpen {
@@ -267,9 +290,15 @@
   justify-content: space-between;
   padding: 16px 24px;
   border-bottom: 1px solid #f0f0f0;
-  direction: rtl;
   background: white;
+}
+
+[dir="rtl"] .chatHeader {
   flex-direction: row-reverse;
+}
+
+[dir="ltr"] .chatHeader {
+  flex-direction: row;
 }
 
 .chatHeaderLeft {
@@ -303,7 +332,6 @@
 .chatUserInfo {
   display: flex;
   flex-direction: column;
-  text-align: right;
 }
 
 .chatUserName {
@@ -347,7 +375,6 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  direction: rtl;
 }
 
 .chatMessageWrapper {
@@ -400,7 +427,6 @@
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.5;
-  text-align: right;
 }
 
 .chatMessageTime {
@@ -417,7 +443,6 @@
   padding: 16px 24px;
   background: white;
   border-top: 1px solid #f0f0f0;
-  direction: rtl;
   position: relative;
 }
 
@@ -430,7 +455,6 @@
   outline: none;
   transition: border-color 0.2s ease;
   background: #fafafa;
-  text-align: right;
 }
 
 .messageInput:focus {
@@ -744,7 +768,6 @@
   font-size: 1rem;
   font-weight: 600;
   color: #111;
-  text-align: right;
 }
 
 .locationAddress {
@@ -754,7 +777,6 @@
   padding: 8px;
   background: #f5f5f5;
   border-radius: 8px;
-  text-align: right;
 }
 
 .locationActions {

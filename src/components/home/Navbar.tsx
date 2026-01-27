@@ -3,12 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/home/home.module.css";
 import { NotificationDrawer } from "./NotificationDrawer";
 import { ProfileDropdown } from "./ProfileDropdown";
+import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 
 export const Navbar = () => {
     const pathname = usePathname();
+    const t = useTranslations('nav');
 
     return (
         <nav className={styles.navbar}>
@@ -33,7 +36,7 @@ export const Navbar = () => {
                                 height={20}
                                 className={pathname === '/' ? styles.navIconActive : styles.navIconInactive}
                             />
-                            الرئيسية
+                            {t('home')}
                         </Link>
                         <Link href="/orders" className={`${styles.navLink} ${pathname === '/orders' ? styles.navLinkActive : ''}`}>
                             <Image
@@ -43,7 +46,7 @@ export const Navbar = () => {
                                 height={20}
                                 className={pathname === '/orders' ? styles.navIconActive : styles.navIconInactive}
                             />
-                            الطلبات
+                            {t('orders')}
                         </Link>
                         <Link href="/transaction" className={`${styles.navLink} ${pathname === '/transaction' ? styles.navLinkActive : ''}`}>
                             <Image
@@ -53,13 +56,14 @@ export const Navbar = () => {
                                 height={20}
                                 className={pathname === '/transaction' ? styles.navIconActive : styles.navIconInactive}
                             />
-                            المحفظة
+                            {t('wallet')}
                         </Link>
                     </div>
                 </div>
 
                 {/* Left Side (User Actions) */}
                 <div className={styles.navLeft}>
+                    <LanguageSwitcher variant="icon" />
                     <NotificationDrawer />
                     <ProfileDropdown />
                 </div>

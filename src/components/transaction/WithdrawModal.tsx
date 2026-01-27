@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/transaction/withdrawModal.module.css";
 import { commonService } from "@/lib/api/services/commonService";
 
@@ -12,6 +13,8 @@ interface WithdrawModalProps {
 }
 
 export const WithdrawModal = ({ isOpen, onClose, currentBalance }: WithdrawModalProps) => {
+  const t = useTranslations('wallet.withdrawModal');
+  const tCommon = useTranslations('common');
   const [amount, setAmount] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [withdrawMethod, setWithdrawMethod] = useState("vodafone");
@@ -27,11 +30,11 @@ export const WithdrawModal = ({ isOpen, onClose, currentBalance }: WithdrawModal
 
   const handleWithdraw = async () => {
     if (!amount || isNaN(Number(amount)) || Number(amount) > currentBalance) {
-      alert("Please enter a valid amount within your balance.");
+      alert(t('invalidAmount'));
       return;
     }
     if (!accountNumber) {
-      alert("Please enter a valid account number.");
+      alert(t('invalidAccount'));
       return;
     }
 
@@ -42,11 +45,11 @@ export const WithdrawModal = ({ isOpen, onClose, currentBalance }: WithdrawModal
         method: withdrawMethod,
         accountNumber: accountNumber
       });
-      alert("Withdrawal request submitted successfully.");
+      alert(t('success'));
       onClose();
     } catch (error) {
       console.error("Withdrawal failed", error);
-      alert("Failed to submit withdrawal request.");
+      alert(t('failed'));
     } finally {
       setIsLoading(false);
     }
@@ -61,23 +64,23 @@ export const WithdrawModal = ({ isOpen, onClose, currentBalance }: WithdrawModal
       <div className={styles.modal}>
         <div className={styles.modalContent}>
           {/* Header */}
-          <h2 className={styles.modalTitle}>سحب الرصيد</h2>
+          <h2 className={styles.modalTitle}>{t('title')}</h2>
 
           {/* Available Balance */}
           <div className={styles.balanceSection} style={{ textAlign: 'center' }}>
-            <p className={styles.balanceLabel}>الرصيد المتاح للسحب</p>
+            <p className={styles.balanceLabel}>{t('availableBalance')}</p>
             <p className={styles.balanceAmount}>
-              <span className={styles.amount}>{currentBalance}</span> جنيه
+              <span className={styles.amount}>{currentBalance}</span> {tCommon('currency')}
             </p>
           </div>
 
           {/* Amount Input */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>المبلغ</label>
+            <label className={styles.label}>{t('amount')}</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="ادخل المبلغ هنا"
+              placeholder={t('amountPlaceholder')}
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
@@ -85,19 +88,19 @@ export const WithdrawModal = ({ isOpen, onClose, currentBalance }: WithdrawModal
 
           {/* Withdraw Method */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>طريقة السحب</label>
+            <label className={styles.label}>{t('method')}</label>
             <div className={styles.selectWrapper}>
               <select
                 className={styles.select}
                 value={withdrawMethod}
                 onChange={(e) => setWithdrawMethod(e.target.value)}
               >
-                <option value="vodafone">فودافون</option>
-                <option value="etisalat">اتصالات</option>
-                <option value="orange">اورانج</option>
-                <option value="aman">امان</option>
-                <option value="bank_wallet">محفظه بنكيه</option>
-                <option value="bank_card">بطاقه بنكيه</option>
+                <option value="vodafone">{t('vodafone')}</option>
+                <option value="etisalat">{t('etisalat')}</option>
+                <option value="orange">{t('orange')}</option>
+                <option value="aman">{t('aman')}</option>
+                <option value="bank_wallet">{t('bankWallet')}</option>
+                <option value="bank_card">{t('bankCard')}</option>
               </select>
               <svg
                 className={styles.selectIcon}
@@ -120,11 +123,11 @@ export const WithdrawModal = ({ isOpen, onClose, currentBalance }: WithdrawModal
 
           {/* Account Number */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>رقم الحساب</label>
+            <label className={styles.label}>{t('accountNumber')}</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="ادخل رقم الحساب"
+              placeholder={t('accountNumberPlaceholder')}
               value={accountNumber}
               onChange={(e) => setAccountNumber(e.target.value)}
             />
@@ -132,25 +135,25 @@ export const WithdrawModal = ({ isOpen, onClose, currentBalance }: WithdrawModal
 
           {/* Helper Text */}
           <p className={styles.helperText}>
-            رقم محفظة الهاتف او انستاباي
+            {t('accountHelper')}
           </p>
 
           {/* Fees Info */}
           <p className={styles.feesText}>
-            رسوم السحب 2% + 1 جنيه، بحد أدني 5 جنيه
+            {t('fees')}
           </p>
 
           {/* Action Buttons */}
           <div className={styles.buttonGroup}>
             <button className={styles.cancelButton} onClick={handleCancel}>
-              رجوع
+              {t('back')}
             </button>
             <button
               className={styles.withdrawButton}
               onClick={handleWithdraw}
               disabled={isLoading}
             >
-              {isLoading ? "جاري المعالجة..." : "سحب الرصيد"}
+              {isLoading ? t('processing') : t('submit')}
             </button>
           </div>
         </div>
