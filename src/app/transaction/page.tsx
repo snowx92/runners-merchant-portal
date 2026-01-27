@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
+import { useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { WithdrawModal } from "@/components/transaction/WithdrawModal";
@@ -20,6 +21,8 @@ const cairo = Cairo({
 });
 
 function TransactionContent() {
+  const t = useTranslations('wallet');
+  const tCommon = useTranslations('common');
   const searchParams = useSearchParams();
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
@@ -107,11 +110,11 @@ function TransactionContent() {
   const getTransactionTitle = (transaction: Transaction) => {
     switch (transaction.type) {
       case "COMMISSION":
-        return "تم تطبيق عموله";
+        return t('transactionTypes.commission');
       case "COD":
-        return "الدفع عند الاستلام";
+        return t('transactionTypes.cod');
       case "PENALTY":
-        return "غرامة";
+        return t('transactionTypes.penalty');
       default:
         return transaction.status || "";
     }
@@ -159,33 +162,33 @@ function TransactionContent() {
       <Navbar />
 
       <div className={styles.container}>
-        <h1 className={styles.pageTitle}>المحفظة</h1>
+        <h1 className={styles.pageTitle}>{t('title')}</h1>
 
         {/* Balance Card */}
         <div className={styles.balanceCard}>
-          <p className={styles.balanceLabel}>الرصيد الحالي</p>
+          <p className={styles.balanceLabel}>{t('currentBalance')}</p>
           <h2 className={styles.balanceAmount}>
-            <span className={styles.amount}>{balance !== null ? balance : "..."}</span> جنيه
+            <span className={styles.amount}>{balance !== null ? balance : "..."}</span> {tCommon('currency')}
           </h2>
           <div className={styles.buttonGroup}>
             <button className={styles.withdrawButton} onClick={() => setIsWithdrawModalOpen(true)}>
-              سحب
+              {t('withdraw')}
             </button>
             <button className={styles.depositButton} onClick={() => setIsDepositModalOpen(true)}>
-              إيداع
+              {t('deposit')}
             </button>
           </div>
         </div>
 
         {/* Transactions Section */}
         <div className={styles.transactionsSection}>
-          <h3 className={styles.sectionTitle}>العمليات</h3>
+          <h3 className={styles.sectionTitle}>{t('transactions')}</h3>
 
           <div className={styles.transactionsList}>
             {isLoading ? (
-              <div style={{ textAlign: "center", padding: "20px" }}>جاري التحميل...</div>
+              <div style={{ textAlign: "center", padding: "20px" }}>{tCommon('loading')}</div>
             ) : transactions.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "20px" }}>لا توجد عمليات</div>
+              <div style={{ textAlign: "center", padding: "20px" }}>{t('noTransactions')}</div>
             ) : (
               transactions.map((transaction) => (
                 <div
@@ -218,7 +221,7 @@ function TransactionContent() {
   className={`${styles.transactionAmount} ${getAmountClass(transaction.type)}`}
 >
   {getAmountSign(transaction.type)}
-  {Math.abs(transaction.amount)} جنيه
+  {Math.abs(transaction.amount)} {tCommon('currency')}
 </p>
                   </div>
                 </div>
@@ -244,14 +247,19 @@ function TransactionContent() {
   );
 }
 
+function TransactionPageFallback() {
+  const tCommon = useTranslations('common');
+  return (
+    <main className={`${styles.mainContainer} ${cairo.className}`}>
+      <Navbar />
+      <div style={{ textAlign: "center", padding: "50px" }}>{tCommon('loading')}</div>
+    </main>
+  );
+}
+
 export default function TransactionPage() {
   return (
-    <Suspense fallback={
-      <main className={`${styles.mainContainer} ${cairo.className}`}>
-        <Navbar />
-        <div style={{ textAlign: "center", padding: "50px" }}>جاري التحميل...</div>
-      </main>
-    }>
+    <Suspense fallback={<TransactionPageFallback />}>
       <TransactionContent />
     </Suspense>
   );

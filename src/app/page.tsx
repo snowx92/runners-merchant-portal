@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { Navbar } from "@/components/home/Navbar";
 import { HeroBanner } from "@/components/home/HeroBanner";
@@ -21,6 +22,8 @@ const cairo = Cairo({
 
 export default function Home() {
   const { isAuthenticated, loading } = useAuth();
+  const t = useTranslations('home');
+  const tCommon = useTranslations('common');
   const [analytics, setAnalytics] = useState<HomeAnalytics | null>(null);
   const [banners, setBanners] = useState<Banner[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -82,7 +85,7 @@ export default function Home() {
         }
       } catch (err) {
         console.error("Error fetching home data:", err);
-        setError(err instanceof Error ? err.message : "فشل في تحميل البيانات");
+        setError(err instanceof Error ? err.message : tCommon('failedToLoad'));
       } finally {
         setDataLoading(false);
       }
@@ -102,7 +105,7 @@ export default function Home() {
         fontSize: "1.2rem",
         color: "#666"
       }}>
-        جاري التحميل...
+        {tCommon('loading')}
       </div>
     );
   }
@@ -126,7 +129,7 @@ export default function Home() {
       <Navbar />
 
       <div className={styles.container}>
-        <h1 className={styles.pageTitle} style={{ textAlign: 'right' }}>الرئيسية</h1>
+        <h1 className={styles.pageTitle} style={{ textAlign: 'right' }}>{t('title')}</h1>
 
         {error && (
           <div style={{
@@ -147,7 +150,7 @@ export default function Home() {
             padding: '3rem',
             color: '#666'
           }}>
-            جاري تحميل البيانات...
+            {tCommon('loadingData')}
           </div>
         ) : (
           <>

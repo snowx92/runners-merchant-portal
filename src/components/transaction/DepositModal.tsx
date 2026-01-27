@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/transaction/depositModal.module.css";
 import { commonService } from "@/lib/api/services/commonService";
 
@@ -10,6 +11,7 @@ interface DepositModalProps {
 }
 
 export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
+  const t = useTranslations('wallet.depositModal');
   const [amount, setAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"wallet" | "card" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +26,7 @@ export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
 
   const handleDeposit = async () => {
     if (!amount || isNaN(Number(amount)) || !paymentMethod) {
-      alert("Please enter a valid amount and select a payment method.");
+      alert(t('invalidInput'));
       return;
     }
 
@@ -39,11 +41,11 @@ export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
         // Redirect to payment link
         window.location.href = response.data.link;
       } else {
-        alert("Failed to initiate deposit. Please try again.");
+        alert(t('failed'));
       }
     } catch (error) {
       console.error("Deposit failed", error);
-      alert("An error occurred during deposit.");
+      alert(t('error'));
     } finally {
       setIsLoading(false);
     }
@@ -58,8 +60,8 @@ export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
       <div className={styles.modal}>
         <div className={styles.modalContent}>
           {/* Header */}
-          <h2 className={styles.modalTitle}>إيداع رصيد</h2>
-          <p className={styles.subtitle}>قم بإيداع مبلغ في رصيدك</p>
+          <h2 className={styles.modalTitle}>{t('title')}</h2>
+          <p className={styles.subtitle}>{t('subtitle')}</p>
 
           {/* Payment Method Selection */}
           <div className={styles.paymentMethods}>
@@ -97,9 +99,9 @@ export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
                   </svg>
                 </div>
                 <div className={styles.paymentText}>
-                  <h3 className={styles.paymentTitle}>محفظة</h3>
+                  <h3 className={styles.paymentTitle}>{t('wallet')}</h3>
                   <p className={styles.paymentDescription}>
-                    اختر محفظة الهاتف للدفع
+                    {t('walletDescription')}
                   </p>
                 </div>
               </div>
@@ -148,9 +150,9 @@ export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
                   </svg>
                 </div>
                 <div className={styles.paymentText}>
-                  <h3 className={styles.paymentTitle}>بطاقة</h3>
+                  <h3 className={styles.paymentTitle}>{t('card')}</h3>
                   <p className={styles.paymentDescription}>
-                    اختر بطاقة بنكية للدفع
+                    {t('cardDescription')}
                   </p>
                 </div>
               </div>
@@ -159,11 +161,11 @@ export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
 
           {/* Amount Input */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>الرصيد</label>
+            <label className={styles.label}>{t('amount')}</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="ادخل الرصيد هنا"
+              placeholder={t('amountPlaceholder')}
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
@@ -172,14 +174,14 @@ export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
           {/* Action Buttons */}
           <div className={styles.buttonGroup}>
             <button className={styles.cancelButton} onClick={handleCancel}>
-              رجوع
+              {t('back')}
             </button>
             <button
               className={styles.depositButton}
               onClick={handleDeposit}
               disabled={isLoading}
             >
-              {isLoading ? "جاري المعالجة..." : "إيداع"}
+              {isLoading ? t('processing') : t('submit')}
             </button>
           </div>
         </div>

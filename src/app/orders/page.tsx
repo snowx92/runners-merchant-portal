@@ -7,6 +7,7 @@ import { Cairo } from "next/font/google";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { orderService } from "@/lib/api/services/orderService";
 import { zoneService } from "@/lib/api/services/zoneService";
 import type { Order } from "@/lib/api/types/home.types";
@@ -35,6 +36,8 @@ interface FilterState {
 
 export default function Orders() {
   const router = useRouter();
+  const t = useTranslations('orders');
+  const tCommon = useTranslations('common');
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -194,17 +197,17 @@ export default function Orders() {
   };
 
   const getStatusLabel = (status: Order["status"]) => {
-    const labels = {
-      PENDING: "جديد",
-      ACCEPTED: "مقبول",
-      PICKED_UP: "تم الاستلام",
-      DELIVERED: "قيد التسليم",
-      COMPLETED: "مكتمل",
-      CANCELLED: "ملغي",
-      FAILED: "فشل",
-      RETURNED: "مرتجع",
+    const statusKeys: Record<Order["status"], string> = {
+      PENDING: 'pending',
+      ACCEPTED: 'accepted',
+      PICKED_UP: 'pickedUp',
+      DELIVERED: 'delivered',
+      COMPLETED: 'completed',
+      CANCELLED: 'cancelled',
+      FAILED: 'failed',
     };
-    return labels[status] || status;
+    const key = statusKeys[status];
+    return key ? t(`status.${key}`) : status;
   };
 
   const getStatusClass = (status: Order["status"]) => {
@@ -268,16 +271,16 @@ export default function Orders() {
               className={styles.toggleButton}
               onClick={() => router.push("/orders/bulk")}
             >
-              انشاء طلب مجمع
+              {t('createBulk')}
             </button>
             <button
               className={`${styles.toggleButton} ${styles.toggleButtonActive}`}
               onClick={() => router.push("/orders/add")}
             >
-              انشاء طلب جديد
+              {t('createNew')}
             </button>
           </div>
-          <h1 className={styles.pageTitle}>الطلبات</h1>
+          <h1 className={styles.pageTitle}>{t('title')}</h1>
         </div>
 
         {/* Second Row: Search bar with filter button on left */}
@@ -302,7 +305,7 @@ export default function Orders() {
             </div>
             <input
               type="text"
-              placeholder="ابحث برقم الطلب أو اسم العميل"
+              placeholder={t('searchPlaceholder')}
               className={styles.searchInput}
               value={filters.keyword}
               onChange={(e) => setFilters((prev) => ({ ...prev, keyword: e.target.value }))}
@@ -319,7 +322,7 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("CANCELLED")}
           >
-            ملغي
+            {t('status.cancelled')}
           </button>
           <button
             className={`${styles.statusTab} ${
@@ -327,7 +330,7 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("FAILED")}
           >
-            فشل
+            {t('status.failed')}
           </button>
           <button
             className={`${styles.statusTab} ${
@@ -335,7 +338,7 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("COMPLETED")}
           >
-            مكتمل
+            {t('status.completed')}
           </button>
           <button
             className={`${styles.statusTab} ${
@@ -343,7 +346,7 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("DELIVERED")}
           >
-            قيد التسليم
+            {t('status.delivered')}
           </button>
           <button
             className={`${styles.statusTab} ${
@@ -351,7 +354,7 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("PENDING")}
           >
-            جديد
+            {t('status.pending')}
           </button>
           <button
             className={`${styles.statusTab} ${
@@ -359,16 +362,16 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("all")}
           >
-            الكل
+            {t('status.all')}
           </button>
         </div>
 
         {/* Orders List */}
         <div className={styles.ordersList}>
           {loading && orders.length === 0 ? (
-            <div className={styles.loadingState}>جاري التحميل...</div>
+            <div className={styles.loadingState}>{tCommon('loading')}</div>
           ) : orders.length === 0 ? (
-            <div className={styles.emptyState}>لا توجد طلبات</div>
+            <div className={styles.emptyState}>{t('noOrders')}</div>
           ) : (
             <>
               {orders.map((order) => (
@@ -390,7 +393,7 @@ export default function Orders() {
                       {order.customer.city}, {order.customer.gov}
                     </p>
                     <p className={styles.orderPrice}>
-                      السعر: {order.cash} جنيه - التوصيل: {order.shippingAmount} جنيه
+                      {t('price')}: {order.cash} {tCommon('currency')} - {t('shipping')}: {order.shippingAmount} {tCommon('currency')}
                     </p>
                   </div>
                 </div>
@@ -402,7 +405,7 @@ export default function Orders() {
                   onClick={handleLoadMore}
                   disabled={loading}
                 >
-                  {loading ? "جاري التحميل..." : "تحميل المزيد"}
+                  {loading ? tCommon('loading') : tCommon('loadMore')}
                 </button>
               )}
             </>
@@ -421,16 +424,16 @@ export default function Orders() {
               >
                 ✕
               </button>
-              <h2 className={styles.modalTitle}>تصفية الطلبات</h2>
+              <h2 className={styles.modalTitle}>{t('filterOrders')}</h2>
             </div>
 
             <div className={styles.filterSection}>
               {/* Price Range with Slider */}
               <div className={styles.filterGroup}>
                 <div className={styles.rangeHeader}>
-                  <span className={styles.rangeLabel}>نطاق السعر</span>
+                  <span className={styles.rangeLabel}>{t('filter.priceRange')}</span>
                   <span className={styles.rangeValues}>
-                    {filters.priceFrom} - {filters.priceTo} جنيه
+                    {filters.priceFrom} - {filters.priceTo} {tCommon('currency')}
                   </span>
                 </div>
                 <div className={styles.dualRangeSlider}>
@@ -477,9 +480,9 @@ export default function Orders() {
               {/* Shipping Price Range with Slider */}
               <div className={styles.filterGroup}>
                 <div className={styles.rangeHeader}>
-                  <span className={styles.rangeLabel}>نطاق سعر التوصيل</span>
+                  <span className={styles.rangeLabel}>{t('filter.shippingRange')}</span>
                   <span className={styles.rangeValues}>
-                    {filters.shippingPriceFrom} - {filters.shippingPriceTo} جنيه
+                    {filters.shippingPriceFrom} - {filters.shippingPriceTo} {tCommon('currency')}
                   </span>
                 </div>
                 <div className={styles.dualRangeSlider}>
@@ -525,7 +528,7 @@ export default function Orders() {
 
               {/* From Location with Search */}
               <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>من (المحافظة والمدينة) - اختياري</label>
+                <label className={styles.filterLabel}>{t('filter.fromLocation')} - {tCommon('optional')}</label>
 
                 {/* Two Column Layout for Governorate and City */}
                 <div className={styles.filterRow}>
@@ -533,7 +536,7 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.fromGovId ? getGovName(filters.fromGovId) : "اختر المحافظة..."}
+                      placeholder={filters.fromGovId ? getGovName(filters.fromGovId) : t('filter.selectGovernorate')}
                       className={styles.filterInput}
                       value={fromGovSearch}
                       onChange={(e) => {
@@ -560,7 +563,7 @@ export default function Orders() {
                             </div>
                           ))
                         ) : (
-                          <div className={styles.searchResultItem}>لا توجد نتائج</div>
+                          <div className={styles.searchResultItem}>{tCommon('noResults')}</div>
                         )}
                       </div>
                     )}
@@ -570,7 +573,7 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.fromCityId ? getCityName(filters.fromGovId, filters.fromCityId) : "اختر المدينة..."}
+                      placeholder={filters.fromCityId ? getCityName(filters.fromGovId, filters.fromCityId) : t('filter.selectCity')}
                       className={styles.filterInput}
                       value={fromCitySearch}
                       onChange={(e) => {
@@ -598,7 +601,7 @@ export default function Orders() {
                             </div>
                           ))
                         ) : (
-                          <div className={styles.searchResultItem}>لا توجد نتائج</div>
+                          <div className={styles.searchResultItem}>{tCommon('noResults')}</div>
                         )}
                       </div>
                     )}
@@ -608,7 +611,7 @@ export default function Orders() {
 
               {/* To Location with Search */}
               <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>إلى (المحافظة والمدينة) - اختياري</label>
+                <label className={styles.filterLabel}>{t('filter.toLocation')} - {tCommon('optional')}</label>
 
                 {/* Two Column Layout for Governorate and City */}
                 <div className={styles.filterRow}>
@@ -616,7 +619,7 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.toGovId ? getGovName(filters.toGovId) : "اختر المحافظة..."}
+                      placeholder={filters.toGovId ? getGovName(filters.toGovId) : t('filter.selectGovernorate')}
                       className={styles.filterInput}
                       value={toGovSearch}
                       onChange={(e) => {
@@ -643,7 +646,7 @@ export default function Orders() {
                             </div>
                           ))
                         ) : (
-                          <div className={styles.searchResultItem}>لا توجد نتائج</div>
+                          <div className={styles.searchResultItem}>{tCommon('noResults')}</div>
                         )}
                       </div>
                     )}
@@ -653,7 +656,7 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.toCityId ? getCityName(filters.toGovId, filters.toCityId) : "اختر المدينة..."}
+                      placeholder={filters.toCityId ? getCityName(filters.toGovId, filters.toCityId) : t('filter.selectCity')}
                       className={styles.filterInput}
                       value={toCitySearch}
                       onChange={(e) => {
@@ -681,7 +684,7 @@ export default function Orders() {
                             </div>
                           ))
                         ) : (
-                          <div className={styles.searchResultItem}>لا توجد نتائج</div>
+                          <div className={styles.searchResultItem}>{tCommon('noResults')}</div>
                         )}
                       </div>
                     )}
@@ -692,10 +695,10 @@ export default function Orders() {
 
             <div className={styles.modalActions}>
               <button className={styles.resetButton} onClick={resetFilters}>
-                إعادة تعيين
+                {tCommon('reset')}
               </button>
               <button className={styles.applyButton} onClick={applyFilters}>
-                تطبيق
+                {tCommon('apply')}
               </button>
             </div>
           </div>

@@ -1,0 +1,47 @@
+.languageSwitcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  color: #333;
+}
+
+.languageSwitcher:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+.languageSwitcher:active {
+  transform: scale(0.95);
+}
+
+/* Icon variant - compact */
+.icon {
+  width: 36px;
+  height: 36px;
+  font-size: 0.85rem;
+  padding: 0;
+}
+
+/* Text variant - medium */
+.text {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+/* Full variant - with icon */
+.full {
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  gap: 8px;
+}
+
+/* RTL adjustments */
+[dir="ltr"] .languageSwitcher {
+  font-family: 'Cairo', sans-serif;
+}

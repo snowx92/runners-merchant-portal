@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useLocale } from "@/lib/contexts/LocaleContext";
 import styles from "@/styles/home/notifications.module.css";
 import { commonService } from "@/lib/api/services/commonService";
 import { Notification } from "@/lib/api/types/common.types";
@@ -58,6 +60,8 @@ const NotificationIcon = ({ iconType }: { iconType: string }) => {
 
 export const NotificationDrawer = () => {
   const router = useRouter();
+  const t = useTranslations('notifications');
+  const { locale } = useLocale();
   const { isLoggedIn } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -225,9 +229,10 @@ export const NotificationDrawer = () => {
   const formatDate = (date: { _seconds: number; _nanoseconds: number }) => {
     try {
       const timestamp = new Date(date._seconds * 1000);
+      const dateLocale = locale === 'ar' ? 'ar-EG' : 'en-US';
       return {
-        date: timestamp.toLocaleDateString('ar-EG'),
-        time: timestamp.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+        date: timestamp.toLocaleDateString(dateLocale),
+        time: timestamp.toLocaleTimeString(dateLocale, { hour: '2-digit', minute: '2-digit' })
       };
     } catch {
       return { date: '', time: '' };
@@ -255,10 +260,10 @@ export const NotificationDrawer = () => {
         <div className={styles.drawerContent}>
           {/* Header with Mark All as Read */}
           <div className={styles.drawerHeader}>
-            <h2 className={styles.drawerTitle}>الإشعارات</h2>
+            <h2 className={styles.drawerTitle}>{t('title')}</h2>
             {unreadCount > 0 && (
               <button className={styles.markAllButton} onClick={handleMarkAllAsRead}>
-                تعليم الكل كمقروء
+                {t('markAllRead')}
               </button>
             )}
           </div>
@@ -266,9 +271,9 @@ export const NotificationDrawer = () => {
           {/* Notifications List */}
           <div className={styles.notificationsList}>
             {isLoading && notifications.length === 0 ? (
-              <div style={{ padding: '20px', textAlign: 'center' }}>جاري التحميل...</div>
+              <div style={{ padding: '20px', textAlign: 'center' }}>{t('loading')}</div>
             ) : notifications.length === 0 ? (
-              <div style={{ padding: '20px', textAlign: 'center' }}>لا توجد إشعارات</div>
+              <div style={{ padding: '20px', textAlign: 'center' }}>{t('noNotifications')}</div>
             ) : (
               <>
                 {notifications.map((notification) => {
@@ -320,7 +325,7 @@ export const NotificationDrawer = () => {
                       onClick={handleLoadMore}
                       disabled={isLoadingMore}
                     >
-                      {isLoadingMore ? 'جاري التحميل...' : 'تحميل المزيد'}
+                      {isLoadingMore ? t('loading') : t('loadMore')}
                     </button>
                   </div>
                 )}
