@@ -53,7 +53,7 @@ export const TransactionDetailsModal = ({ isOpen, onClose, transaction }: Transa
         return "/icons/Download.png";
       case "PENALTY":
         return "/icons/product-money.svg";
-      case "BOUNS":
+      case "BONUS":
         return "/icons/product-money.svg";
       default:
         return "/icons/product-money.svg";

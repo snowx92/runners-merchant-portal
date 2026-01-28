@@ -120,7 +120,7 @@ export interface TransactionDetail {
 export interface Transaction {
     id: string;
     amount: number;
-    type: "COMMISSION" | "COD" | "PENALTY" | "BOUNS" | "WITHDRAWAL" | "DEPOSIT";
+    type: "COMMISSION" | "COD" | "PENALTY" | "BONUS" | "WITHDRAWAL" | "DEPOSIT";
     status?: string;
     description?: string | TransactionDetail;
     date: string | { _seconds: number; _nanoseconds: number };
