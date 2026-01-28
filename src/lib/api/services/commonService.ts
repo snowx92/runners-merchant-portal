@@ -176,6 +176,26 @@ class CommonService extends CommonApiService {
     }
 
     /**
+     * Get Unread Notification Count
+     * GET /v1/common/notifications/unread-count
+     */
+    async getUnreadNotificationCount(): Promise<ApiResponse<number>> {
+        const response = await this.get<ApiResponse<number>>("/common/notifications/unread-count");
+        if (!response) throw new Error("Failed to fetch unread notification count");
+        return response;
+    }
+
+    /**
+     * Get Unread Chat Count
+     * GET /v1/common/chats/unread-count
+     */
+    async getUnreadChatCount(): Promise<ApiResponse<number>> {
+        const response = await this.get<ApiResponse<number>>("/common/chats/unread-count");
+        if (!response) throw new Error("Failed to fetch unread chat count");
+        return response;
+    }
+
+    /**
      * Mark Notification Read
      * POST /v1/common/notifications/read
      */
