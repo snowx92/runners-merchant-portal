@@ -2,7 +2,6 @@
 .mainContainer {
   min-height: 100vh;
   background-color: #FAFAFA;
-  direction: rtl;
   padding-bottom: 4rem;
 }
 
@@ -580,3 +579,20 @@
   }
 }
 
+
+/* LTR (English) Overrides */
+[dir="ltr"] .pageTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .formGroup {
+  text-align: left;
+}
+
+[dir="ltr"] .input {
+  text-align: left;
+}
+
+[dir="ltr"] .backButton svg {
+  transform: none;
+}

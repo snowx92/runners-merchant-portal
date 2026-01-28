@@ -7,6 +7,7 @@ import styles from "@/styles/orders/orderDetails.module.css";
 import { Cairo } from "next/font/google";
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { orderService } from "@/lib/api/services";
 import type { OrderBid } from "@/lib/api/types/order.types";
 import Image from "next/image";
@@ -101,6 +102,7 @@ interface BidWithCourier extends OrderBid {
 
 // QR Code Display Component
 function QRCodeDisplay({ data }: { data: string }) {
+  const t = useTranslations('orders.details');
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -110,7 +112,7 @@ function QRCodeDisplay({ data }: { data: string }) {
       try {
         setLoading(true);
         setError(false);
-        
+
         // Try to decode JWT format to get the actual data
         let qrData = data;
         try {
@@ -124,7 +126,7 @@ function QRCodeDisplay({ data }: { data: string }) {
         } catch (_) {
           // If not JWT, use as is
         }
-        
+
         // Generate QR code as data URL
         const url = await QRCode.toDataURL(qrData, {
           width: 250,
@@ -153,7 +155,7 @@ function QRCodeDisplay({ data }: { data: string }) {
       <div className={styles.qrCodePlaceholder}>
         <div className={styles.qrCodeLoading}>
           <span style={{ fontSize: '2rem' }}>⏳</span>
-          <p>جاري تحميل QR Code...</p>
+          <p>{t('loadingQRCode')}</p>
         </div>
       </div>
     );
@@ -163,7 +165,7 @@ function QRCodeDisplay({ data }: { data: string }) {
     return (
       <div className={styles.qrCodePlaceholder}>
         <span style={{ fontSize: '3rem' }}>📱</span>
-        <p>فشل في تحميل QR Code</p>
+        <p>{t('failedLoadingQRCode')}</p>
       </div>
     );
   }
@@ -182,6 +184,10 @@ export default function OrderDetailsPage() {
   const params = useParams();
   const orderId = params.id as string;
   const { showToast } = useToast();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations("orders.details");
+  const tCommon = useTranslations("common");
   const mapRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
   const mapRefObj = useRef<google.maps.Map | null>(null);
@@ -281,17 +287,17 @@ export default function OrderDetailsPage() {
       setProcessingAction(true);
       await orderService.adjustLocation(orderId, { lat, lng });
       await fetchOrderDetails();
-      showToast("تم تحديث موقع التوصيل بنجاح", "success");
+      showToast(t("locationUpdatedSuccess"), "success");
     } catch (error) {
       console.error("Error updating drop-off location:", error);
-      showToast("فشل في تحديث موقع التوصيل", "error");
+      showToast(t("locationUpdatedError"), "error");
     } finally {
       setProcessingAction(false);
     }
   };
 
   const handleAcceptBid = async (bidId: string) => {
-    if (!window.confirm("هل أنت متأكد من قبول هذا العرض؟")) return;
+    if (!window.confirm(t("confirmAcceptBid"))) return;
 
     try {
       setProcessingBid(bidId);
@@ -300,17 +306,17 @@ export default function OrderDetailsPage() {
         status: "ACCEPTED",
       });
       await fetchOrderDetails();
-      showToast("تم قبول العرض بنجاح", "success");
+      showToast(t("bidAcceptedSuccess"), "success");
     } catch (error) {
       console.error("Error accepting bid:", error);
-      showToast("فشل في قبول العرض", "error");
+      showToast(t("bidAcceptedError"), "error");
     } finally {
       setProcessingBid(null);
     }
   };
 
   const handleRejectBid = async (bidId: string) => {
-    if (!window.confirm("هل أنت متأكد من رفض هذا العرض؟")) return;
+    if (!window.confirm(t("confirmRejectBid"))) return;
 
     try {
       setProcessingBid(bidId);
@@ -322,10 +328,10 @@ export default function OrderDetailsPage() {
       if (bidsRes) {
         setBids(bidsRes as unknown as BidWithCourier[]);
       }
-      showToast("تم رفض العرض بنجاح", "success");
+      showToast(t("bidRejectedSuccess"), "success");
     } catch (error) {
       console.error("Error rejecting bid:", error);
-      showToast("فشل في رفض العرض", "error");
+      showToast(t("bidRejectedError"), "error");
     } finally {
       setProcessingBid(null);
     }
@@ -346,27 +352,27 @@ export default function OrderDetailsPage() {
       await fetchOrderDetails();
       setShowReturnModal(false);
       // Show success message - either from API response or default
-      const successMessage = response?.message || "تم تأكيد استلام المرتجع بنجاح";
+      const successMessage = response?.message || t("returnConfirmedSuccess");
       showToast(successMessage, "success");
     } catch (error) {
       console.error("Error marking order as returned:", error);
-      showToast("فشل في تأكيد استلام المرتجع", "error");
+      showToast(t("returnConfirmedError"), "error");
     } finally {
       setProcessingAction(false);
     }
   };
 
   const handleRelistOrder = async () => {
-    if (!window.confirm("هل أنت متأكد من إعادة طرح هذا الطلب؟")) return;
+    if (!window.confirm(t("confirmRelist"))) return;
 
     try {
       setProcessingAction(true);
       await orderService.relistOrder(orderId);
       await fetchOrderDetails();
-      showToast("تم إعادة طرح الطلب بنجاح", "success");
+      showToast(t("relistSuccess"), "success");
     } catch (error) {
       console.error("Error relisting order:", error);
-      showToast("فشل في إعادة طرح الطلب", "error");
+      showToast(t("relistError"), "error");
     } finally {
       setProcessingAction(false);
     }
@@ -374,7 +380,7 @@ export default function OrderDetailsPage() {
 
   const handleCancelOrder = async () => {
     if (!cancelReason.trim()) {
-      showToast("يرجى إدخال سبب الإلغاء", "warning");
+      showToast(t("enterCancelReason"), "warning");
       return;
     }
 
@@ -384,10 +390,10 @@ export default function OrderDetailsPage() {
       await fetchOrderDetails();
       setShowCancelModal(false);
       setCancelReason("");
-      showToast("تم إلغاء الطلب بنجاح", "success");
+      showToast(t("orderCancelledSuccess"), "success");
     } catch (error) {
       console.error("Error cancelling order:", error);
-      showToast("فشل في إلغاء الطلب", "error");
+      showToast(t("orderCancelledError"), "error");
     } finally {
       setProcessingAction(false);
     }
@@ -404,10 +410,10 @@ export default function OrderDetailsPage() {
       setShowRatingModal(false);
       setRating(5);
       setReviewContent("");
-      showToast("تم إرسال التقييم بنجاح", "success");
+      showToast(t("ratingSubmittedSuccess"), "success");
     } catch (error) {
       console.error("Error submitting rating:", error);
-      showToast("فشل في إرسال التقييم", "error");
+      showToast(t("ratingSubmittedError"), "error");
     } finally {
       setProcessingAction(false);
     }
@@ -417,29 +423,32 @@ export default function OrderDetailsPage() {
     router.push(`/orders/edit/${orderId}`);
   };
 
+  const statusTranslations = useTranslations("orders.status");
+
   const getStatusLabel = (status: string) => {
-    const labels: Record<string, string> = {
-      PENDING: "جديد",
-      PENDING_COURIER: "في انتظار المندوب",
-      RECEIVED: "تم الاستلام من التاجر",
-      ACCEPTED: "مقبول",
-      PICKED_UP: "تم الاستلام",
-      DELIVERED: "قيد التسليم",
-      COMPLETED: "مكتمل",
-      CANCELLED: "ملغي",
-      EXPIRED: "منتهي",
-      FAILED: "فشل",
-      RETURNED: "مرتجع",
+    const statusMap: Record<string, string> = {
+      PENDING: "pending",
+      PENDING_COURIER: "pendingCourier",
+      RECEIVED: "received",
+      ACCEPTED: "accepted",
+      PICKED_UP: "pickedUp",
+      DELIVERED: "delivered",
+      COMPLETED: "completed",
+      CANCELLED: "cancelled",
+      EXPIRED: "expired",
+      FAILED: "failed",
+      RETURNED: "returned",
     };
-    return labels[status] || status;
+    const key = statusMap[status];
+    return key ? statusTranslations(key) : status;
   };
 
   const formatDate = (seconds: number) => {
-    return new Date(seconds * 1000).toLocaleDateString("ar-EG", {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-    });
+    const date = new Date(seconds * 1000);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   const canShowMap = () => {
@@ -486,10 +495,10 @@ export default function OrderDetailsPage() {
 
   if (loading) {
     return (
-      <main className={`${styles.mainContainer} ${cairo.className}`}>
+      <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
         <Navbar />
         <div className={styles.container}>
-          <div className={styles.loadingState}>جاري التحميل...</div>
+          <div className={styles.loadingState}>{tCommon("loading")}</div>
         </div>
       </main>
     );
@@ -497,22 +506,30 @@ export default function OrderDetailsPage() {
 
   if (!order) {
     return (
-      <main className={`${styles.mainContainer} ${cairo.className}`}>
+      <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
         <Navbar />
         <div className={styles.container}>
-          <div className={styles.emptyState}>لم يتم العثور على الطلب</div>
+          <div className={styles.emptyState}>{t("orderNotFound")}</div>
         </div>
       </main>
     );
   }
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
+          <span className={styles.backArrow} onClick={() => router.push("/orders")}>
+            {isRTL ? "→" : "←"}
+          </span>
+
+          <h1 className={styles.pageTitle}>
+            {t("orderDetails")} #{order.id}
+          </h1>
+
           <div className={styles.orderActions}>
             {/* PENDING: Edit, Cancel, Map */}
             {order.status === "PENDING" && (
@@ -522,14 +539,14 @@ export default function OrderDetailsPage() {
                   onClick={handleEditOrder}
                   disabled={processingAction}
                 >
-                  تعديل الطلب
+                  {t("editOrder")}
                 </button>
                 <button
                   className={styles.actionButtonWarning}
                   onClick={() => setShowCancelModal(true)}
                   disabled={processingAction}
                 >
-                  إلغاء الطلب
+                  {t("cancelOrder")}
                 </button>
               </>
             )}
@@ -542,7 +559,7 @@ export default function OrderDetailsPage() {
                     className={styles.actionButton}
                     onClick={() => setShowQRModal(true)}
                   >
-                    عرض QR Code
+                    {t("showQRCode")}
                   </button>
                 )}
                 <button
@@ -550,7 +567,7 @@ export default function OrderDetailsPage() {
                   onClick={() => setShowCancelModal(true)}
                   disabled={processingAction}
                 >
-                  إلغاء الطلب
+                  {t("cancelOrder")}
                 </button>
               </>
             )}
@@ -562,7 +579,7 @@ export default function OrderDetailsPage() {
                 onClick={() => setShowCancelModal(true)}
                 disabled={processingAction}
               >
-                إلغاء الطلب
+                {t("cancelOrder")}
               </button>
             )}
 
@@ -574,7 +591,7 @@ export default function OrderDetailsPage() {
                     className={styles.actionButton}
                     onClick={() => setShowRatingModal(true)}
                   >
-                    تقييم
+                    {t("rate")}
                   </button>
                 )}
               </>
@@ -587,7 +604,7 @@ export default function OrderDetailsPage() {
                 onClick={() => setShowReturnModal(true)}
                 disabled={processingAction}
               >
-                تم استلام المرتجع
+                {t("confirmReturnReceived")}
               </button>
             )}
 
@@ -599,26 +616,18 @@ export default function OrderDetailsPage() {
                   onClick={handleEditOrder}
                   disabled={processingAction}
                 >
-                  تعديل الطلب
+                  {t("editOrder")}
                 </button>
                 <button
                   className={styles.actionButton}
                   onClick={handleRelistOrder}
                   disabled={processingAction}
                 >
-                  إعادة طرح الطلب
+                  {t("relistOrder")}
                 </button>
               </>
             )}
           </div>
-
-          <h1 className={styles.pageTitle}>
-            تفاصيل الطلب #{order.id}
-          </h1>
-          
-          <span className={styles.backArrow} onClick={() => router.push("/orders")}>
-            →
-          </span>
         </div>
 
         {/* OTP Section for PREPAID */}
@@ -627,9 +636,9 @@ export default function OrderDetailsPage() {
             <div className={styles.otpCard}>
               <div className={styles.otpIcon}>🔐</div>
               <div className={styles.otpContent}>
-                <h3 className={styles.otpTitle}>رمز OTP للدفع المسبق</h3>
+                <h3 className={styles.otpTitle}>{t("otpPrepaid.title")}</h3>
                 <p className={styles.otpDescription}>
-                  هذا الرمز خاص بالدفع المسبق، احتفظ به وأعطه للمندوب عند التسليم
+                  {t("otpPrepaid.description")}
                 </p>
                 <div className={styles.otpCode}>{order.otp}</div>
               </div>
@@ -643,9 +652,9 @@ export default function OrderDetailsPage() {
             <div className={styles.otpCard}>
               <div className={styles.otpIcon}>📱</div>
               <div className={styles.otpContent}>
-                <h3 className={styles.otpTitle}>رمز استلام OTP</h3>
+                <h3 className={styles.otpTitle}>{t("otpReceive.title")}</h3>
                 <p className={styles.otpDescription}>
-                  هذا الرمز لاستلام الطلب من التاجر
+                  {t("otpReceive.description")}
                 </p>
                 <div className={styles.otpCode}>{order.receiveOTP}</div>
               </div>
@@ -659,9 +668,9 @@ export default function OrderDetailsPage() {
             <div className={styles.otpCard}>
               <div className={styles.otpIcon}>🔓</div>
               <div className={styles.otpContent}>
-                <h3 className={styles.otpTitle}>رمز إلغاء OTP</h3>
+                <h3 className={styles.otpTitle}>{t("otpCancel.title")}</h3>
                 <p className={styles.otpDescription}>
-                  رمز الإلغاء (للإلغاء دون سبب)
+                  {t("otpCancel.description")}
                 </p>
                 <div className={styles.otpCode}>{order.cancelOTP}</div>
               </div>
@@ -673,9 +682,9 @@ export default function OrderDetailsPage() {
         {canShowMap() && (
           <div className={styles.mapSection}>
             <div className={styles.mapHeader}>
-              <h3 className={styles.mapTitle}>تحديد موقع التوصيل</h3>
+              <h3 className={styles.mapTitle}>{t("mapTitle")}</h3>
               <p className={styles.mapDescription}>
-                اسحب العلامة على الخريطة لتحديد موقع التوصيل الجديد
+                {t("mapDescription")}
               </p>
             </div>
             <div className={styles.mapContainer} ref={mapRef}></div>
@@ -693,16 +702,16 @@ export default function OrderDetailsPage() {
           {/* Price Cards - Right Half */}
           <div className={styles.priceCardsGrid}>
             <div className={styles.priceCard}>
-              <span className={styles.priceLabel}>سعر الشحنة</span>
-              <span className={styles.priceValue}>{order.cash} جنيه</span>
+              <span className={styles.priceLabel}>{t("packagePrice")}</span>
+              <span className={styles.priceValue}>{order.cash} {tCommon("currency")}</span>
             </div>
             <div className={styles.priceCard}>
-              <span className={styles.priceLabel}>سعر التوصيل</span>
-              <span className={styles.priceValue}>{order.shippingAmount} جنيه</span>
+              <span className={styles.priceLabel}>{t("shippingPrice")}</span>
+              <span className={styles.priceValue}>{order.shippingAmount} {tCommon("currency")}</span>
             </div>
             {order.type === "PREPAID" && order.otp && (
               <div className={styles.priceCardOtp}>
-                <span className={styles.priceLabel}>رمز OTP</span>
+                <span className={styles.priceLabel}>{t("otpCode")}</span>
                 <span className={styles.otpValue}>{order.otp}</span>
               </div>
             )}
@@ -736,13 +745,13 @@ export default function OrderDetailsPage() {
         <div className={styles.offersSection}>
           <div className={styles.offersSectionHeader}>
             <h2 className={styles.offersTitle}>
-              العروض المقدمة ({bids.length.toString().padStart(2, "0")})
+              {t("bidsTitle")} ({bids.length.toString().padStart(2, "0")})
             </h2>
           </div>
 
           <div className={styles.offersList}>
             {bids.length === 0 ? (
-              <div className={styles.emptyState}>لا توجد عروض حتى الآن</div>
+              <div className={styles.emptyState}>{t("noBids")}</div>
             ) : (
               bids.map((bid) => (
                 <div key={bid.id} className={styles.offerCard}>
@@ -768,7 +777,7 @@ export default function OrderDetailsPage() {
                         <h3 className={styles.runnerName}>{bid.courier.name}</h3>
                         <div className={styles.runnerMeta}>
                           <span className={styles.runnerOrders}>
-                            {bid.courier.successCount} عملية ناجحة
+                            {bid.courier.successCount} {t("successfulOrders")}
                           </span>
                           <span className={styles.runnerRating}>
                             {bid.courier.rating} ⭐
@@ -777,17 +786,17 @@ export default function OrderDetailsPage() {
                       </div>
                       <div className={styles.offerDetailsRow}>
                         <div className={styles.detailItem}>
-                          <span className={styles.detailLabel}>سعر التوصيل المقترح</span>
-                          <span className={styles.detailValue}>{bid.amount} جنيه</span>
+                          <span className={styles.detailLabel}>{t("suggestedPrice")}</span>
+                          <span className={styles.detailValue}>{bid.amount} {tCommon("currency")}</span>
                         </div>
                         <div className={styles.detailItem}>
-                          <span className={styles.detailLabel}>تاريخ العرض</span>
+                          <span className={styles.detailLabel}>{t("bidDate")}</span>
                           <span className={styles.detailValue}>
                             {formatDate(bid.createdAt._seconds)}
                           </span>
                         </div>
                         <div className={styles.detailItem}>
-                          <span className={styles.detailLabel}>طريقة التوصيل</span>
+                          <span className={styles.detailLabel}>{t("deliveryMethod")}</span>
                           <span className={styles.detailValue}>{bid.courier.method}</span>
                         </div>
                       </div>
@@ -799,7 +808,7 @@ export default function OrderDetailsPage() {
                             disabled={processingBid === bid.id}
                           >
                             <span>✓</span>
-                            {processingBid === bid.id ? "جاري المعالجة..." : "قبول العرض"}
+                            {processingBid === bid.id ? t("processing") : t("acceptBid")}
                           </button>
                           <button
                             className={styles.rejectBtn}
@@ -807,13 +816,13 @@ export default function OrderDetailsPage() {
                             disabled={processingBid === bid.id}
                           >
                             <span>✕</span>
-                            رفض العرض
+                            {t("rejectBid")}
                           </button>
                         </div>
                       )}
                       {bid.status !== "PENDING" && (
                         <div className={styles.bidStatusBadge}>
-                          {bid.status === "ACCEPTED" ? "مقبول ✓" : "مرفوض ✕"}
+                          {bid.status === "ACCEPTED" ? t("acceptedBid") : t("rejectedBid")}
                         </div>
                       )}
                     </div>
@@ -830,7 +839,7 @@ export default function OrderDetailsPage() {
           <div className={styles.modalOverlay} onClick={() => setShowCancelModal(false)}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
-                <h3 className={styles.modalTitle}>إلغاء الطلب</h3>
+                <h3 className={styles.modalTitle}>{t("cancelOrderModal.title")}</h3>
                 <button
                   className={styles.modalClose}
                   onClick={() => setShowCancelModal(false)}
@@ -839,10 +848,10 @@ export default function OrderDetailsPage() {
                 </button>
               </div>
               <div className={styles.modalBody}>
-                <label className={styles.modalLabel}>سبب الإلغاء</label>
+                <label className={styles.modalLabel}>{t("cancelOrderModal.label")}</label>
                 <textarea
                   className={styles.modalTextarea}
-                  placeholder="اكتب سبب إلغاء الطلب..."
+                  placeholder={t("cancelOrderModal.placeholder")}
                   value={cancelReason}
                   onChange={(e) => setCancelReason(e.target.value)}
                   rows={4}
@@ -856,14 +865,14 @@ export default function OrderDetailsPage() {
                     setCancelReason("");
                   }}
                 >
-                  إلغاء
+                  {t("common.cancel")}
                 </button>
                 <button
                   className={styles.modalConfirmBtn}
                   onClick={handleCancelOrder}
                   disabled={processingAction}
                 >
-                  {processingAction ? "جاري الإلغاء..." : "تأكيد الإلغاء"}
+                  {processingAction ? t("processingCancel") : t("confirmCancel")}
                 </button>
               </div>
             </div>
@@ -875,7 +884,7 @@ export default function OrderDetailsPage() {
           <div className={styles.modalOverlay} onClick={() => setShowReturnModal(false)}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
-                <h3 className={styles.modalTitle}>تأكيد استلام المرتجع</h3>
+                <h3 className={styles.modalTitle}>{t("returnModal.title")}</h3>
                 <button
                   className={styles.modalClose}
                   onClick={() => setShowReturnModal(false)}
@@ -885,7 +894,7 @@ export default function OrderDetailsPage() {
               </div>
               <div className={styles.modalBody}>
                 <p className={styles.modalHint}>
-                  هل أنت متأكد من تأكيد استلام المرتجع؟ سيتم تحديث حالة الطلب.
+                  {t("returnModal.hint")}
                 </p>
               </div>
               <div className={styles.modalFooter}>
@@ -895,14 +904,14 @@ export default function OrderDetailsPage() {
                     setShowReturnModal(false);
                   }}
                 >
-                  إلغاء
+                  {t("common.cancel")}
                 </button>
                 <button
                   className={styles.modalConfirmBtn}
                   onClick={handleMarkAsReturned}
                   disabled={processingAction}
                 >
-                  {processingAction ? "جاري التأكيد..." : "تأكيد الاستلام"}
+                  {processingAction ? t("processingReturn") : t("confirmReturn")}
                 </button>
               </div>
             </div>
@@ -914,7 +923,7 @@ export default function OrderDetailsPage() {
           <div className={styles.modalOverlay} onClick={() => setShowRatingModal(false)}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
-                <h3 className={styles.modalTitle}>تقييم المندوب</h3>
+                <h3 className={styles.modalTitle}>{t("ratingModal.title")}</h3>
                 <button
                   className={styles.modalClose}
                   onClick={() => setShowRatingModal(false)}
@@ -923,7 +932,7 @@ export default function OrderDetailsPage() {
                 </button>
               </div>
               <div className={styles.modalBody}>
-                <label className={styles.modalLabel}>التقييم</label>
+                <label className={styles.modalLabel}>{t("ratingModal.ratingLabel")}</label>
                 <div className={styles.ratingStars}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -936,11 +945,11 @@ export default function OrderDetailsPage() {
                   ))}
                 </div>
                 <label className={styles.modalLabel} style={{ marginTop: "1rem" }}>
-                  التعليق (اختياري)
+                  {t("ratingModal.commentLabel")}
                 </label>
                 <textarea
                   className={styles.modalTextarea}
-                  placeholder="اكتب تعليقا..."
+                  placeholder={t("ratingModal.placeholder")}
                   value={reviewContent}
                   onChange={(e) => setReviewContent(e.target.value)}
                   rows={4}
@@ -955,14 +964,14 @@ export default function OrderDetailsPage() {
                     setReviewContent("");
                   }}
                 >
-                  إلغاء
+                  {t("common.cancel")}
                 </button>
                 <button
                   className={styles.modalConfirmBtn}
                   onClick={handleSubmitRating}
                   disabled={processingAction}
                 >
-                  {processingAction ? "جاري الإرسال..." : "إرسال التقييم"}
+                  {processingAction ? t("processingRating") : t("submitRating")}
                 </button>
               </div>
             </div>
@@ -974,7 +983,7 @@ export default function OrderDetailsPage() {
           <div className={styles.modalOverlay} onClick={() => setShowQRModal(false)}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
-                <h3 className={styles.modalTitle}>QR Code</h3>
+                <h3 className={styles.modalTitle}>{t("qrModal.title")}</h3>
                 <button
                   className={styles.modalClose}
                   onClick={() => setShowQRModal(false)}
@@ -987,7 +996,7 @@ export default function OrderDetailsPage() {
 <QRCodeDisplay data={order.qrCode} />
                 </div>
                 <p className={styles.qrCodeHint}>
-                  اعرض هذا الكود للمندوب
+                  {t("qrModal.hint")}
                 </p>
               </div>
               <div className={styles.modalFooter}>
@@ -995,7 +1004,7 @@ export default function OrderDetailsPage() {
                   className={styles.modalConfirmBtn}
                   onClick={() => setShowQRModal(false)}
                 >
-                  إغلاق
+                  {t("common.close")}
                 </button>
               </div>
             </div>

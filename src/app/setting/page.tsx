@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
@@ -22,13 +22,14 @@ const cairo = Cairo({
 
 export default function SettingPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const { showToast } = useToast();
   const t = useTranslations('settings');
   const tCommon = useTranslations('common');
   const [acceptOrdersAuto, setAcceptOrdersAuto] = useState(true);
   const [isSupplier, setIsSupplier] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [nightMode, setNightMode] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -95,7 +96,7 @@ export default function SettingPage() {
   };
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
@@ -122,18 +123,6 @@ export default function SettingPage() {
                 </label>
               </div>
             )}
-
-            <div className={styles.settingItem}>
-              <span className={styles.settingLabel}>{t('nightMode')}</span>
-              <label className={styles.toggleSwitch}>
-                <input
-                  type="checkbox"
-                  checked={nightMode}
-                  onChange={(e) => setNightMode(e.target.checked)}
-                />
-                <span className={styles.toggleSlider}></span>
-              </label>
-            </div>
           </div>
         </div>
 

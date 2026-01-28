@@ -17,13 +17,29 @@ import type {
     PayoutResponse
 } from "../types/common.types";
 
+// Get current locale for API requests
+const getCurrentLocale = (): string => {
+  if (typeof window !== "undefined") {
+    const cookies = document.cookie.split(";");
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split("=");
+      if (name === "NEXT_LOCALE") return value || "ar";
+    }
+    const dir = document.documentElement.dir;
+    return dir === "ltr" ? "en" : "ar";
+  }
+  return "ar";
+};
+
 class CommonService extends CommonApiService {
     /**
      * Get FAQs
      * GET /v1/common/faqs
      */
     async getFaqs(): Promise<ApiResponse<Faq[]>> {
-        const response = await this.get<ApiResponse<Faq[]>>("/common/faqs");
+        // Add timestamp to prevent cached responses
+        const language = getCurrentLocale();
+        const response = await this.get<ApiResponse<Faq[]>>("/common/faqs", { _t: Date.now().toString() }, { Language: language });
         if (!response) throw new Error("Failed to fetch FAQs");
         return response;
     }
@@ -63,7 +79,9 @@ class CommonService extends CommonApiService {
      * GET /v1/common/settings/policy
      */
     async getPolicy(): Promise<ApiResponse<string>> {
-        const response = await this.get<ApiResponse<string>>("/common/settings/policy");
+        // Add timestamp to prevent cached responses
+        const language = getCurrentLocale();
+        const response = await this.get<ApiResponse<string>>("/common/settings/policy", { _t: Date.now().toString() }, { Language: language });
         if (!response) throw new Error("Failed to fetch policy");
         return response;
     }
@@ -73,7 +91,9 @@ class CommonService extends CommonApiService {
      * GET /v1/common/settings/terms
      */
     async getTerms(): Promise<ApiResponse<string>> {
-        const response = await this.get<ApiResponse<string>>("/common/settings/terms");
+        // Add timestamp to prevent cached responses
+        const language = getCurrentLocale();
+        const response = await this.get<ApiResponse<string>>("/common/settings/terms", { _t: Date.now().toString() }, { Language: language });
         if (!response) throw new Error("Failed to fetch terms");
         return response;
     }

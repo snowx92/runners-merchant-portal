@@ -8,6 +8,7 @@ import { Cairo } from "next/font/google";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import * as XLSX from "xlsx";
 
 const cairo = Cairo({
@@ -51,6 +52,9 @@ interface BulkOrder {
 
 export default function BulkOrder() {
   const router = useRouter();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations('orders.bulk');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [orders, setOrders] = useState<BulkOrder[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
@@ -194,7 +198,7 @@ export default function BulkOrder() {
   };
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
@@ -203,19 +207,19 @@ export default function BulkOrder() {
           <span className={styles.backArrow} onClick={() => router.back()}>
             →
           </span>
-          <h1 className={styles.pageTitle}>انشاء طلب مجمع</h1>
-          <button 
+          <h1 className={styles.pageTitle}>{t('title')}</h1>
+          <button
             className={`${styles.confirmButton} ${orders.length === 0 ? styles.disabledButton : ""}`}
             disabled={orders.length === 0}
           >
-            تأكيد الطلب
+            {t('submit')}
           </button>
         </div>
 
         {/* Upload Card or Orders List */}
         {orders.length === 0 ? (
           <div className={styles.uploadCard}>
-            <h2 className={styles.cardTitle}>وصف الشحنة (اختياري)</h2>
+            <h2 className={styles.cardTitle}>{t('uploadFile')}</h2>
 
             <div
               className={styles.uploadArea}
@@ -270,15 +274,15 @@ export default function BulkOrder() {
                     </p>
                   </div>
                 ) : (
-                  <p className={styles.uploadText}>قم برفع ملف Excel هنا</p>
+                  <p className={styles.uploadText}>{t('dragDrop')}</p>
                 )}
               </div>
             </div>
 
             <p className={styles.uploadHint}>
-              يجب ان يحتوي الملف على المعلومات الاساسية لكل طلب{" "}
+              {t('supportedFormats')}{" "}
               <span className={styles.downloadLink} onClick={handleDownloadTemplate} style={{ cursor: "pointer", textDecoration: "underline" }}>
-                تحميل ملف ارشادي
+                {t('downloadTemplate')}
               </span>
             </p>
           </div>
@@ -294,24 +298,24 @@ export default function BulkOrder() {
                           className={styles.cancelButton}
                           onClick={() => handleCancelEdit(order.id)}
                         >
-                          إلغاء
+                          {t('cancel')}
                         </button>
                         <button
                           className={styles.saveButton}
                           onClick={() => handleCancelEdit(order.id)}
                         >
-                          حفظ التعديلات
+                          {t('save')}
                         </button>
                       </div>
-                      <h3 className={styles.formHeaderTitle}>تعديل الطلب</h3>
+                      <h3 className={styles.formHeaderTitle}>{t('editOrder')}</h3>
                     </div>
 
                     <div className={styles.formGroup}>
                       <label className={styles.label}>
-                        وصف الشحنة
+                        {t('packageDescription')}
                         <textarea
                           className={styles.textarea}
-                          placeholder="ادخل وصف الشحنة هنا"
+                          placeholder={t('packageDescriptionPlaceholder')}
                           rows={4}
                           value={order.packageDescription}
                           onChange={(e) => handleOrderChange(order.id, "packageDescription", e.target.value)}
@@ -321,21 +325,21 @@ export default function BulkOrder() {
 
                     <div className={styles.formRow}>
                       <label className={styles.label}>
-                        سعر الشحنة
+                        {t('packagePrice')}
                         <input
                           type="text"
                           className={styles.input}
-                          placeholder="ادخل سعر الشحنة هنا"
+                          placeholder={t('packagePricePlaceholder')}
                           value={order.packagePrice}
                           onChange={(e) => handleOrderChange(order.id, "packagePrice", parseFloat(e.target.value) || 0)}
                         />
                       </label>
                       <label className={styles.label}>
-                        سعر التوصيل
+                        {t('deliveryPrice')}
                         <input
                           type="text"
                           className={styles.input}
-                          placeholder="ادخل سعر التوصيل هنا"
+                          placeholder={t('deliveryPricePlaceholder')}
                           value={order.deliveryPrice}
                           onChange={(e) => handleOrderChange(order.id, "deliveryPrice", parseFloat(e.target.value) || 0)}
                         />
@@ -344,7 +348,7 @@ export default function BulkOrder() {
 
                     <div className={styles.formGroup}>
                       <label className={styles.label}>
-                        صورة الشحنة (اختياري)
+                        {t('packageImage')}
                         <div className={styles.imageUploadContainer}>
                           {order.image ? (
                             <div className={styles.imagePreview}>
@@ -362,7 +366,7 @@ export default function BulkOrder() {
                               onClick={() => orderFileInputRefs.current[order.id]?.click()}
                             >
                               <span className={styles.uploadIcon}>📷</span>
-                              <p className={styles.uploadText}>قم برفع صورة PNG،JPG بحد اقصى 2MB</p>
+                              <p className={styles.uploadText}>{t('uploadImagePlaceholder')}</p>
                               <input
                                 ref={(el) => {
                                   if (el) orderFileInputRefs.current[order.id] = el;
@@ -380,14 +384,14 @@ export default function BulkOrder() {
 
                     <div className={styles.formGroup}>
                       <label className={styles.label}>
-                        عنوان الاستلام
+                        {t('recipientAddress')}
                         <div className={styles.selectWrapper}>
                           <select
                             className={styles.select}
                             value={order.address}
                             onChange={(e) => handleOrderChange(order.id, "address", e.target.value)}
                           >
-                            <option value="">اختر عنوان الاستلام</option>
+                            <option value="">{t('selectAddress')}</option>
                             <option value="شارع السعادة مدينة الرحمن">شارع السعادة مدينة الرحمن</option>
                           </select>
                         </div>
@@ -396,11 +400,11 @@ export default function BulkOrder() {
 
                     <div className={styles.formGroup}>
                       <label className={styles.label}>
-                        اسم العميل
+                        {t('recipientName')}
                         <input
                           type="text"
                           className={styles.input}
-                          placeholder="ادخل اسم العميل هنا"
+                          placeholder={t('recipientNamePlaceholder')}
                           value={order.clientName}
                           onChange={(e) => handleOrderChange(order.id, "clientName", e.target.value)}
                         />
@@ -409,12 +413,12 @@ export default function BulkOrder() {
 
                     <div className={styles.formGroup}>
                       <label className={styles.label}>
-                        رقم هاتف العميل
+                        {t('recipientPhone')}
                         <div className={styles.phoneInputWrapper}>
                           <input
                             type="tel"
                             className={styles.phoneInputField}
-                            placeholder="ادخل رقم هاتف هنا"
+                            placeholder={t('recipientPhonePlaceholder')}
                             value={order.phone}
                             onChange={(e) => handleOrderChange(order.id, "phone", e.target.value)}
                           />
@@ -450,27 +454,14 @@ export default function BulkOrder() {
 
                     <div className={styles.formGroup}>
                       <label className={styles.label}>
-                        عنوان العميل
-                        <input
-                          type="text"
-                          className={styles.input}
-                          placeholder="ادخل عنوان العميل هنا"
-                          value={order.address}
-                          onChange={(e) => handleOrderChange(order.id, "address", e.target.value)}
-                        />
-                      </label>
-                    </div>
-
-                    <div className={styles.formGroup}>
-                      <label className={styles.label}>
-                        المدينة
+                        {t('city')}
                         <div className={styles.selectWrapper}>
                           <select
                             className={styles.select}
                             value={order.city}
                             onChange={(e) => handleOrderChange(order.id, "city", e.target.value)}
                           >
-                            <option value="">اختر المدينة</option>
+                            <option value="">{t('selectCity')}</option>
                             <option value="القاهرة">القاهرة</option>
                           </select>
                         </div>
@@ -479,11 +470,11 @@ export default function BulkOrder() {
 
                     <div className={styles.formGroup}>
                       <label className={styles.label}>
-                        الملاحظات
+                        {t('notes')}
                         <input
                           type="text"
                           className={styles.input}
-                          placeholder="ادخل الملاحظات هنا"
+                          placeholder={t('notesPlaceholder')}
                           value={order.notes}
                           onChange={(e) => handleOrderChange(order.id, "notes", e.target.value)}
                         />
@@ -493,30 +484,30 @@ export default function BulkOrder() {
                 ) : (
                   <div className={styles.orderRow}>
                     <div className={styles.clientSection}>
-                      <span className={styles.sectionTitle}>اسم العميل: {order.clientName}</span>
-                      <span className={styles.sectionContent}>الهاتف: {order.phone}</span>
+                      <span className={styles.sectionTitle}>{t('recipientName')}: {order.clientName}</span>
+                      <span className={styles.sectionContent}>{t('recipientPhone')}: {order.phone}</span>
                     </div>
 
                     <div className={styles.locationSection}>
-                      <span className={styles.sectionTitle}>المدينة، {order.city}</span>
+                      <span className={styles.sectionTitle}>{t('city')}, {order.city}</span>
                       <span className={styles.sectionContent}>
-                        العنوان: {order.address}
+                        {t('recipientAddress')}: {order.address}
                       </span>
                     </div>
 
                     <div className={styles.descriptionSection}>
-                      <span className={styles.sectionTitle}>وصف الشحنة</span>
+                      <span className={styles.sectionTitle}>{t('packageDescription')}</span>
                       <span className={styles.sectionContent}>{order.packageDescription}</span>
                     </div>
 
                     <div className={styles.priceSection}>
                       <div className={styles.priceItem}>
-                        <span className={styles.priceLabel}>سعر الشحنة</span>
-                        <span className={styles.priceValue}>{order.packagePrice} جنيه</span>
+                        <span className={styles.priceLabel}>{t('packagePrice')}</span>
+                        <span className={styles.priceValue}>{order.packagePrice} {t('currency')}</span>
                       </div>
                       <div className={styles.priceItem}>
-                        <span className={styles.priceLabel}>سعر التوصيل</span>
-                        <span className={styles.priceValue}>{order.deliveryPrice} جنيه</span>
+                        <span className={styles.priceLabel}>{t('deliveryPrice')}</span>
+                        <span className={styles.priceValue}>{order.deliveryPrice} {t('currency')}</span>
                       </div>
                     </div>
 
@@ -524,7 +515,7 @@ export default function BulkOrder() {
                       className={styles.editButton}
                       onClick={() => handleEditOrder(order.id)}
                     >
-                      تعديل الطلب
+                      {t('edit')}
                     </button>
                   </div>
                 )}

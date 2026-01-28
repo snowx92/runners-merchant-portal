@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
@@ -18,6 +19,9 @@ const cairo = Cairo({
 
 export default function FAQPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations("settings");
   const [faqs, setFaqs] = useState<Faq[]>([]);
   const [openItems, setOpenItems] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,16 +60,16 @@ export default function FAQPage() {
   };
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
         <div className={styles.header}>
-          <h1 className={styles.pageTitle}>الاسئلة الشائعة</h1>
+          <h1 className={styles.pageTitle}>{t("faqPage.title")}</h1>
         </div>
 
         {isLoading ? (
-          <div style={{ textAlign: 'center', padding: '50px' }}>جاري التحميل...</div>
+          <div style={{ textAlign: 'center', padding: '50px' }}>{t("common.loading")}</div>
         ) : (
           <div className={styles.faqList}>
             {faqs.map((item) => (

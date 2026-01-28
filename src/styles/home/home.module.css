@@ -2,8 +2,7 @@
 .mainContainer {
     min-height: 100vh;
     background-color: #FAFAFA;
-    direction: rtl;
-    /* Arabic Layout */
+    /* Direction controlled by dir attribute */
     padding-bottom: 4rem;
 }
 

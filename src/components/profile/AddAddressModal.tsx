@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import styles from "@/styles/profile/addAddressModal.module.css";
 import { zoneService } from "@/lib/api/services/zoneService";
 import type { Zone, City } from "@/lib/api/types/zone.types";
@@ -32,6 +32,8 @@ interface AddressData {
 }
 
 export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAddressModalProps) => {
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const t = useTranslations('address');
   const tCommon = useTranslations('common');
 
@@ -545,7 +547,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
-      <div className={styles.modal}>
+      <div className={styles.modal} dir={isRTL ? "rtl" : "ltr"}>
         <div className={styles.modalContent}>
           {/* Header */}
           <h2 className={styles.modalTitle}>{initialData ? t('editTitle') : t('addTitle')}</h2>
@@ -767,15 +769,6 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
 
           {/* Default Address Checkbox */}
           <div className={styles.formGroup}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={defaultAddress}
-                onChange={(e) => setDefaultAddress(e.target.checked)}
-                style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-              />
-              <span className={styles.label} style={{ margin: 0 }}>{t('defaultAddress')}</span>
-            </label>
           </div>
 
           {/* Action Buttons */}

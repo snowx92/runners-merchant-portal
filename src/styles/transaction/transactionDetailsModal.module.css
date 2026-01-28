@@ -27,6 +27,11 @@
   align-items: center;
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid #F0F0F0;
+  flex-direction: row;
+}
+
+[dir="rtl"] .modalHeader {
+  flex-direction: row-reverse;
 }
 
 .modalTitle {
@@ -61,6 +66,12 @@
   padding: 1.5rem;
   background: #FAFAFA;
   gap: 1rem;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+[dir="rtl"] .transactionCard {
+  flex-direction: row-reverse;
 }
 
 .transactionIconWrapper {
@@ -81,6 +92,10 @@
 
 .transactionInfo {
   flex: 1;
+  text-align: left;
+}
+
+[dir="rtl"] .transactionInfo {
   text-align: right;
 }
 
@@ -124,6 +139,11 @@
   align-items: center;
   padding: 0.75rem 0;
   border-bottom: 1px solid #F5F5F5;
+  flex-direction: row;
+}
+
+[dir="rtl"] .detailRow {
+  flex-direction: row-reverse;
 }
 
 .detailRow:last-child {
@@ -133,6 +153,11 @@
 .detailLabel {
   font-size: 0.9rem;
   color: #666;
+  text-align: left;
+}
+
+[dir="rtl"] .detailLabel {
+  text-align: right;
 }
 
 .detailValue {

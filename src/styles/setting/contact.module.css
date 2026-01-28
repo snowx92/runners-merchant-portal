@@ -2,7 +2,6 @@
 .mainContainer {
   min-height: 100vh;
   background-color: #FAFAFA;
-  direction: rtl;
   padding-bottom: 4rem;
 }
 
@@ -164,4 +163,22 @@
 .sendButton:hover {
   background: #000;
   transform: scale(1.05);
+}
+
+/* LTR (English) Overrides */
+[dir="ltr"] .pageTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .header {
+  flex-direction: row-reverse;
+}
+
+[dir="ltr"] .messageInput {
+  text-align: left;
+  direction: ltr;
+}
+
+[dir="ltr"] .backButton svg {
+  transform: none;
 }

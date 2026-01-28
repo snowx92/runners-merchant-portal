@@ -47,11 +47,29 @@ export class CommonApiService {
     const headersToUse = { ...customHeaders };
     delete headersToUse["Skip-Auth"];
 
+    // Get current language from locale context
+    // If Language is explicitly passed in customHeaders, use it; otherwise use current locale
+    const getCurrentLocale = (): string => {
+      if (typeof window !== "undefined") {
+        const cookies = document.cookie.split(";");
+        for (const cookie of cookies) {
+          const [name, value] = cookie.trim().split("=");
+          if (name === "NEXT_LOCALE") return value || "ar";
+        }
+        const dir = document.documentElement.dir;
+        return dir === "ltr" ? "en" : "ar";
+      }
+      return "ar";
+    };
+    const language = headersToUse["Language"] || getCurrentLocale();
+
     if (skipAuth) {
       console.log('🔓 CommonApiService: Skipping authentication for', fullUrl);
-      const staticHeaders = {
-        Language: "ar",
-      };
+      const staticHeaders: Record<string, string> = {};
+      // Only add Language header if not already present in customHeaders
+      if (!headersToUse["Language"]) {
+        staticHeaders["Language"] = language;
+      }
       return this.makeRequest(fullUrl, method, body, staticHeaders, headersToUse);
     }
 
@@ -65,10 +83,13 @@ export class CommonApiService {
       }
     }
 
-    const staticHeaders = {
+    const staticHeaders: Record<string, string> = {
       Authorization: `Bearer ${token || this.sessionManager.getToken()}`,
-      Language: "ar",
     };
+    // Only add Language header if not already present in customHeaders (to allow forcing English for specific endpoints)
+    if (!headersToUse["Language"]) {
+      staticHeaders["Language"] = language;
+    }
 
     return this.makeRequest(fullUrl, method, body, staticHeaders, headersToUse);
   }
@@ -80,11 +101,12 @@ export class CommonApiService {
     staticHeaders: Record<string, string>,
     customHeaders: Record<string, string>
   ): Promise<T | null> {
+    // Merge headers, but customHeaders should override staticHeaders (so custom Language header is respected)
     const mergedHeaders: Record<string, string> = {
       "Content-Type": "application/json",
       Client: "FETCH",
-      ...customHeaders,
       ...staticHeaders,
+      ...customHeaders,
     };
 
     // Remove Authorization header if it's undefined or empty

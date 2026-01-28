@@ -2,8 +2,8 @@
 .mainContainer {
     min-height: 100vh;
     background-color: #FAFAFA;
-    direction: rtl;
     padding-bottom: 4rem;
+    /* Direction controlled by dir attribute */
 }
 
 .container {
@@ -18,9 +18,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-direction: row-reverse;
+    flex-direction: row;
     gap: 1rem;
     flex-wrap: wrap;
+}
+
+[dir="rtl"] .header {
+    flex-direction: row-reverse;
 }
 
 .pageTitle {
@@ -28,11 +32,15 @@
     font-weight: 800;
     color: #111;
     margin: 0;
-    text-align: right;
+    text-align: left;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex: 1;
+}
+
+[dir="rtl"] .pageTitle {
+    text-align: right;
 }
 
 .backArrow {
@@ -45,12 +53,20 @@
     transform: translateX(-3px);
 }
 
+[dir="rtl"] .backArrow:hover {
+    transform: translateX(3px);
+}
+
 /* Order Section - Main Container */
 .orderSection {
     display: flex;
     gap: 1.5rem;
     margin-bottom: 2rem;
     flex-direction: row-reverse;
+}
+
+[dir="rtl"] .orderSection {
+    flex-direction: row;
 }
 
 /* Order Info Card */
@@ -67,6 +83,10 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    flex-direction: row;
+}
+
+[dir="rtl"] .orderTop {
     flex-direction: row-reverse;
 }
 
@@ -93,8 +113,12 @@
 .orderMain {
     display: flex;
     gap: 2rem;
-    flex-direction: row-reverse;
+    flex-direction: row;
     align-items: flex-start;
+}
+
+[dir="rtl"] .orderMain {
+    flex-direction: row-reverse;
 }
 
 .orderImageWrapper {
@@ -111,6 +135,10 @@
 
 .orderTextContent {
     flex: 1;
+    text-align: left;
+}
+
+[dir="rtl"] .orderTextContent {
     text-align: right;
 }
 
@@ -239,9 +267,13 @@
 }
 
 .runnerInfo {
-    text-align: right;
+    text-align: left;
     flex-shrink: 0;
     min-width: 150px;
+}
+
+[dir="rtl"] .runnerInfo {
+    text-align: right;
 }
 
 .runnerName {
@@ -255,8 +287,12 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    flex-direction: row-reverse;
+    flex-direction: row;
     font-size: 0.85rem;
+}
+
+[dir="rtl"] .runnerMeta {
+    flex-direction: row-reverse;
 }
 
 .runnerRating {
@@ -287,8 +323,18 @@
     min-width: 140px;
 }
 
+[dir="rtl"] .detailItem {
+    border-left: none;
+    border-right: 1px solid #E5E5E5;
+    padding: 0 1.5rem;
+}
+
 .detailItem:last-child {
     border-left: none;
+}
+
+[dir="rtl"] .detailItem:last-child {
+    border-right: none;
 }
 
 .detailLabel {
@@ -296,6 +342,7 @@
     color: #999;
     font-weight: 500;
     white-space: nowrap;
+    text-align: center;
 }
 
 .detailValue {
@@ -456,6 +503,10 @@
     align-items: center;
     padding: 1.5rem;
     border-bottom: 1px solid #F0F0F0;
+    flex-direction: row;
+}
+
+[dir="rtl"] .modalHeader {
     flex-direction: row-reverse;
 }
 
@@ -495,6 +546,10 @@
     gap: 1.5rem;
     align-items: center;
     margin-bottom: 2rem;
+    flex-direction: row;
+}
+
+[dir="rtl"] .courierProfileHeader {
     flex-direction: row-reverse;
 }
 
@@ -574,6 +629,10 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
+    flex-direction: row;
+}
+
+[dir="rtl"] .reviewHeader {
     flex-direction: row-reverse;
 }
 
@@ -696,6 +755,10 @@
     color: #111;
     margin-bottom: 0.75rem;
     display: block;
+    text-align: left;
+}
+
+[dir="rtl"] .modalLabel {
     text-align: right;
 }
 
@@ -708,8 +771,12 @@
     border-radius: 12px;
     font-family: inherit;
     transition: border-color 0.2s;
+    text-align: left;
+}
+
+[dir="rtl"] .modalInput,
+[dir="rtl"] .modalTextarea {
     text-align: right;
-    direction: rtl;
 }
 
 .modalInput:focus,
@@ -727,6 +794,10 @@
     font-size: 0.85rem;
     color: #999;
     margin-top: 0.5rem;
+    text-align: left;
+}
+
+[dir="rtl"] .modalHint {
     text-align: right;
 }
 
@@ -735,7 +806,13 @@
     border-top: 1px solid #F0F0F0;
     display: flex;
     gap: 0.75rem;
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .modalFooter {
     justify-content: flex-start;
+    flex-direction: row;
 }
 
 .modalCancelBtn,

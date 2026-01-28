@@ -448,6 +448,73 @@
   background: #ccc;
 }
 
+/* LTR (English) Overrides */
+[dir="ltr"] .modalContent {
+  direction: ltr;
+  text-align: left;
+}
+
+[dir="ltr"] .modalTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .label {
+  text-align: left;
+}
+
+[dir="ltr"] .input {
+  text-align: left;
+}
+
+[dir="ltr"] .phoneInputWrapper {
+  padding-right: 0;
+  padding-left: 110px;
+}
+
+[dir="ltr"] .phoneInput {
+  text-align: left;
+}
+
+[dir="ltr"] .countryCode {
+  right: unset;
+  left: 16px;
+  border-left: none;
+  border-right: 1px solid #ddd;
+  padding-left: 0;
+  padding-right: 16px;
+}
+
+[dir="ltr"] .select {
+  padding-left: 20px;
+  padding-right: 45px;
+  text-align: left;
+}
+
+[dir="ltr"] .selectIcon {
+  left: unset;
+  right: 20px;
+}
+
+[dir="ltr"] .searchWrapper {
+  padding: 0 16px;
+}
+
+[dir="ltr"] .searchInput {
+  text-align: left;
+}
+
+[dir="ltr"] .searchResultItem {
+  text-align: left;
+}
+
+[dir="ltr"] .errorText {
+  text-align: left;
+}
+
+[dir="ltr"] .coordinatesDisplay {
+  text-align: right;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .modalContent {
@@ -469,5 +536,9 @@
   .cancelButton,
   .saveButton {
     width: 100%;
+  }
+
+  [dir="ltr"] .buttonGroup {
+    flex-direction: column;
   }
 }

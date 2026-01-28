@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import styles from "@/styles/home/profileDropdown.module.css";
 import { getFirebaseAuth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
@@ -13,6 +13,8 @@ import { useUserProfile } from "@/lib/hooks/useUserProfile";
 export const ProfileDropdown = () => {
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
+    const locale = useLocale();
+    const isRTL = locale === "ar";
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
     const t = useTranslations('nav');
     const tCommon = useTranslations('common');
@@ -58,6 +60,7 @@ export const ProfileDropdown = () => {
     return (
         <div
             className={styles.profileContainer}
+            dir={isRTL ? "rtl" : "ltr"}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >

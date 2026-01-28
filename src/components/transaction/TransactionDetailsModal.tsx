@@ -1,3 +1,4 @@
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Transaction } from "@/lib/api/types/common.types";
 import styles from "@/styles/transaction/transactionDetailsModal.module.css";
@@ -9,6 +10,10 @@ interface TransactionDetailsModalProps {
 }
 
 export const TransactionDetailsModal = ({ isOpen, onClose, transaction }: TransactionDetailsModalProps) => {
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations('wallet');
+  const tDetails = useTranslations('wallet.transactionDetails');
   if (!isOpen || !transaction) return null;
 
   const formatDate = (date: string | { _seconds: number; _nanoseconds: number }) => {
@@ -21,9 +26,17 @@ export const TransactionDetailsModal = ({ isOpen, onClose, transaction }: Transa
       } else {
         return { date: "", time: "" };
       }
+
+      // Manually format date to ensure Western numerals (avoiding browser locale interference from dir="rtl")
+      const month = String(timestamp.getMonth() + 1).padStart(2, '0');
+      const day = String(timestamp.getDate()).padStart(2, '0');
+      const year = timestamp.getFullYear();
+      const hours = String(timestamp.getHours()).padStart(2, '0');
+      const minutes = String(timestamp.getMinutes()).padStart(2, '0');
+
       return {
-        date: timestamp.toLocaleDateString("ar-EG"),
-        time: timestamp.toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }),
+        date: `${month}/${day}/${year}`,
+        time: `${hours}:${minutes}`,
       };
     } catch {
       return { date: "", time: "" };
@@ -50,17 +63,17 @@ export const TransactionDetailsModal = ({ isOpen, onClose, transaction }: Transa
   const getTransactionTitle = (type: Transaction["type"]) => {
     switch (type) {
       case "COMMISSION":
-        return "عمولة";
+        return t('transactionTypes.commission');
       case "COD":
-        return "الدفع عند الاستلام";
+        return t('transactionTypes.cod');
       case "PENALTY":
-        return "غرامة";
-      case "BOUNS":
-        return "بونص";
+        return t('transactionTypes.penalty');
+      case "BONUS":
+        return t('transactionTypes.bonus');
       case "WITHDRAWAL":
-        return "سحب";
+        return t('transactionTypes.withdrawal');
       case "DEPOSIT":
-        return "إيداع";
+        return t('transactionTypes.deposit');
       default:
         return type;
     }
@@ -76,9 +89,9 @@ export const TransactionDetailsModal = ({ isOpen, onClose, transaction }: Transa
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()} dir={isRTL ? "rtl" : "ltr"}>
         <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>تفاصيل العملية</h2>
+          <h2 className={styles.modalTitle}>{tDetails('title')}</h2>
           <button className={styles.closeButton} onClick={onClose}>
             ✕
           </button>
@@ -100,47 +113,47 @@ export const TransactionDetailsModal = ({ isOpen, onClose, transaction }: Transa
           </div>
 
           <div className={`${styles.transactionAmount} ${getAmountClass(transaction.amount)}`}>
-            {getAmountSign(transaction.amount)}{Math.abs(transaction.amount)} {transaction.currency || "جنيه"}
+            {getAmountSign(transaction.amount)}{Math.abs(transaction.amount)} {transaction.currency || "EGP"}
           </div>
         </div>
 
         <div className={styles.detailsSection}>
           <div className={styles.detailRow}>
-            <span className={styles.detailLabel}>رقم العملية</span>
+            <span className={styles.detailLabel}>{tDetails('transactionId')}</span>
             <span className={styles.detailValue}>{transaction.id}</span>
           </div>
 
           {transaction.orignal && (
             <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>المرجع</span>
+              <span className={styles.detailLabel}>{tDetails('reference')}</span>
               <span className={styles.detailValue}>{transaction.orignal}</span>
             </div>
           )}
 
           <div className={styles.detailRow}>
-            <span className={styles.detailLabel}>الرصيد قبل العملية</span>
+            <span className={styles.detailLabel}>{tDetails('balanceBefore')}</span>
             <span className={styles.detailValue}>
-              {transaction.balanceBefore?.toFixed(2) || "-"} {transaction.currency || "جنيه"}
+              {transaction.balanceBefore?.toFixed(2) || "-"} {transaction.currency || "EGP"}
             </span>
           </div>
 
           <div className={styles.detailRow}>
-            <span className={styles.detailLabel}>الرصيد بعد العملية</span>
+            <span className={styles.detailLabel}>{tDetails('balanceAfter')}</span>
             <span className={styles.detailValue}>
-              {transaction.balanceAfter?.toFixed(2) || "-"} {transaction.currency || "جنيه"}
+              {transaction.balanceAfter?.toFixed(2) || "-"} {transaction.currency || "EGP"}
             </span>
           </div>
 
           {transaction.method && (
             <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>طريقة الدفع</span>
+              <span className={styles.detailLabel}>{tDetails('paymentMethod')}</span>
               <span className={styles.detailValue}>{transaction.method}</span>
             </div>
           )}
 
           {transaction.reason && (
             <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>السبب</span>
+              <span className={styles.detailLabel}>{tDetails('reason')}</span>
               <span className={styles.detailValue}>{transaction.reason}</span>
             </div>
           )}
@@ -148,7 +161,7 @@ export const TransactionDetailsModal = ({ isOpen, onClose, transaction }: Transa
 
         <div className={styles.modalFooter}>
           <button className={styles.closeModalButton} onClick={onClose}>
-            إغلاق
+            {tDetails('close')}
           </button>
         </div>
       </div>

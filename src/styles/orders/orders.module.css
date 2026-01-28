@@ -2,7 +2,7 @@
 .mainContainer {
     min-height: 100vh;
     background-color: #FAFAFA;
-    direction: rtl;
+    /* Direction controlled by dir attribute */
     padding-bottom: 4rem;
 }
 
@@ -18,6 +18,9 @@
     justify-content: space-between;
     align-items: center;
     margin: 2rem 0 1.5rem 0;
+}
+
+[dir="rtl"] .headerRow {
     flex-direction: row-reverse;
 }
 
@@ -26,6 +29,9 @@
     font-weight: 800;
     color: #111;
     margin: 0;
+}
+
+[dir="rtl"] .pageTitle {
     text-align: right;
 }
 
@@ -62,6 +68,9 @@
     display: flex;
     gap: 1rem;
     align-items: center;
+}
+
+[dir="rtl"] .searchSection {
     flex-direction: row-reverse;
 }
 
@@ -74,6 +83,9 @@
     gap: 1rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     flex: 1;
+}
+
+[dir="rtl"] .searchWrapper {
     flex-direction: row-reverse;
 }
 
@@ -90,8 +102,11 @@
     font-size: 0.95rem;
     color: #333;
     background: transparent;
-    text-align: right;
     font-family: inherit;
+}
+
+[dir="rtl"] .searchInput {
+    text-align: right;
 }
 
 .searchInput::placeholder {
@@ -127,6 +142,11 @@
     margin-bottom: 2rem;
     flex-direction: row-reverse;
     justify-content: flex-end;
+}
+
+[dir="rtl"] .statusTabs {
+    flex-direction: row;
+    justify-content: flex-start;
 }
 
 .statusTab {
@@ -174,6 +194,10 @@
     flex-direction: row-reverse;
 }
 
+[dir="rtl"] .orderCard {
+    flex-direction: row-reverse;
+}
+
 .orderCard:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -183,8 +207,11 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    text-align: right;
     flex: 1;
+}
+
+[dir="rtl"] .orderInfo {
+    text-align: right;
 }
 
 .orderTitle {
@@ -322,6 +349,9 @@
     align-items: center;
     padding: 1.5rem;
     border-bottom: 1px solid #F0F0F0;
+}
+
+[dir="rtl"] .modalHeader {
     flex-direction: row-reverse;
 }
 
@@ -368,13 +398,16 @@
     font-size: 0.9rem;
     font-weight: 600;
     color: #333;
-    text-align: right;
+    text-align: left;
 }
 
 .filterRow {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+}
+
+[dir="rtl"] .filterRow {
     flex-direction: row-reverse;
 }
 
@@ -388,8 +421,12 @@
     color: #333;
     background: white;
     font-family: inherit;
-    text-align: right;
     transition: border-color 0.2s;
+}
+
+[dir="rtl"] .filterInput,
+[dir="rtl"] .filterSelect {
+    text-align: right;
 }
 
 .filterInput:focus,
@@ -414,6 +451,9 @@
     gap: 1rem;
     padding: 1.5rem;
     border-top: 1px solid #F0F0F0;
+}
+
+[dir="rtl"] .modalActions {
     flex-direction: row-reverse;
 }
 
@@ -591,9 +631,12 @@
     padding: 0.875rem 1rem;
     cursor: pointer;
     transition: background-color 0.2s;
-    text-align: right;
     border-bottom: 1px solid #F5F5F5;
     color: #111;
+}
+
+[dir="rtl"] .searchResultItem {
+    text-align: right;
 }
 
 .searchResultItem:last-child {

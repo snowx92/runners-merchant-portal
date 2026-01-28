@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
@@ -20,6 +21,9 @@ const cairo = Cairo({
 
 export default function ApiKeysPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations("settings");
   const { showToast } = useToast();
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +48,7 @@ export default function ApiKeysPage() {
       }
     } catch (error) {
       console.error("Error fetching API keys:", error);
-      showToast("فشل في جلب مفاتيح API", "error");
+      showToast(t("apiKeysPage.createKeyModal.description"), "error");
     } finally {
       setLoading(false);
     }
@@ -52,7 +56,7 @@ export default function ApiKeysPage() {
 
     const handleCreateKey = async () => {
     if (!newKeyName.trim()) {
-      showToast("يرجى إدخال اسم للمفتاح", "error");
+      showToast(t("apiKeysPage.deleteKeyModal.errors.nameRequired"), "error");
       return;
     }
 
@@ -61,13 +65,13 @@ export default function ApiKeysPage() {
       const response = await customerService.createApiKey({ name: newKeyName });
       if (response && response.data) {
         setApiKeys([response.data, ...apiKeys]);
-        showToast("تم إنشاء مفتاح API بنجاح", "success");
+        showToast(t("apiKeysPage.deleteKeyModal.errors.createdSuccess"), "success");
         setShowCreateModal(false);
         setNewKeyName("");
       }
     } catch (error) {
       console.error("Error creating API key:", error);
-      showToast("فشل في إنشاء مفتاح API", "error");
+      showToast(t("apiKeysPage.deleteKeyModal.errors.createFailed"), "error");
     } finally {
       setCreating(false);
     }
@@ -80,12 +84,12 @@ export default function ApiKeysPage() {
     try {
       await customerService.deleteApiKey(selectedKey.id);
       setApiKeys(apiKeys.filter((k) => k.id !== selectedKey.id));
-      showToast("تم حذف مفتاح API بنجاح", "success");
+      showToast(t("apiKeysPage.deleteKeyModal.errors.deletedSuccess"), "success");
       setShowDeleteModal(false);
       setSelectedKey(null);
     } catch (error) {
       console.error("Error deleting API key:", error);
-      showToast("فشل في حذف مفتاح API", "error");
+      showToast(t("apiKeysPage.deleteKeyModal.errors.deleteFailed"), "error");
     } finally {
       setDeletingId(null);
     }
@@ -109,30 +113,16 @@ export default function ApiKeysPage() {
   };
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.titleSection}>
             <button className={styles.backButton} onClick={() => router.back()}>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M19 12H5M12 19l-7-7 7-7"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {isRTL ? "→" : "←"}
             </button>
-            <h1 className={styles.pageTitle}>مفاتيح API</h1>
+            <h1 className={styles.pageTitle}>{t("apiKeysPage.title")}</h1>
           </div>
           <button className={styles.addButton} onClick={() => setShowCreateModal(true)}>
             <svg
@@ -150,14 +140,14 @@ export default function ApiKeysPage() {
                 strokeLinejoin="round"
               />
             </svg>
-            إضافة مفتاح جديد
+            {t("apiKeysPage.addButton")}
           </button>
         </div>
 
         {loading ? (
           <div className={styles.loadingContainer}>
             <div className={styles.loadingSpinner}></div>
-            <p className={styles.loadingText}>جاري تحميل المفاتيح...</p>
+            <p className={styles.loadingText}>{t("apiKeysPage.loading")}</p>
           </div>
         ) : apiKeys.length === 0 ? (
           <div className={styles.keyCard}>
@@ -184,9 +174,9 @@ export default function ApiKeysPage() {
                   <circle cx="10" cy="13.3333" r="0.833333" fill="currentColor" />
                 </svg>
               </div>
-              <h3 className={styles.emptyTitle}>لا توجد مفاتيح API</h3>
+              <h3 className={styles.emptyTitle}>{t("apiKeysPage.noKeys")}</h3>
               <p className={styles.emptyDescription}>
-                لم تقم بإنشاء أي مفاتيح API بعد. انقر على زر إضافة مفتاح جديد للبدء.
+                {t("apiKeysPage.noKeysDescription")}
               </p>
               <button className={styles.addButton} onClick={() => setShowCreateModal(true)}>
                 <svg
@@ -204,7 +194,7 @@ export default function ApiKeysPage() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                إضافة مفتاح جديد
+                {t("apiKeysPage.addButton")}
               </button>
             </div>
           </div>
@@ -217,14 +207,14 @@ export default function ApiKeysPage() {
                   <div className={`${styles.keyStatus} ${key.isActive ? styles.active : styles.inactive}`}>
                     <span className={styles.statusDot}></span>
                     <span className={styles.statusText}>
-                      {key.isActive ? "نشط" : "غير نشط"}
+                      {key.isActive ? t("apiKeysPage.active") : t("apiKeysPage.inactive")}
                     </span>
                   </div>
                 </div>
 
                 <div className={styles.keyInfo}>
                   <div className={styles.infoRow}>
-                    <span className={styles.infoLabel}>المفتاح</span>
+                    <span className={styles.infoLabel}>{t("apiKeysPage.keyName")}</span>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                       <span className={styles.infoValue}>{key.apiKeyMasked}</span>
                       <button
@@ -253,19 +243,19 @@ export default function ApiKeysPage() {
                             strokeLinejoin="round"
                           />
                         </svg>
-                        نسخ
+                        {t("apiKeysPage.copy")}
                       </button>
                     </div>
                   </div>
 
                   <div className={styles.infoRow}>
-                    <span className={styles.infoLabel}>تاريخ الإنشاء</span>
+                    <span className={styles.infoLabel}>{t("apiKeysPage.createdDate")}</span>
                     <span className={styles.infoValue}>{formatDate(key.createdAt)}</span>
                   </div>
 
                   {key.lastUsedAt && (
                     <div className={styles.infoRow}>
-                      <span className={styles.infoLabel}>آخر استخدام</span>
+                      <span className={styles.infoLabel}>{t("apiKeysPage.lastUsed")}</span>
                       <span className={styles.infoValue}>{formatDate(key.lastUsedAt as unknown as { _seconds: number; _nanoseconds: number })}</span>
                     </div>
                   )}
@@ -281,7 +271,7 @@ export default function ApiKeysPage() {
                     disabled={deletingId === key.id}
                   >
                     {deletingId === key.id ? (
-                      "جاري الحذف..."
+                      t("apiKeysPage.deleting")
                     ) : (
                       <>
                         <svg
@@ -306,7 +296,7 @@ export default function ApiKeysPage() {
                             strokeLinejoin="round"
                           />
                         </svg>
-                        حذف المفتاح
+                        {t("apiKeysPage.deleteKey")}
                       </>
                     )}
                   </button>
@@ -339,17 +329,17 @@ export default function ApiKeysPage() {
                 />
               </svg>
             </div>
-            <h2 className={styles.modalTitle}>إنشاء مفتاح API جديد</h2>
+            <h2 className={styles.modalTitle}>{t("apiKeysPage.createKeyModal.title")}</h2>
             <p className={styles.modalMessage}>
-              أدخل اسماً وصفياً للمفتاح الجديد لمساعدتك في التعرف عليه لاحقاً.
+              {t("apiKeysPage.createKeyModal.description")}
             </p>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>اسم المفتاح</label>
+              <label className={styles.label}>{t("apiKeysPage.keyName")}</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="مثال: مفتاح للمتجر الرئيسي"
+                placeholder={t("apiKeysPage.keyNamePlaceholder")}
                 value={newKeyName}
                 onChange={(e) => setNewKeyName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreateKey()}
@@ -362,14 +352,14 @@ export default function ApiKeysPage() {
                 onClick={() => setShowCreateModal(false)}
                 disabled={creating}
               >
-                إلغاء
+                {t("apiKeysPage.createKeyModal.cancel")}
               </button>
               <button
                 className={styles.confirmButton}
                 onClick={handleCreateKey}
                 disabled={creating}
               >
-                {creating ? "جاري الإنشاء..." : "إنشاء المفتاح"}
+                {creating ? t("apiKeysPage.createKeyModal.creating") : t("apiKeysPage.createKeyModal.create")}
               </button>
             </div>
           </div>
@@ -398,10 +388,10 @@ export default function ApiKeysPage() {
                 />
               </svg>
             </div>
-            <h2 className={styles.modalTitle}>حذف مفتاح API</h2>
+            <h2 className={styles.modalTitle}>{t("apiKeysPage.deleteKeyModal.title")}</h2>
             <p className={styles.modalMessage}>
-              هل أنت متأكد من حذف مفتاح <strong>{selectedKey.name}</strong>؟
-              هذا الإجراء لا يمكن التراجع عنه وسيتم فقدان الوصول المرتبط بهذا المفتاح.
+              {t("apiKeysPage.deleteKeyModal.description")} <strong>{selectedKey.name}</strong>?
+              {t("apiKeysPage.deleteKeyModal.warning")}
             </p>
             <div className={styles.modalButtons}>
               <button
@@ -409,7 +399,7 @@ export default function ApiKeysPage() {
                 onClick={() => setShowDeleteModal(false)}
                 disabled={!!deletingId}
               >
-                إلغاء
+                {t("apiKeysPage.deleteKeyModal.cancel")}
               </button>
               <button
                 className={styles.confirmButton}
@@ -417,7 +407,7 @@ export default function ApiKeysPage() {
                 onClick={handleDeleteKey}
                 disabled={!!deletingId}
               >
-                {deletingId ? "جاري الحذف..." : "حذف المفتاح"}
+                {deletingId ? t("apiKeysPage.deleting") : t("apiKeysPage.deleteKeyModal.delete")}
               </button>
             </div>
           </div>
@@ -443,7 +433,7 @@ export default function ApiKeysPage() {
               strokeLinejoin="round"
             />
           </svg>
-          تم نسخ المفتاح
+          {t("apiKeysPage.copiedToast")}
         </div>
       )}
 

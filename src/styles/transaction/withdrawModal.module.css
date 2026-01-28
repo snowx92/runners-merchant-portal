@@ -48,6 +48,9 @@
 
 .modalContent {
   padding: 40px 32px;
+}
+
+[dir="rtl"] .modalContent {
   direction: rtl;
   text-align: right;
 }
@@ -58,12 +61,18 @@
   font-weight: 700;
   color: #111;
   margin: 0 0 24px 0;
+}
+
+[dir="rtl"] .modalTitle {
   text-align: right;
 }
 
 /* Balance Section */
 .balanceSection {
   margin-bottom: 32px;
+}
+
+[dir="rtl"] .balanceSection {
   text-align: right;
 }
 
@@ -79,6 +88,9 @@
   font-weight: 700;
   color: #111;
   margin: 0;
+}
+
+[dir="rtl"] .balanceAmount {
   direction: rtl;
 }
 
@@ -97,6 +109,9 @@
   font-weight: 600;
   color: #111;
   margin-bottom: 12px;
+}
+
+[dir="rtl"] .label {
   text-align: right;
 }
 
@@ -111,8 +126,11 @@
   color: #111;
   outline: none;
   transition: background 0.2s ease;
-  text-align: right;
   font-family: inherit;
+}
+
+[dir="rtl"] .input {
+  text-align: right;
 }
 
 .input::placeholder {
@@ -140,9 +158,12 @@
   outline: none;
   cursor: pointer;
   appearance: none;
-  text-align: right;
   font-family: inherit;
   transition: background 0.2s ease;
+}
+
+[dir="rtl"] .select {
+  text-align: right;
 }
 
 .select:focus {

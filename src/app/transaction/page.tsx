@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { WithdrawModal } from "@/components/transaction/WithdrawModal";
@@ -21,6 +21,8 @@ const cairo = Cairo({
 });
 
 function TransactionContent() {
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const t = useTranslations('wallet');
   const tCommon = useTranslations('common');
   const searchParams = useSearchParams();
@@ -70,13 +72,19 @@ function TransactionContent() {
   const formatDate = (date: any) => {
     try {
       if (!date) return "";
+      let timestamp: Date;
       if (typeof date === "object" && date._seconds) {
-        const d = new Date(date._seconds * 1000);
-        return d.toLocaleDateString("ar-EG");
+        timestamp = new Date(date._seconds * 1000);
+      } else {
+        timestamp = new Date(date);
       }
-      return new Date(date).toLocaleDateString("ar-EG");
+      // Manually format to ensure Western numerals in both English and Arabic modes
+      const month = String(timestamp.getMonth() + 1).padStart(2, '0');
+      const day = String(timestamp.getDate()).padStart(2, '0');
+      const year = timestamp.getFullYear();
+      return `${month}/${day}/${year}`;
     } catch (error) {
-      return "error in date" + error;
+      return "";
     }
   };
 
@@ -158,7 +166,7 @@ function TransactionContent() {
 
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>

@@ -6,6 +6,7 @@ import { Cairo } from "next/font/google";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { zoneService } from "@/lib/api/services/zoneService";
 import { orderService } from "@/lib/api/services/orderService";
 import { locationService } from "@/lib/api/services/locationService";
@@ -30,12 +31,12 @@ interface OrderForm {
   recipientAddress: string;
   recipientName: string;
   recipientPhone: string;
-  clientAddressId: string; // pickupId - اختيار عنوان الاستلام
-  governorate: string; // المحافظة
+  clientAddressId: string;
+  governorate: string;
   governorateId: string;
-  city: string; // المدينة
+  city: string;
   cityId: string;
-  paymentType: "COD" | "PREPAID"; // دفع مقدم or مدفوع اونلاين
+  paymentType: "COD" | "PREPAID";
   notes: string;
   image: string | null;
   isCollapsed: boolean;
@@ -44,8 +45,10 @@ interface OrderForm {
 export default function AddOrder() {
   const router = useRouter();
   const fileInputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
-
-
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations("orders.add");
+  const tCommon = useTranslations("common");
 
   // API data states
   const [userAddresses, setUserAddresses] = useState<UserAddress[]>([]);
@@ -66,7 +69,7 @@ export default function AddOrder() {
       governorateId: "",
       city: "",
       cityId: "",
-      paymentType: "COD", // Default to COD (دفع عند الاستلام)
+      paymentType: "COD",
       notes: "",
       image: null,
       isCollapsed: false,
@@ -92,14 +95,16 @@ export default function AddOrder() {
           const zonesData = zonesRes.value.data;
           setZones(zonesData);
 
-          // Find Cairo (القاهرة) and set it as default for all orders
-          const cairo = zonesData.find((zone) => zone.name === "القاهرة");
-          if (cairo) {
+          // Find Cairo (القاهرة or Cairo) and set it as default for all orders
+          const cairoZone = zonesData.find((zone) => 
+            zone.name === "القاهرة" || zone.name === "Cairo" || zone.name === "cairo"
+          );
+          if (cairoZone) {
             setOrders((prev) =>
               prev.map((order) => ({
                 ...order,
-                governorate: cairo.name,
-                governorateId: cairo.id,
+                governorate: cairoZone.name,
+                governorateId: cairoZone.id,
               }))
             );
           }
@@ -112,7 +117,7 @@ export default function AddOrder() {
     };
 
     fetchData();
-  }, []);
+  }, [locale]);
 
   // Helper function to get cities for a selected governorate
   const getCitiesForGovernorate = (governorateId: string) => {
@@ -133,33 +138,33 @@ export default function AddOrder() {
     const newErrors: { [key: string]: string } = {};
 
     if (!order.clientAddressId.trim()) {
-      newErrors[`${orderId}_clientAddressId`] = "اختر عنوانك مطلوب";
+      newErrors[`${orderId}_clientAddressId`] = t("chooseAddressError");
     }
     if (!order.packageDescription.trim()) {
-      newErrors[`${orderId}_packageDescription`] = "وصف الشحنة مطلوب";
+      newErrors[`${orderId}_packageDescription`] = t("packageDescriptionError");
     }
     if (!order.packagePrice.trim() || isNaN(Number(order.packagePrice))) {
-      newErrors[`${orderId}_packagePrice`] = "سعر الشحنة مطلوب ويجب أن يكون رقماً";
+      newErrors[`${orderId}_packagePrice`] = t("packagePriceError");
     }
     if (!order.deliveryPrice.trim() || isNaN(Number(order.deliveryPrice))) {
-      newErrors[`${orderId}_deliveryPrice`] = "سعر التوصيل مطلوب ويجب أن يكون رقماً";
+      newErrors[`${orderId}_deliveryPrice`] = t("deliveryPriceError");
     }
     if (!order.recipientAddress.trim()) {
-      newErrors[`${orderId}_recipientAddress`] = "عنوان المستلم مطلوب";
+      newErrors[`${orderId}_recipientAddress`] = t("recipientAddressError");
     }
     if (!order.recipientName.trim()) {
-      newErrors[`${orderId}_recipientName`] = "اسم المستلم مطلوب";
+      newErrors[`${orderId}_recipientName`] = t("recipientNameError");
     }
     if (!order.recipientPhone.trim()) {
-      newErrors[`${orderId}_recipientPhone`] = "رقم الهاتف مطلوب";
+      newErrors[`${orderId}_recipientPhone`] = t("recipientPhoneError");
     } else if (!/^\d{11}$/.test(order.recipientPhone) || !order.recipientPhone.startsWith("0")) {
-      newErrors[`${orderId}_recipientPhone`] = "رقم الهاتف يجب أن يكون 11 رقماً ويبدأ بـ 0";
+      newErrors[`${orderId}_recipientPhone`] = t("recipientPhoneInvalidError");
     }
     if (!order.governorateId.trim()) {
-      newErrors[`${orderId}_governorate`] = "المحافظة مطلوبة";
+      newErrors[`${orderId}_governorate`] = t("governorateError");
     }
     if (!order.cityId.trim()) {
-      newErrors[`${orderId}_city`] = "المدينة مطلوبة";
+      newErrors[`${orderId}_city`] = t("cityError");
     }
 
     setErrors((prev) => ({ ...prev, ...newErrors }));
@@ -299,7 +304,7 @@ export default function AddOrder() {
       }
     } catch (error) {
       console.error("❌ Error creating order(s):", error);
-      alert(error instanceof Error ? error.message : "فشل في إنشاء الطلب. الرجاء المحاولة مرة أخرى");
+      alert(error instanceof Error ? error.message : t("failedToCreateOrder"));
     } finally {
       setLoading(false);
     }
@@ -329,7 +334,7 @@ export default function AddOrder() {
             <span className={styles.orderNumber}>{order.id}</span>
             <div className={styles.collapsedInfo}>
               <span className={styles.collapsedTitle}>
-                اسم العميل: {order.recipientName || "أحمد محمد"}    وصف الشحنة: {order.packageDescription.substring(0, 30) || "وصف الشحنة هنا"}
+                {order.recipientName || tCommon("user")} - {order.packageDescription.substring(0, 30) || t("packageDescriptionPlaceholder")}
               </span>
             </div>
           </div>
@@ -378,21 +383,21 @@ export default function AddOrder() {
               </div>
               <div className={styles.orderHeaderInfo}>
                 <span className={styles.orderNumber}>{order.id}</span>
-                <span className={styles.orderHeaderTitle}>وصف الشحنة</span>
+                <span className={styles.orderHeaderTitle}>{t("orderHeaderTitle")}</span>
               </div>
             </div>
           )}
 
           {/* اختر عنوانك - FIRST FIELD */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>اختر عنوانك</label>
+            <label className={styles.label}>{t("chooseAddress")}</label>
             <div className={styles.selectWrapper}>
               <select
                 className={`${styles.select} ${errors[`${order.id}_clientAddressId`] ? styles.inputError : ""}`}
                 value={order.clientAddressId}
                 onChange={(e) => updateOrder(order.id, "clientAddressId", e.target.value)}
               >
-                <option value="">اختر العنوان</option>
+                <option value="">{t("selectAddress")}</option>
                 {userAddresses.map((address) => (
                   <option key={address.id} value={address.id}>
                     {address.title} - {address.street}, {address.city}
@@ -410,7 +415,7 @@ export default function AddOrder() {
           <div className={styles.formRow}>
             {/* المحافظة - Governorate dropdown */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>المحافظة</label>
+              <label className={styles.label}>{t("governorate")}</label>
               <div className={styles.selectWrapper}>
                 <select
                   className={`${styles.select} ${errors[`${order.id}_governorate`] ? styles.inputError : ""}`}
@@ -422,7 +427,7 @@ export default function AddOrder() {
                     }
                   }}
                 >
-                  <option value="">اختر المحافظة</option>
+                  <option value="">{t("selectGovernorate")}</option>
                   {zones.map((zone) => (
                     <option key={zone.id} value={zone.id}>
                       {zone.name}
@@ -437,7 +442,7 @@ export default function AddOrder() {
             </div>
             {/* المدينة - City dropdown (depends on governorate) */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>المدينة</label>
+              <label className={styles.label}>{t("city")}</label>
               <div className={styles.selectWrapper}>
                 <select
                   className={`${styles.select} ${errors[`${order.id}_city`] ? styles.inputError : ""}`}
@@ -452,7 +457,7 @@ export default function AddOrder() {
                   }}
                   disabled={!order.governorateId}
                 >
-                  <option value="">اختر المدينة</option>
+                  <option value="">{t("selectCity")}</option>
                   {getCitiesForGovernorate(order.governorateId).map((city) => (
                     <option key={city.id} value={city.id}>
                       {city.name}
@@ -471,7 +476,7 @@ export default function AddOrder() {
 
           {/* Payment Type - نوع الدفع */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>نوع الدفع</label>
+            <label className={styles.label}>{t("paymentType")}</label>
             <div style={{
               display: "flex",
               justifyContent: "space-between",
@@ -503,7 +508,7 @@ export default function AddOrder() {
                     transition: "all 0.2s ease"
                   }}
                 />
-                <span style={{ fontSize: "14px" }}>دفع عند الاستلام (COD)</span>
+                <span style={{ fontSize: "14px" }}>{t("cod")}</span>
               </label>
               <label style={{
                 display: "flex",
@@ -529,16 +534,16 @@ export default function AddOrder() {
                     transition: "all 0.2s ease"
                   }}
                 />
-                <span style={{ fontSize: "14px" }}>مدفوع اونلاين (Prepaid)</span>
+                <span style={{ fontSize: "14px" }}>{t("prepaid")}</span>
               </label>
             </div>
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>وصف الشحنة</label>
+            <label className={styles.label}>{t("packageDescription")}</label>
             <textarea
               className={`${styles.textarea} ${errors[`${order.id}_packageDescription`] ? styles.inputError : ""}`}
-              placeholder="ادخل وصف الشحنة هنا"
+              placeholder={t("packageDescriptionPlaceholder")}
               rows={4}
               value={order.packageDescription}
               onChange={(e) => updateOrder(order.id, "packageDescription", e.target.value)}
@@ -550,11 +555,11 @@ export default function AddOrder() {
 
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>سعر التوصيل</label>
+              <label className={styles.label}>{t("deliveryPrice")}</label>
               <input
                 type="text"
                 className={`${styles.input} ${errors[`${order.id}_deliveryPrice`] ? styles.inputError : ""}`}
-                placeholder="ادخل سعر التوصيل"
+                placeholder={t("deliveryPricePlaceholder")}
                 value={order.deliveryPrice}
                 onChange={(e) => updateOrder(order.id, "deliveryPrice", e.target.value)}
               />
@@ -563,11 +568,11 @@ export default function AddOrder() {
               )}
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.label}>سعر الشحنة</label>
+              <label className={styles.label}>{t("packagePrice")}</label>
               <input
                 type="text"
                 className={`${styles.input} ${errors[`${order.id}_packagePrice`] ? styles.inputError : ""}`}
-                placeholder="ادخل سعر الشحنة"
+                placeholder={t("packagePricePlaceholder")}
                 value={order.packagePrice}
                 onChange={(e) => updateOrder(order.id, "packagePrice", e.target.value)}
               />
@@ -578,7 +583,7 @@ export default function AddOrder() {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>صورة الشحنة (اختياري)</label>
+            <label className={styles.label}>{t("packageImage")}</label>
             <input
               ref={(el) => {
                 fileInputRefs.current[order.id] = el;
@@ -586,7 +591,7 @@ export default function AddOrder() {
               type="file"
               accept="image/png, image/jpeg"
               onChange={(e) => handleImageUpload(e, order.id)}
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
             />
             {order.image ? (
               <div className={styles.imagePreview}>
@@ -621,17 +626,17 @@ export default function AddOrder() {
                     <circle cx="24" cy="24" r="20" stroke="#999" strokeWidth="2" />
                   </svg>
                 </div>
-                <p className={styles.uploadText}>قم برفع صور للطلب هنا بصيغة PNG,JPG</p>
+                <p className={styles.uploadText}>{t("uploadImagePlaceholder")}</p>
               </div>
             )}
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>عنوان المستلم</label>
+            <label className={styles.label}>{t("recipientAddress")}</label>
             <input
               type="text"
               className={`${styles.input} ${errors[`${order.id}_recipientAddress`] ? styles.inputError : ""}`}
-              placeholder="ادخل عنوان المستلم"
+              placeholder={t("recipientAddressPlaceholder")}
               value={order.recipientAddress}
               onChange={(e) => updateOrder(order.id, "recipientAddress", e.target.value)}
             />
@@ -641,11 +646,11 @@ export default function AddOrder() {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>اسم المستلم</label>
+            <label className={styles.label}>{t("recipientName")}</label>
             <input
               type="text"
               className={`${styles.input} ${errors[`${order.id}_recipientName`] ? styles.inputError : ""}`}
-              placeholder="ادخل اسم المستلم هنا"
+              placeholder={t("recipientNamePlaceholder")}
               value={order.recipientName}
               onChange={(e) => updateOrder(order.id, "recipientName", e.target.value)}
             />
@@ -655,11 +660,11 @@ export default function AddOrder() {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>رقم هاتف المستلم</label>
+            <label className={styles.label}>{t("recipientPhone")}</label>
             <input
               type="text"
               className={`${styles.input} ${errors[`${order.id}_recipientPhone`] ? styles.inputError : ""}`}
-              placeholder="ادخل رقم الهاتف (01xxxxxxxxx)"
+              placeholder={t("recipientPhonePlaceholder")}
               value={order.recipientPhone}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
@@ -675,10 +680,10 @@ export default function AddOrder() {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>الملاحظات</label>
+            <label className={styles.label}>{t("notes")}</label>
             <textarea
               className={styles.textarea}
-              placeholder="ادخل الملاحظات هنا"
+              placeholder={t("notesPlaceholder")}
               rows={3}
               value={order.notes}
               onChange={(e) => updateOrder(order.id, "notes", e.target.value)}
@@ -690,33 +695,32 @@ export default function AddOrder() {
   );
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} data-rtl={isRTL} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
-        <div className={styles.header}>
+        <div className={styles.header} data-rtl={isRTL}>
+          <h1 className={styles.pageTitle} data-rtl={isRTL}>
+            <span className={styles.backArrow} data-rtl={isRTL} onClick={() => router.push("/orders")}>
+              →
+            </span>
+            {t("title")}
+          </h1>
           <div className={styles.toggleContainer}>
-
             <button
               className={styles.toggleButton}
               onClick={handleAddAnotherOrder}
             >
-              اضافة طلب اخر
+              {t("addAnotherOrder")}
             </button>
             <button
               className={`${styles.toggleButton} ${styles.toggleButtonActive}`}
               onClick={handleConfirmOrder}
               disabled={loading}
             >
-              {loading ? "جاري التحميل..." : "تأكيد الطلب"}
+              {loading ? t("loading") : t("confirmOrder")}
             </button>
           </div>
-          <h1 className={styles.pageTitle}>
-<span className={styles.backArrow} onClick={() => router.push("/orders")}>
-              →
-            </span>
-            اضافة طلب
-          </h1>
         </div>
 
         {orders.map((order) => renderOrderForm(order))}
@@ -724,3 +728,4 @@ export default function AddOrder() {
     </main>
   );
 }
+

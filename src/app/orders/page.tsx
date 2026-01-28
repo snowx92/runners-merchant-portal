@@ -7,7 +7,7 @@ import { Cairo } from "next/font/google";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { orderService } from "@/lib/api/services/orderService";
 import { zoneService } from "@/lib/api/services/zoneService";
 import type { Order } from "@/lib/api/types/home.types";
@@ -36,6 +36,8 @@ interface FilterState {
 
 export default function Orders() {
   const router = useRouter();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const t = useTranslations('orders');
   const tCommon = useTranslations('common');
   const [orders, setOrders] = useState<Order[]>([]);
@@ -260,7 +262,7 @@ export default function Orders() {
   };
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
@@ -416,7 +418,7 @@ export default function Orders() {
       {/* Filter Modal */}
       {showFilterModal && (
         <div className={styles.modalOverlay} onClick={() => setShowFilterModal(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()} dir={isRTL ? "rtl" : "ltr"}>
             <div className={styles.modalHeader}>
               <button
                 className={styles.closeButton}
@@ -468,9 +470,12 @@ export default function Orders() {
                   <div className={styles.sliderTrack}>
                     <div
                       className={styles.sliderRange}
-                      style={{
+                      style={isRTL ? {
                         right: `${(Number(filters.priceFrom) / 10000) * 100}%`,
                         left: `${100 - (Number(filters.priceTo) / 10000) * 100}%`
+                      } : {
+                        left: `${(Number(filters.priceFrom) / 10000) * 100}%`,
+                        right: `${100 - (Number(filters.priceTo) / 10000) * 100}%`
                       }}
                     />
                   </div>
@@ -517,9 +522,12 @@ export default function Orders() {
                   <div className={styles.sliderTrack}>
                     <div
                       className={styles.sliderRange}
-                      style={{
+                      style={isRTL ? {
                         right: `${(Number(filters.shippingPriceFrom) / 500) * 100}%`,
                         left: `${100 - (Number(filters.shippingPriceTo) / 500) * 100}%`
+                      } : {
+                        left: `${(Number(filters.shippingPriceFrom) / 500) * 100}%`,
+                        right: `${100 - (Number(filters.shippingPriceTo) / 500) * 100}%`
                       }}
                     />
                   </div>

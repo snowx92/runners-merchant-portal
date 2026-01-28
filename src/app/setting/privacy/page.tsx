@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
@@ -19,6 +20,9 @@ import { commonService } from "@/lib/api/services/commonService";
 
 export default function PrivacyPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations("settings");
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,36 +44,22 @@ export default function PrivacyPage() {
   }, []);
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.titleSection}>
             <button className={styles.backButton} onClick={() => router.back()}>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M19 12H5M12 19l-7-7 7-7"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {isRTL ? "→" : "←"}
             </button>
-            <h1 className={styles.pageTitle}>سياسة الخصوصية</h1>
+            <h1 className={styles.pageTitle}>{t("privacyPage.title")}</h1>
           </div>
         </div>
 
         <div className={styles.contentCard}>
           {isLoading ? (
-            <div style={{ textAlign: 'center', padding: '50px' }}>جاري التحميل...</div>
+            <div style={{ textAlign: 'center', padding: '50px' }}>{t("common.loading")}</div>
           ) : (
             <div
               className={styles.paragraph}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { AddAddressModal } from "@/components/profile/AddAddressModal";
@@ -23,6 +23,8 @@ const cairo = Cairo({
 });
 
 export default function ProfilePage() {
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const t = useTranslations('profile');
   const tCommon = useTranslations('common');
   const router = useRouter();
@@ -178,7 +180,7 @@ export default function ProfilePage() {
   const displayAvatar = user?.avatar || "/icons/User.svg";
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
@@ -340,9 +342,9 @@ export default function ProfilePage() {
           ) : (
             <div className={styles.reviewsGrid}>
               {reviews.map((review) => {
-                const reviewerName = review.reviewerName || (review.user ? `${review.user.firstName} ${review.user.lastName}` : "مستخدم");
+                const reviewerName = review.reviewerName || (review.user ? `${review.user.firstName} ${review.user.lastName}` : tCommon('user'));
                 const reviewerAvatar = review.reviewerAvatar || review.user?.avatar || "/icons/User.svg";
-                const reviewDate = review.date || (review.createdAt ? new Date(review.createdAt).toLocaleDateString('ar-EG') : "");
+                const reviewDate = review.date || (review.createdAt ? new Date(review.createdAt).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US') : "");
 
                 return (
                   <div key={review.id} className={styles.reviewCard}>

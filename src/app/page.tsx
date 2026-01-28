@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { Navbar } from "@/components/home/Navbar";
 import { HeroBanner } from "@/components/home/HeroBanner";
@@ -22,6 +22,8 @@ const cairo = Cairo({
 
 export default function Home() {
   const { isAuthenticated, loading } = useAuth();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const t = useTranslations('home');
   const tCommon = useTranslations('common');
   const [analytics, setAnalytics] = useState<HomeAnalytics | null>(null);
@@ -125,7 +127,7 @@ export default function Home() {
   });
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>

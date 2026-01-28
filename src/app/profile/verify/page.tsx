@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
@@ -18,6 +19,10 @@ const cairo = Cairo({
 
 export default function VerifyProfilePage() {
   const router = useRouter();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations('profile.verify');
+  const tCommon = useTranslations('common');
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [idNumber, setIdNumber] = useState("");
@@ -116,7 +121,7 @@ export default function VerifyProfilePage() {
   const handleVerify = async () => {
     if (!firstName || !lastName || !idNumber || !birthDate || !idImage || !idHolderImage) {
       // Basic validation
-      alert("يرجى تعبئة جميع الحقول");
+      alert(t('fillAllFields'));
       return;
     }
 
@@ -137,11 +142,11 @@ export default function VerifyProfilePage() {
       if (response && response.data) {
         setVerificationStatus(response.data);
       }
-      alert("تم إرسال طلب التوثيق بنجاح");
+      alert(t('submittedSuccess'));
       router.back();
     } catch (error) {
       console.error("Verification submission failed:", error);
-      alert("فشل في إرسال طلب التوثيق");
+      alert(t('submittedError'));
     } finally {
       setIsLoading(false);
     }
@@ -151,39 +156,25 @@ export default function VerifyProfilePage() {
   const isReadOnly = verificationStatus === 'PENDING' || verificationStatus === 'APPROVED';
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.titleSection}>
             <button className={styles.backButton} onClick={() => router.back()}>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M15 18l-6-6 6-6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {isRTL ? "→" : "←"}
             </button>
-            <h1 className={styles.pageTitle}>توثيق الحساب</h1>
+            <h1 className={styles.pageTitle}>{t('title')}</h1>
           </div>
           {/* Show status instead of button if verified or pending? */}
           {!isReadOnly && (
             <button className={styles.verifyButton} onClick={handleVerify}>
-              تحقق من البيانات
+              {t('verifyButton')}
             </button>
           )}
-          {verificationStatus === 'PENDING' && <div style={{ color: 'orange', fontWeight: 'bold' }}>قيد المراجعة</div>}
-          {verificationStatus === 'APPROVED' && <div style={{ color: 'green', fontWeight: 'bold' }}>تم التوثيق</div>}
+          {verificationStatus === 'PENDING' && <div style={{ color: 'orange', fontWeight: 'bold' }}>{t('underReview')}</div>}
+          {verificationStatus === 'APPROVED' && <div style={{ color: 'green', fontWeight: 'bold' }}>{t('verified')}</div>}
         </div>
 
         <div className={styles.formCard}>
@@ -193,11 +184,11 @@ export default function VerifyProfilePage() {
             <div className={styles.formColumn}>
               {/* First Name */}
               <div className={styles.formGroup}>
-                <label className={styles.label}>الاسم الأول</label>
+                <label className={styles.label}>{t('firstName')}</label>
                 <input
                   type="text"
                   className={styles.input}
-                  placeholder="الاسم الأول"
+                  placeholder={t('firstName')}
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   disabled={isReadOnly}
@@ -206,11 +197,11 @@ export default function VerifyProfilePage() {
 
               {/* ID Number */}
               <div className={styles.formGroup}>
-                <label className={styles.label}>رقم البطاقة</label>
+                <label className={styles.label}>{t('idNumberLabel')}</label>
                 <input
                   type="text"
                   className={styles.input}
-                  placeholder="رقم البطاقة"
+                  placeholder={t('idNumberLabel')}
                   value={idNumber}
                   onChange={(e) => setIdNumber(e.target.value)}
                   disabled={isReadOnly}
@@ -222,11 +213,11 @@ export default function VerifyProfilePage() {
             <div className={styles.formColumn}>
               {/* Last Name */}
               <div className={styles.formGroup}>
-                <label className={styles.label}>الاسم الأخير</label>
+                <label className={styles.label}>{t('lastNameLabel')}</label>
                 <input
                   type="text"
                   className={styles.input}
-                  placeholder="الاسم الأخير"
+                  placeholder={t('lastNameLabel')}
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   disabled={isReadOnly}
@@ -235,12 +226,12 @@ export default function VerifyProfilePage() {
 
               {/* Birth Date */}
               <div className={styles.formGroup}>
-                <label className={styles.label}>تاريخ الميلاد</label>
+                <label className={styles.label}>{t('birthDateLabel')}</label>
                 <div className={styles.dateInputWrapper}>
                   <input
                     type="date"
                     className={styles.dateInput}
-                    placeholder="ي ي/ش ش/س س/س س"
+                    placeholder="DD/MM/YYYY"
                     value={birthDate}
                     onChange={(e) => setBirthDate(e.target.value)}
                     disabled={isReadOnly}
@@ -278,7 +269,7 @@ export default function VerifyProfilePage() {
 
           {/* ID Card Image Upload */}
           <div className={styles.uploadSection}>
-            <label className={styles.uploadLabel}>بطاقة الهوية</label>
+            <label className={styles.uploadLabel}>{t('idCardLabel')}</label>
             <div className={styles.uploadBox} onClick={handleIdImageClick} style={{ cursor: isReadOnly ? 'default' : 'pointer' }}>
               {idImage ? (
                 <Image
@@ -311,7 +302,7 @@ export default function VerifyProfilePage() {
                     />
                   </svg>
                   <p className={styles.uploadText}>
-                    قم بتصوير صورة بطاقة هويتك صورة واضحة من الوجه الأمامي، تأكد من ظهور الاسم ووضوح الصورة
+                    {t('idCardPlaceholder')}
                   </p>
                 </>
               )}
@@ -327,7 +318,7 @@ export default function VerifyProfilePage() {
 
           {/* ID Holder Image Upload */}
           <div className={styles.uploadSection}>
-            <label className={styles.uploadLabel}>صورة لنفسك حاملاً البطاقة</label>
+            <label className={styles.uploadLabel}>{t('idHolderLabel')}</label>
             <div className={styles.uploadBox} onClick={handleIdHolderImageClick} style={{ cursor: isReadOnly ? 'default' : 'pointer' }}>
               {idHolderImage ? (
                 <Image
@@ -360,7 +351,7 @@ export default function VerifyProfilePage() {
                     />
                   </svg>
                   <p className={styles.uploadText}>
-                    قم بتصوير نفسك حاملاً بطاقتك الشخصية صورة سيلفي، تأكد من ظهور ملامح وجهك والبطاقة
+                    {t('idHolderPlaceholder')}
                   </p>
                 </>
               )}

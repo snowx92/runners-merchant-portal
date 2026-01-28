@@ -117,11 +117,13 @@
     "viewAll": "عرض الكل",
     "noOrders": "لا توجد طلبات",
     "stats": {
-      "totalOrders": "إجمالي الطلبات",
-      "completedOrders": "طلبات مكتملة",
-      "pendingOrders": "طلبات معلقة",
-      "totalRevenue": "إجمالي الإيرادات"
-    }
+      "title": "الإحصائيات",
+      "orders": "طلبات",
+      "activeOrders": "الطلبات النشطة",
+      "completedOrders": "الطلبات المكتملة",
+      "netProfit": "صافي الأرباح"
+    },
+    "statsTitle": "الإحصائيات"
   },
   "orders": {
     "title": "الطلبات",
@@ -130,16 +132,21 @@
     "searchPlaceholder": "ابحث برقم الطلب أو اسم العميل",
     "filterOrders": "تصفية الطلبات",
     "noOrders": "لا توجد طلبات",
+    "orderNumber": "طلب #{id}",
+    "customer": "العميل",
     "price": "السعر",
     "shipping": "التوصيل",
     "status": {
       "all": "الكل",
       "pending": "جديد",
+      "pendingCourier": "في انتظار المندوب",
+      "received": "تم الاستلام من التاجر",
       "accepted": "مقبول",
       "pickedUp": "تم الاستلام",
       "delivered": "قيد التسليم",
       "completed": "مكتمل",
       "cancelled": "ملغي",
+      "expired": "منتهي",
       "failed": "فشل",
       "returned": "مرتجع"
     },
@@ -160,16 +167,165 @@
       "orderPrice": "سعر الطلب",
       "shippingPrice": "سعر التوصيل",
       "notes": "ملاحظات",
-      "submit": "إنشاء الطلب"
+      "submit": "إنشاء الطلب",
+      "chooseAddress": "اختر عنوانك",
+      "selectAddress": "اختر العنوان",
+      "governorate": "المحافظة",
+      "selectGovernorate": "اختر المحافظة",
+      "city": "المدينة",
+      "selectCity": "اختر المدينة",
+      "paymentType": "نوع الدفع",
+      "cod": "دفع عند الاستلام (COD)",
+      "prepaid": "مدفوع اونلاين (Prepaid)",
+      "packageDescription": "وصف الشحنة",
+      "packageDescriptionPlaceholder": "ادخل وصف الشحنة هنا",
+      "deliveryPrice": "سعر التوصيل",
+      "deliveryPricePlaceholder": "ادخل سعر التوصيل",
+      "packagePrice": "سعر الشحنة",
+      "packagePricePlaceholder": "ادخل سعر الشحنة",
+      "packageImage": "صورة الشحنة (اختياري)",
+      "uploadImagePlaceholder": "قم برفع صور للطلب هنا بصيغة PNG,JPG",
+      "recipientAddress": "عنوان المستلم",
+      "recipientAddressPlaceholder": "ادخل عنوان المستلم",
+      "recipientName": "اسم المستلم",
+      "recipientNamePlaceholder": "ادخل اسم المستلم هنا",
+      "recipientPhone": "رقم هاتف المستلم",
+      "recipientPhonePlaceholder": "ادخل رقم الهاتف (01xxxxxxxxx)",
+      "notesPlaceholder": "ادخل الملاحظات هنا",
+      "addAnotherOrder": "اضافة طلب اخر",
+      "loading": "جاري التحميل...",
+      "confirmOrder": "تأكيد الطلب",
+      "orderHeaderTitle": "وصف الشحنة",
+      "chooseAddressError": "اختر عنوانك مطلوب",
+      "packageDescriptionError": "وصف الشحنة مطلوب",
+      "packagePriceError": "سعر الشحنة مطلوب ويجب أن يكون رقماً",
+      "deliveryPriceError": "سعر التوصيل مطلوب ويجب أن يكون رقماً",
+      "recipientAddressError": "عنوان المستلم مطلوب",
+      "recipientNameError": "اسم المستلم مطلوب",
+      "recipientPhoneError": "رقم الهاتف مطلوب",
+      "recipientPhoneInvalidError": "رقم الهاتف يجب أن يكون 11 رقماً ويبدأ بـ 0",
+      "governorateError": "المحافظة مطلوبة",
+      "cityError": "المدينة مطلوبة",
+      "failedToCreateOrder": "فشل في إنشاء الطلب. الرجاء المحاولة مرة أخرى",
+      "required": "*مطلوب",
+      "customerNamePlaceholder": "ادخل اسم العميل",
+      "orderPricePlaceholder": "ادخل سعر الطلب",
+      "cancel": "إلغاء"
     },
     "bulk": {
-      "title": "إضافة طلبات مجمعة",
-      "downloadTemplate": "تحميل القالب",
+      "title": "إنشاء طلب مجمع",
+      "downloadTemplate": "تحميل قالب",
       "uploadFile": "رفع الملف",
       "dragDrop": "اسحب الملف هنا أو اضغط للاختيار",
       "supportedFormats": "الصيغ المدعومة: Excel (.xlsx, .xls)",
       "preview": "معاينة الطلبات",
-      "submit": "إنشاء الطلبات"
+      "submit": "تأكيد الطلب",
+      "editOrder": "تعديل الطلب",
+      "save": "حفظ التعديلات",
+      "cancel": "إلغاء",
+      "edit": "تعديل الطلب",
+      "packageDescription": "وصف الشحنة",
+      "packageDescriptionPlaceholder": "أدخل وصف الشحنة هنا",
+      "packagePrice": "سعر الشحنة",
+      "packagePricePlaceholder": "أدخل سعر الشحنة",
+      "deliveryPrice": "سعر التوصيل",
+      "deliveryPricePlaceholder": "أدخل سعر التوصيل",
+      "packageImage": "صورة الشحنة (اختياري)",
+      "uploadImagePlaceholder": "رفع صور PNG، JPG بحد أقصى 2 ميجابايت",
+      "recipientAddress": "عنوان المستقبل",
+      "selectAddress": "اختر العنوان",
+      "recipientName": "اسم المستقبل",
+      "recipientNamePlaceholder": "أدخل اسم المستقبل هنا",
+      "recipientPhone": "هاتف المستقبل",
+      "recipientPhonePlaceholder": "أدخل رقم الهاتف (01xxxxxxxxx)",
+      "city": "المدينة",
+      "selectCity": "اختر المدينة",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "أدخل الملاحظات هنا",
+      "currency": "جنيه"
+    },
+    "details": {
+      "orderNotFound": "لم يتم العثور على الطلب",
+      "editOrder": "تعديل الطلب",
+      "cancelOrder": "إلغاء الطلب",
+      "showQRCode": "عرض QR Code",
+      "rate": "تقييم",
+      "confirmReturnReceived": "تم استلام المرتجع",
+      "relistOrder": "إعادة طرح الطلب",
+      "orderDetails": "تفاصيل الطلب",
+      "packagePrice": "سعر الشحنة",
+      "shippingPrice": "سعر التوصيل",
+      "otpCode": "رمز OTP",
+      "bidsTitle": "العروض المقدمة",
+      "noBids": "لا توجد عروض حتى الآن",
+      "successfulOrders": "عملية ناجحة",
+      "suggestedPrice": "سعر التوصيل المقترح",
+      "bidDate": "تاريخ العرض",
+      "deliveryMethod": "طريقة التوصيل",
+      "acceptBid": "قبول العرض",
+      "rejectBid": "رفض العرض",
+      "acceptedBid": "مقبول ✓",
+      "rejectedBid": "مرفوض ✕",
+      "processing": "جاري المعالجة...",
+      "confirmAcceptBid": "هل أنت متأكد من قبول هذا العرض؟",
+      "bidAcceptedSuccess": "تم قبول العرض بنجاح",
+      "bidAcceptedError": "فشل في قبول العرض",
+      "confirmRejectBid": "هل أنت متأكد من رفض هذا العرض؟",
+      "bidRejectedSuccess": "تم رفض العرض بنجاح",
+      "bidRejectedError": "فشل في رفض العرض",
+      "locationUpdatedSuccess": "تم تحديث موقع التوصيل بنجاح",
+      "locationUpdatedError": "فشل في تحديث موقع التوصيل",
+      "enterCancelReason": "يرجى إدخال سبب الإلغاء",
+      "orderCancelledSuccess": "تم إلغاء الطلب بنجاح",
+      "orderCancelledError": "فشل في إلغاء الطلب",
+      "returnConfirmedSuccess": "تم تأكيد استلام المرتجع بنجاح",
+      "returnConfirmedError": "فشل في تأكيد استلام المرتجع",
+      "confirmRelist": "هل أنت متأكد من إعادة طرح هذا الطلب؟",
+      "relistSuccess": "تم إعادة طرح الطلب بنجاح",
+      "relistError": "فشل في إعادة طرح الطلب",
+      "ratingSubmittedSuccess": "تم إرسال التقييم بنجاح",
+      "ratingSubmittedError": "فشل في إرسال التقييم",
+      "loadingQRCode": "جاري تحميل QR Code...",
+      "failedLoadingQRCode": "فشل في تحميل QR Code",
+      "mapTitle": "تحديد موقع التوصيل",
+      "mapDescription": "اسحب العلامة على الخريطة لتحديد موقع التوصيل الجديد",
+      "otpPrepaid": {
+        "title": "رمز OTP للدفع المسبق",
+        "description": "هذا الرمز خاص بالدفع المسبق، احتفظ به وأعطه للمندوب عند التسليم"
+      },
+      "otpReceive": {
+        "title": "رمز استلام OTP",
+        "description": "هذا الرمز لاستلام الطلب من التاجر"
+      },
+      "otpCancel": {
+        "title": "رمز إلغاء OTP",
+        "description": "رمز الإلغاء (للإلغاء دون سبب)"
+      },
+      "cancelOrderModal": {
+        "title": "إلغاء الطلب",
+        "label": "سبب الإلغاء",
+        "placeholder": "اكتب سبب إلغاء الطلب..."
+      },
+      "processingCancel": "جاري الإلغاء...",
+      "confirmCancel": "تأكيد الإلغاء",
+      "returnModal": {
+        "title": "تأكيد استلام المرتجع",
+        "hint": "هل أنت متأكد من تأكيد استلام المرتجع؟ سيتم تحديث حالة الطلب."
+      },
+      "processingReturn": "جاري التأكيد...",
+      "confirmReturn": "تأكيد الاستلام",
+      "ratingModal": {
+        "title": "تقييم المندوب",
+        "ratingLabel": "التقييم",
+        "commentLabel": "التعليق (اختياري)",
+        "placeholder": "اكتب تعليقا..."
+      },
+      "processingRating": "جاري الإرسال...",
+      "submitRating": "إرسال التقييم",
+      "qrModal": {
+        "title": "QR Code",
+        "hint": "اعرض هذا الكود للمندوب"
+      }
     }
   },
   "profile": {
@@ -194,13 +350,30 @@
       "title": "تعديل الملف الشخصي",
       "avatar": "الصورة الشخصية",
       "changeAvatar": "تغيير الصورة",
-      "submit": "حفظ التغييرات"
+      "submit": "حفظ التغييرات",
+      "firstName": "الاسم الأول",
+      "lastName": "الاسم الأخير",
+      "storeName": "اسم المتجر"
     },
     "verify": {
       "title": "توثيق الحساب",
       "uploadId": "رفع صورة الهوية",
       "uploadCommercial": "رفع السجل التجاري",
-      "submit": "إرسال للمراجعة"
+      "submit": "إرسال للمراجعة",
+      "firstName": "الاسم الأول",
+      "lastNameLabel": "الاسم الأخير",
+      "idNumberLabel": "رقم البطاقة",
+      "birthDateLabel": "تاريخ الميلاد",
+      "idCardLabel": "بطاقة الهوية",
+      "idCardPlaceholder": "قم بتصوير صورة بطاقة هويتك صورة واضحة من الوجه الأمامي، تأكد من ظهور الاسم ووضوح الصورة",
+      "idHolderLabel": "صورة لنفسك حاملاً البطاقة",
+      "idHolderPlaceholder": "قم بتصوير نفسك حاملاً بطاقتك الشخصية صورة سيلفي، تأكد من ظهور ملامح وجهك والبطاقة",
+      "verifyButton": "تحقق من البيانات",
+      "fillAllFields": "يرجى تعبئة جميع الحقول المطلوبة",
+      "submittedSuccess": "تم إرسال طلب التوثيق بنجاح",
+      "submittedError": "فشل في إرسال طلب التوثيق",
+      "underReview": "قيد المراجعة",
+      "verified": "تم التوثيق"
     }
   },
   "address": {
@@ -265,11 +438,98 @@
     "deleting": "جاري الحذف...",
     "settingUpdated": "تم تحديث الإعداد بنجاح",
     "settingUpdateFailed": "فشل في تحديث الإعداد",
+    "common": {
+      "loading": "جاري التحميل..."
+    },
     "password": {
       "current": "كلمة المرور الحالية",
       "new": "كلمة المرور الجديدة",
       "confirm": "تأكيد كلمة المرور الجديدة",
       "submit": "تغيير كلمة المرور"
+    },
+    "changePasswordPage": {
+      "title": "تعديل كلمة المرور",
+      "currentPassword": "كلمة المرور الحالية",
+      "currentPasswordPlaceholder": "أدخل كلمة المرور الحالية",
+      "newPassword": "كلمة المرور الجديدة",
+      "newPasswordPlaceholder": "أدخل كلمة مرور جديدة (8 أحرف على الأقل)",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور",
+      "saveButton": "حفظ التعديلات",
+      "errors": {
+        "minLength": "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+        "mismatch": "كلمتا المرور غير متطابقتين",
+        "currentRequired": "يرجى إدخال كلمة المرور الحالية",
+        "success": "تم تغيير كلمة المرور بنجاح",
+        "failed": "فشل في تغيير كلمة المرور"
+      }
+    },
+    "changeContactPage": {
+      "title": "تعديل معلومات التواصل",
+      "saveButton": "حفظ التعديلات",
+      "phone": "رقم الهاتف",
+      "phonePlaceholder": "01xxxxxxxxx",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "example@email.com",
+      "errors": {
+        "startWith01": "رقم الهاتف يجب أن يبدأ بـ 01",
+        "length11Digits": "رقم الهاتف يجب أن يكون 11 رقم",
+        "numbersOnly": "رقم الهاتف يجب أن يحتوي على أرقام فقط"
+      }
+    },
+    "apiKeysPage": {
+      "title": "مفاتيح API",
+      "addButton": "إضافة مفتاح جديد",
+      "loading": "جاري تحميل المفاتيح...",
+      "noKeys": "لا توجد مفاتيح API",
+      "noKeysDescription": "لم تقم بإنشاء أي مفاتيح API بعد. انقر على زر إضافة مفتاح جديد للبدء.",
+      "keyName": "اسم المفتاح",
+      "keyNamePlaceholder": "مثال: مفتاح المتجر الرئيسي",
+      "copy": "نسخ",
+      "copiedToast": "تم نسخ المفتاح",
+      "createdDate": "تاريخ الإنشاء",
+      "lastUsed": "آخر استخدام",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "deleteKey": "حذف المفتاح",
+      "deleting": "جاري الحذف...",
+      "createKeyModal": {
+        "title": "إنشاء مفتاح API جديد",
+        "description": "أدخل اسماً وصفياً للمفتاح الجديد لمساعدتك في التعرف عليه لاحقاً.",
+        "cancel": "إلغاء",
+        "create": "إنشاء المفتاح",
+        "creating": "جاري الإنشاء..."
+      },
+      "deleteKeyModal": {
+        "title": "حذف مفتاح API",
+        "description": "هل أنت متأكد من حذف المفتاح",
+        "warning": "هذا الإجراء لا يمكن التراجع عنه وسيتم فقدان الوصول المرتبط بهذا المفتاح.",
+        "cancel": "إلغاء",
+        "delete": "حذف المفتاح",
+        "errors": {
+          "nameRequired": "يرجى إدخال اسم للمفتاح",
+          "createFailed": "فشل في إنشاء مفتاح API",
+          "deleteFailed": "فشل في حذف مفتاح API",
+          "deletedSuccess": "تم حذف مفتاح API بنجاح",
+          "createdSuccess": "تم إنشاء مفتاح API بنجاح",
+          "loadFailed": "فشل في تحميل مفاتيح API"
+        }
+      }
+    },
+    "contactPage": {
+      "title": "تواصل معنا",
+      "previousQuestions": "عرض الأسئلة الشائعة",
+      "messageInput": "اكتب رسالتك هنا...",
+      "send": "إرسال"
+    },
+    "faqPage": {
+      "title": "اسئلة شائعة"
+    },
+    "privacyPage": {
+      "title": "سياسة الخصوصية"
+    },
+    "termsPage": {
+      "title": "الشروط والاحكام"
     }
   },
   "wallet": {
@@ -282,67 +542,20 @@
     "transactionTypes": {
       "commission": "تم تطبيق عموله",
       "cod": "الدفع عند الاستلام",
-      "penalty": "غرامة"
+      "penalty": "غرامة",
+      "bonus": "بونص",
+      "withdrawal": "سحب",
+      "deposit": "إيداع"
     },
-    "withdrawModal": {
-      "title": "سحب الرصيد",
-      "amount": "المبلغ",
-      "amountPlaceholder": "ادخل المبلغ المراد سحبه",
-      "method": "طريقة السحب",
-      "bankTransfer": "تحويل بنكي",
-      "wallet": "محفظة إلكترونية",
-      "submit": "تأكيد السحب"
-    },
-    "depositModal": {
-      "title": "إيداع الرصيد",
-      "amount": "المبلغ",
-      "amountPlaceholder": "ادخل المبلغ المراد إيداعه",
-      "method": "طريقة الإيداع",
-      "submit": "تأكيد الإيداع"
-    }
-  },
-  "notifications": {
-    "title": "الإشعارات",
-    "noNotifications": "لا توجد إشعارات",
-    "markAllRead": "تعليم الكل كمقروء",
-    "loading": "جاري التحميل...",
-    "loadMore": "تحميل المزيد"
-  },
-  "messages": {
-    "title": "الرسائل",
-    "noMessages": "لا توجد رسائل",
-    "noConversations": "لا توجد محادثات",
-    "loading": "جاري التحميل...",
-    "close": "إغلاق",
-    "user": "مستخدم",
-    "noMessagesDefault": "لا توجد رسائل",
-    "noMessagesYet": "لا توجد رسائل بعد",
-    "onlineNow": "متواجد الآن",
-    "typeMessage": "اكتب رسالتك هنا..",
-    "recording": "جاري التسجيل...",
-    "locatingPosition": "جاري تحديد موقعك...",
-    "shareLocation": "مشاركة الموقع",
-    "sendLocation": "إرسال الموقع",
-    "image": "صورة",
-    "voiceMessage": "رسالة صوتية",
-    "location": "موقع",
-    "map": "خريطة",
-    "balanceError": "لا يمكنك فتح الدردشة برصيد أقل من 5 جنيهات. يرجى شحن حسابك.",
-    "selectImageFile": "يرجى اختيار ملف صورة",
-    "browserNotSupported": "المتصفح لا يدعم تحديد الموقع",
-    "locationFailed": "فشل في تحديد الموقع"
-  },
-  "wallet": {
-    "title": "المحفظة",
-    "currentBalance": "الرصيد الحالي",
-    "withdraw": "سحب",
-    "deposit": "إيداع",
-    "transactions": "العمليات",
-    "noTransactions": "لا توجد عمليات",
-    "transactionTypes": {
-      "commission": "تم تطبيق عموله",
-      "cod": "الدفع عند الاستلام",
-      "penalty": "غرامة"
+    "transactionDetails": {
+      "title": "تفاصيل العملية",
+      "transactionId": "رقم العملية",
+      "reference": "المرجع",
+      "balanceBefore": "الرصيد قبل العملية",
+      "balanceAfter": "الرصيد بعد العملية",
+      "paymentMethod": "طريقة الدفع",
+      "reason": "السبب",
+      "close": "إغلاق"
     },
     "withdrawModal": {
       "title": "سحب الرصيد",
@@ -350,6 +563,8 @@
       "amount": "المبلغ",
       "amountPlaceholder": "ادخل المبلغ هنا",
       "method": "طريقة السحب",
+      "bankTransfer": "تحويل بنكي",
+      "wallet": "محفظة إلكترونية",
       "accountNumber": "رقم الحساب",
       "accountNumberPlaceholder": "ادخل رقم الحساب",
       "accountHelper": "رقم محفظة الهاتف او انستاباي",
@@ -384,5 +599,36 @@
       "failed": "فشل في بدء الإيداع. يرجى المحاولة مرة أخرى.",
       "error": "حدث خطأ أثناء الإيداع."
     }
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "noNotifications": "لا توجد إشعارات",
+    "markAllRead": "تعليم الكل كمقروء",
+    "loading": "جاري التحميل...",
+    "loadMore": "تحميل المزيد"
+  },
+  "messages": {
+    "title": "الرسائل",
+    "noMessages": "لا توجد رسائل",
+    "noConversations": "لا توجد محادثات",
+    "loading": "جاري التحميل...",
+    "close": "إغلاق",
+    "user": "مستخدم",
+    "noMessagesDefault": "لا توجد رسائل",
+    "noMessagesYet": "لا توجد رسائل بعد",
+    "onlineNow": "متواجد الآن",
+    "typeMessage": "اكتب رسالتك هنا..",
+    "recording": "جاري التسجيل...",
+    "locatingPosition": "جاري تحديد موقعك...",
+    "shareLocation": "مشاركة الموقع",
+    "sendLocation": "إرسال الموقع",
+    "image": "صورة",
+    "voiceMessage": "رسالة صوتية",
+    "location": "موقع",
+    "map": "خريطة",
+    "balanceError": "لا يمكنك فتح الدردشة برصيد أقل من 5 جنيهات. يرجى شحن حسابك.",
+    "selectImageFile": "يرجى اختيار ملف صورة",
+    "browserNotSupported": "المتصفح لا يدعم تحديد الموقع",
+    "locationFailed": "فشل في تحديد الموقع"
   }
 }

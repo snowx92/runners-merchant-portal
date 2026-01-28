@@ -2,7 +2,6 @@
 .mainContainer {
   min-height: 100vh;
   background: #f8f8f8;
-  direction: rtl;
 }
 
 .container {
@@ -356,6 +355,62 @@
   text-align: right;
 }
 
+/* LTR (English) Overrides */
+[dir="ltr"] .pageTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .profileHeader {
+  direction: ltr;
+}
+
+[dir="ltr"] .profileInfo {
+  text-align: left;
+}
+
+[dir="ltr"] .userDetails {
+  margin-right: 0;
+  margin-left: 16px;
+}
+
+[dir="ltr"] .addressesTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .addressContent {
+  direction: ltr;
+}
+
+[dir="ltr"] .addressInfo {
+  text-align: left;
+}
+
+[dir="ltr"] .addressActions {
+  order: -1;
+  margin-right: 16px;
+  margin-left: 0;
+}
+
+[dir="ltr"] .sectionTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .reviewHeader {
+  direction: ltr;
+}
+
+[dir="ltr"] .reviewerInfo {
+  direction: ltr;
+}
+
+[dir="ltr"] .reviewerDetails {
+  text-align: left;
+}
+
+[dir="ltr"] .reviewComment {
+  text-align: left;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .container {
@@ -398,5 +453,19 @@
   .addressActions {
     width: 100%;
     justify-content: flex-end;
+  }
+
+  [dir="ltr"] .profileHeader {
+    flex-direction: row;
+  }
+
+  [dir="ltr"] .addressContent {
+    flex-direction: column;
+  }
+
+  [dir="ltr"] .addressActions {
+    width: 100%;
+    justify-content: flex-start;
+    margin-right: 0;
   }
 }

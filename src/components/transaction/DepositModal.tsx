@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import styles from "@/styles/transaction/depositModal.module.css";
 import { commonService } from "@/lib/api/services/commonService";
 
@@ -11,6 +11,8 @@ interface DepositModalProps {
 }
 
 export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const t = useTranslations('wallet.depositModal');
   const [amount, setAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"wallet" | "card" | null>(null);
@@ -57,7 +59,7 @@ export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
-      <div className={styles.modal}>
+      <div className={styles.modal} dir={isRTL ? "rtl" : "ltr"}>
         <div className={styles.modalContent}>
           {/* Header */}
           <h2 className={styles.modalTitle}>{t('title')}</h2>

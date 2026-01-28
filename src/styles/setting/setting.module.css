@@ -2,7 +2,6 @@
 .mainContainer {
   min-height: 100vh;
   background-color: #FAFAFA;
-  direction: rtl;
   padding-bottom: 4rem;
 }
 
@@ -290,4 +289,21 @@
 .confirmDeleteButton:hover {
   background: #B91C1C;
   transform: scale(1.02);
+}
+
+/* LTR (English) Overrides */
+[dir="ltr"] .pageTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .sectionTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .menuItem {
+  text-align: left;
+}
+
+[dir="ltr"] .menuItem svg {
+  transform: none;
 }

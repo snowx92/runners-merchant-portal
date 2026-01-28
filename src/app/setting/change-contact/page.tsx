@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
@@ -17,6 +18,9 @@ const cairo = Cairo({
 
 export default function ChangeContactPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations("settings");
   const { user } = useUserProfile();
 
   const [phone, setPhone] = useState("");
@@ -43,17 +47,17 @@ export default function ChangeContactPage() {
     }
 
     if (!cleanPhone.startsWith("01")) {
-      setPhoneError("رقم الهاتف يجب أن يبدأ بـ 01");
+      setPhoneError(t("changeContactPage.errors.startWith01"));
       return false;
     }
 
     if (cleanPhone.length !== 11) {
-      setPhoneError("رقم الهاتف يجب أن يكون 11 رقم");
+      setPhoneError(t("changeContactPage.errors.length11Digits"));
       return false;
     }
 
     if (!/^\d+$/.test(cleanPhone)) {
-      setPhoneError("رقم الهاتف يجب أن يحتوي على أرقام فقط");
+      setPhoneError(t("changeContactPage.errors.numbersOnly"));
       return false;
     }
 
@@ -85,33 +89,19 @@ export default function ChangeContactPage() {
   };
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.titleSection}>
             <button className={styles.backButton} onClick={() => router.back()}>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M19 12H5M12 19l-7-7 7-7"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {isRTL ? "→" : "←"}
             </button>
-            <h1 className={styles.pageTitle}>تعديل معلومات التواصل</h1>
+            <h1 className={styles.pageTitle}>{t("changeContactPage.title")}</h1>
           </div>
           <button className={styles.saveButton} onClick={handleSave}>
-            حفظ التعديلات
+            {t("changeContactPage.saveButton")}
           </button>
         </div>
 
@@ -119,11 +109,11 @@ export default function ChangeContactPage() {
           <div className={styles.formRow}>
             {/* Phone Number */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>رقم الهاتف</label>
+              <label className={styles.label}>{t("changeContactPage.phone")}</label>
               <input
                 type="tel"
                 className={`${styles.input} ${phoneError ? styles.inputError : ""}`}
-                placeholder="01xxxxxxxxx"
+                placeholder={t("changeContactPage.phonePlaceholder")}
                 value={phone}
                 onChange={handlePhoneChange}
                 maxLength={11}
@@ -133,11 +123,11 @@ export default function ChangeContactPage() {
 
             {/* Email */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>البريد الإلكتروني</label>
+              <label className={styles.label}>{t("changeContactPage.email")}</label>
               <input
                 type="email"
                 className={styles.input}
-                placeholder="example@email.com"
+                placeholder={t("changeContactPage.emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />

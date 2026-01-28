@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
@@ -19,6 +20,10 @@ const cairo = Cairo({
 
 export default function EditProfilePage() {
   const { user, loading: userLoading } = useUserProfile();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations('profile.edit');
+  const tCommon = useTranslations('common');
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -106,33 +111,19 @@ export default function EditProfilePage() {
   };
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.titleSection}>
             <button className={styles.backButton} onClick={() => router.back()}>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M15 18l-6-6 6-6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {isRTL ? "→" : "←"}
             </button>
-            <h1 className={styles.pageTitle}>تعديل الحساب</h1>
+            <h1 className={styles.pageTitle}>{t('title')}</h1>
           </div>
           <button className={styles.saveButton} onClick={handleSave}>
-            حفظ التعديلات
+            {t('submit')}
           </button>
         </div>
 
@@ -198,11 +189,11 @@ export default function EditProfilePage() {
           <div className={styles.formFields}>
             {/* First Name */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>الاسم الأول</label>
+              <label className={styles.label}>{t('firstName')}</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="الاسم الأول"
+                placeholder={t('firstName')}
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
               />
@@ -210,11 +201,11 @@ export default function EditProfilePage() {
 
             {/* Last Name */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>الاسم الأخير</label>
+              <label className={styles.label}>{t('lastName')}</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="الاسم الأخير"
+                placeholder={t('lastName')}
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
               />
@@ -222,11 +213,11 @@ export default function EditProfilePage() {
 
             {/* Store Name */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>اسم المتجر</label>
+              <label className={styles.label}>{t('storeName')}</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="اسم المتجر"
+                placeholder={t('storeName')}
                 value={storeName}
                 onChange={(e) => setStoreName(e.target.value)}
               />

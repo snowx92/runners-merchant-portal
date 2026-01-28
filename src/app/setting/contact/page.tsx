@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
@@ -16,6 +17,9 @@ const cairo = Cairo({
 
 export default function ContactPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations("settings");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,12 +37,12 @@ export default function ContactPage() {
   };
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
         <div className={styles.header}>
-                    <h1 className={styles.pageTitle}>تواصل معنا</h1>
+                    <h1 className={styles.pageTitle}>{t("contactPage.title")}</h1>
           <button
             className={styles.previousQuestionsButton}
             onClick={() => router.push("/setting/faq")}
@@ -58,7 +62,7 @@ export default function ContactPage() {
                 strokeLinejoin="round"
               />
             </svg>
-            عرض الاسئله الشائعه
+            {t("contactPage.previousQuestions")}
           </button>
 
         </div>
@@ -83,12 +87,12 @@ export default function ContactPage() {
                         <input
               type="text"
               className={styles.messageInput}
-              placeholder="اكتب رسالتك هنا..."
+              placeholder={t("contactPage.messageInput")}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSend()}
             />
-            <button className={styles.sendButton} onClick={handleSend}>
+            <button className={styles.sendButton} onClick={handleSend} title={t("contactPage.send")}>
               <svg
                 width="24"
                 height="24"

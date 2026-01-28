@@ -117,11 +117,13 @@
     "viewAll": "View All",
     "noOrders": "No orders",
     "stats": {
-      "totalOrders": "Total Orders",
+      "title": "Statistics",
+      "orders": "Orders",
+      "activeOrders": "Active Orders",
       "completedOrders": "Completed Orders",
-      "pendingOrders": "Pending Orders",
-      "totalRevenue": "Total Revenue"
-    }
+      "netProfit": "Net Profit"
+    },
+    "statsTitle": "Statistics"
   },
   "orders": {
     "title": "Orders",
@@ -130,16 +132,21 @@
     "searchPlaceholder": "Search by order number or customer name",
     "filterOrders": "Filter Orders",
     "noOrders": "No orders found",
+    "orderNumber": "Order #{id}",
+    "customer": "Customer",
     "price": "Price",
     "shipping": "Shipping",
     "status": {
       "all": "All",
       "pending": "New",
+      "pendingCourier": "Waiting for Courier",
+      "received": "Received from Merchant",
       "accepted": "Accepted",
       "pickedUp": "Picked Up",
       "delivered": "In Delivery",
       "completed": "Completed",
       "cancelled": "Cancelled",
+      "expired": "Expired",
       "failed": "Failed",
       "returned": "Returned"
     },
@@ -160,16 +167,165 @@
       "orderPrice": "Order Price",
       "shippingPrice": "Shipping Price",
       "notes": "Notes",
-      "submit": "Create Order"
+      "submit": "Create Order",
+      "chooseAddress": "Choose your address",
+      "selectAddress": "Select Address",
+      "governorate": "Governorate",
+      "selectGovernorate": "Select Governorate",
+      "city": "City",
+      "selectCity": "Select City",
+      "paymentType": "Payment Type",
+      "cod": "Cash on Delivery (COD)",
+      "prepaid": "Prepaid (Online Payment)",
+      "packageDescription": "Package Description",
+      "packageDescriptionPlaceholder": "Enter package description here",
+      "deliveryPrice": "Delivery Price",
+      "deliveryPricePlaceholder": "Enter delivery price",
+      "packagePrice": "Package Price",
+      "packagePricePlaceholder": "Enter package price",
+      "packageImage": "Package Image (Optional)",
+      "uploadImagePlaceholder": "Upload order images here in PNG,JPG format",
+      "recipientAddress": "Recipient Address",
+      "recipientAddressPlaceholder": "Enter recipient address",
+      "recipientName": "Recipient Name",
+      "recipientNamePlaceholder": "Enter recipient name here",
+      "recipientPhone": "Recipient Phone Number",
+      "recipientPhonePlaceholder": "Enter phone number (01xxxxxxxxx)",
+      "notesPlaceholder": "Enter notes here",
+      "addAnotherOrder": "Add Another Order",
+      "loading": "Loading...",
+      "confirmOrder": "Confirm Order",
+      "orderHeaderTitle": "Package Description",
+      "chooseAddressError": "Address is required",
+      "packageDescriptionError": "Package description is required",
+      "packagePriceError": "Package price is required and must be a number",
+      "deliveryPriceError": "Delivery price is required and must be a number",
+      "recipientAddressError": "Recipient address is required",
+      "recipientNameError": "Recipient name is required",
+      "recipientPhoneError": "Phone number is required",
+      "recipientPhoneInvalidError": "Phone number must be 11 digits and start with 0",
+      "governorateError": "Governorate is required",
+      "cityError": "City is required",
+      "failedToCreateOrder": "Failed to create order. Please try again",
+      "required": "*Required",
+      "customerNamePlaceholder": "Enter customer name",
+      "orderPricePlaceholder": "Enter order price",
+      "cancel": "Cancel"
     },
     "bulk": {
-      "title": "Add Bulk Orders",
+      "title": "Create Bulk Order",
       "downloadTemplate": "Download Template",
       "uploadFile": "Upload File",
       "dragDrop": "Drag file here or click to select",
       "supportedFormats": "Supported formats: Excel (.xlsx, .xls)",
       "preview": "Preview Orders",
-      "submit": "Create Orders"
+      "submit": "Confirm Order",
+      "editOrder": "Edit Order",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "edit": "Edit Order",
+      "packageDescription": "Package Description",
+      "packageDescriptionPlaceholder": "Enter package description here",
+      "packagePrice": "Package Price",
+      "packagePricePlaceholder": "Enter package price",
+      "deliveryPrice": "Delivery Price",
+      "deliveryPricePlaceholder": "Enter delivery price",
+      "packageImage": "Package Image (Optional)",
+      "uploadImagePlaceholder": "Upload PNG, JPG images up to 2MB",
+      "recipientAddress": "Recipient Address",
+      "selectAddress": "Select Address",
+      "recipientName": "Recipient Name",
+      "recipientNamePlaceholder": "Enter recipient name here",
+      "recipientPhone": "Recipient Phone",
+      "recipientPhonePlaceholder": "Enter phone number (01xxxxxxxxx)",
+      "city": "City",
+      "selectCity": "Select City",
+      "notes": "Notes",
+      "notesPlaceholder": "Enter notes here",
+      "currency": "EGP"
+    },
+    "details": {
+      "orderNotFound": "Order not found",
+      "editOrder": "Edit Order",
+      "cancelOrder": "Cancel Order",
+      "showQRCode": "Show QR Code",
+      "rate": "Rate",
+      "confirmReturnReceived": "Confirm Return Received",
+      "relistOrder": "Relist Order",
+      "orderDetails": "Order Details",
+      "packagePrice": "Package Price",
+      "shippingPrice": "Shipping Price",
+      "otpCode": "OTP Code",
+      "bidsTitle": "Offers Received",
+      "noBids": "No offers yet",
+      "successfulOrders": "successful orders",
+      "suggestedPrice": "Suggested Price",
+      "bidDate": "Bid Date",
+      "deliveryMethod": "Delivery Method",
+      "acceptBid": "Accept Offer",
+      "rejectBid": "Reject Offer",
+      "acceptedBid": "Accepted ✓",
+      "rejectedBid": "Rejected ✕",
+      "processing": "Processing...",
+      "confirmAcceptBid": "Are you sure you want to accept this offer?",
+      "bidAcceptedSuccess": "Offer accepted successfully",
+      "bidAcceptedError": "Failed to accept offer",
+      "confirmRejectBid": "Are you sure you want to reject this offer?",
+      "bidRejectedSuccess": "Offer rejected successfully",
+      "bidRejectedError": "Failed to reject offer",
+      "locationUpdatedSuccess": "Drop-off location updated successfully",
+      "locationUpdatedError": "Failed to update drop-off location",
+      "enterCancelReason": "Please enter a cancellation reason",
+      "orderCancelledSuccess": "Order cancelled successfully",
+      "orderCancelledError": "Failed to cancel order",
+      "returnConfirmedSuccess": "Return confirmed successfully",
+      "returnConfirmedError": "Failed to confirm return",
+      "confirmRelist": "Are you sure you want to relist this order?",
+      "relistSuccess": "Order relisted successfully",
+      "relistError": "Failed to relist order",
+      "ratingSubmittedSuccess": "Rating submitted successfully",
+      "ratingSubmittedError": "Failed to submit rating",
+      "loadingQRCode": "Loading QR Code...",
+      "failedLoadingQRCode": "Failed to load QR Code",
+      "mapTitle": "Set Delivery Location",
+      "mapDescription": "Drag the marker on the map to set the new delivery location",
+      "otpPrepaid": {
+        "title": "OTP for Prepaid",
+        "description": "This code is for prepaid payment. Keep it and give it to the courier upon delivery"
+      },
+      "otpReceive": {
+        "title": "OTP for Receiving",
+        "description": "This code is for receiving the order from the merchant"
+      },
+      "otpCancel": {
+        "title": "OTP for Cancellation",
+        "description": "Cancellation code (for cancellation without reason)"
+      },
+      "cancelOrderModal": {
+        "title": "Cancel Order",
+        "label": "Cancellation Reason",
+        "placeholder": "Enter the reason for cancellation..."
+      },
+      "processingCancel": "Cancelling...",
+      "confirmCancel": "Confirm Cancellation",
+      "returnModal": {
+        "title": "Confirm Return Receipt",
+        "hint": "Are you sure you want to confirm return receipt? The order status will be updated."
+      },
+      "processingReturn": "Confirming...",
+      "confirmReturn": "Confirm Receipt",
+      "ratingModal": {
+        "title": "Rate Courier",
+        "ratingLabel": "Rating",
+        "commentLabel": "Comment (Optional)",
+        "placeholder": "Write a comment..."
+      },
+      "processingRating": "Submitting...",
+      "submitRating": "Submit Rating",
+      "qrModal": {
+        "title": "QR Code",
+        "hint": "Show this code to the courier"
+      }
     }
   },
   "profile": {
@@ -194,13 +350,30 @@
       "title": "Edit Profile",
       "avatar": "Profile Picture",
       "changeAvatar": "Change Picture",
-      "submit": "Save Changes"
+      "submit": "Save Changes",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "storeName": "Store Name"
     },
     "verify": {
       "title": "Verify Account",
       "uploadId": "Upload ID Photo",
       "uploadCommercial": "Upload Commercial Registration",
-      "submit": "Submit for Review"
+      "submit": "Submit for Review",
+      "firstName": "First Name",
+      "lastNameLabel": "Last Name",
+      "idNumberLabel": "ID Number",
+      "birthDateLabel": "Birth Date",
+      "idCardLabel": "National ID Card",
+      "idCardPlaceholder": "Take a clear photo of your ID card from the front. Ensure your name is visible and the image is clear.",
+      "idHolderLabel": "Photo with ID",
+      "idHolderPlaceholder": "Take a selfie holding your ID card. Ensure your face and the card are visible.",
+      "verifyButton": "Verify Data",
+      "fillAllFields": "Please fill all required fields",
+      "submittedSuccess": "Verification request submitted successfully",
+      "submittedError": "Failed to submit verification request",
+      "underReview": "Under Review",
+      "verified": "Verified"
     }
   },
   "address": {
@@ -265,11 +438,110 @@
     "deleting": "Deleting...",
     "settingUpdated": "Setting updated successfully",
     "settingUpdateFailed": "Failed to update setting",
+    "common": {
+      "loading": "Loading..."
+    },
     "password": {
+      "title": "Edit Password",
       "current": "Current Password",
+      "currentPlaceholder": "Enter your current password",
       "new": "New Password",
-      "confirm": "Confirm New Password",
-      "submit": "Change Password"
+      "newPlaceholder": "Enter new password (at least 8 characters)",
+      "confirm": "Confirm Password",
+      "confirmPlaceholder": "Re-enter the password",
+      "submit": "Change Password",
+      "save": "Save Changes",
+      "errors": {
+        "minLength": "Password must be at least 8 characters",
+        "mismatch": "Passwords do not match",
+        "currentRequired": "Please enter your current password",
+        "success": "Password changed successfully",
+        "failed": "Failed to change password"
+      }
+    },
+    "changePasswordPage": {
+      "title": "Edit Password",
+      "currentPassword": "Current Password",
+      "currentPasswordPlaceholder": "Enter your current password",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter new password (at least 8 characters)",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Re-enter the password",
+      "saveButton": "Save Changes",
+      "errors": {
+        "minLength": "Password must be at least 8 characters",
+        "mismatch": "Passwords do not match",
+        "currentRequired": "Please enter your current password",
+        "success": "Password changed successfully",
+        "failed": "Failed to change password"
+      }
+    },
+    "changeContactPage": {
+      "title": "Edit Contact Info",
+      "saveButton": "Save Changes",
+      "phone": "Phone Number",
+      "phonePlaceholder": "01xxxxxxxxx",
+      "email": "Email Address",
+      "emailPlaceholder": "example@email.com",
+      "errors": {
+        "startWith01": "Phone number must start with 01",
+        "length11Digits": "Phone number must be 11 digits",
+        "numbersOnly": "Phone number must contain only digits"
+      }
+    },
+    "apiKeysPage": {
+      "title": "API Keys",
+      "addButton": "Add New Key",
+      "loading": "Loading API Keys...",
+      "noKeys": "No API Keys",
+      "noKeysDescription": "You haven't created any API keys yet. Click the Add New Key button to get started.",
+      "keyName": "Key Name",
+      "keyNamePlaceholder": "Example: Main Store Key",
+      "copy": "Copy",
+      "copiedToast": "Key copied to clipboard",
+      "createdDate": "Created Date",
+      "lastUsed": "Last Used",
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleteKey": "Delete Key",
+      "deleting": "Deleting...",
+      "createKeyModal": {
+        "title": "Create New API Key",
+        "description": "Enter a descriptive name for the new key to help you identify it later.",
+        "cancel": "Cancel",
+        "create": "Create Key",
+        "creating": "Creating..."
+      },
+      "deleteKeyModal": {
+        "title": "Delete API Key",
+        "description": "Are you sure you want to delete the key",
+        "warning": "This action cannot be undone and access associated with this key will be lost.",
+        "cancel": "Cancel",
+        "delete": "Delete Key",
+        "errors": {
+          "nameRequired": "Please enter a name for the key",
+          "createFailed": "Failed to create API key",
+          "deleteFailed": "Failed to delete API key",
+          "deletedSuccess": "API key deleted successfully",
+          "createdSuccess": "API key created successfully",
+          "loadFailed": "Failed to load API keys"
+        }
+      }
+    },
+    "contactPage": {
+      "title": "Contact Us",
+      "previousQuestions": "View FAQ",
+      "messageInput": "Type your message here...",
+      "send": "Send"
+    },
+    "faqPage": {
+      "title": "FAQ"
+    },
+    "privacyPage": {
+      "title": "Privacy Policy"
+    },
+    "termsPage": {
+      "title": "Terms and Conditions"
     }
   },
   "wallet": {
@@ -282,74 +554,29 @@
     "transactionTypes": {
       "commission": "Commission Applied",
       "cod": "Cash on Delivery",
-      "penalty": "Penalty"
+      "penalty": "Penalty",
+      "bonus": "Bonus",
+      "withdrawal": "Withdrawal",
+      "deposit": "Deposit"
     },
-    "withdrawModal": {
-      "title": "Withdraw Balance",
-      "amount": "Amount",
-      "amountPlaceholder": "Enter amount to withdraw",
-      "method": "Withdrawal Method",
-      "bankTransfer": "Bank Transfer",
-      "wallet": "E-Wallet",
-      "submit": "Confirm Withdrawal"
-    },
-    "depositModal": {
-      "title": "Deposit Balance",
-      "amount": "Amount",
-      "amountPlaceholder": "Enter amount to deposit",
-      "method": "Deposit Method",
-      "submit": "Confirm Deposit"
-    }
-  },
-  "notifications": {
-    "title": "Notifications",
-    "noNotifications": "No notifications",
-    "markAllRead": "Mark all as read",
-    "loading": "Loading...",
-    "loadMore": "Load More"
-  },
-  "messages": {
-    "title": "Messages",
-    "noMessages": "No messages",
-    "noConversations": "No conversations",
-    "loading": "Loading...",
-    "close": "Close",
-    "user": "User",
-    "noMessagesDefault": "No messages",
-    "noMessagesYet": "No messages yet",
-    "onlineNow": "Online now",
-    "typeMessage": "Type your message here..",
-    "recording": "Recording...",
-    "locatingPosition": "Locating your position...",
-    "shareLocation": "Share Location",
-    "sendLocation": "Send Location",
-    "image": "Image",
-    "voiceMessage": "Voice Message",
-    "location": "Location",
-    "map": "Map",
-    "balanceError": "You cannot open chat with balance less than 5 EGP. Please top up your account.",
-    "selectImageFile": "Please select an image file",
-    "browserNotSupported": "Your browser does not support location services",
-    "locationFailed": "Failed to get location"
-  },
-  "wallet": {
-    "title": "Wallet",
-    "currentBalance": "Current Balance",
-    "withdraw": "Withdraw",
-    "deposit": "Deposit",
-    "transactions": "Transactions",
-    "noTransactions": "No transactions",
-    "transactionTypes": {
-      "commission": "Commission Applied",
-      "cod": "Cash on Delivery",
-      "penalty": "Penalty"
+    "transactionDetails": {
+      "title": "Transaction Details",
+      "transactionId": "Transaction ID",
+      "reference": "Reference",
+      "balanceBefore": "Balance Before",
+      "balanceAfter": "Balance After",
+      "paymentMethod": "Payment Method",
+      "reason": "Reason",
+      "close": "Close"
     },
     "withdrawModal": {
       "title": "Withdraw Balance",
       "availableBalance": "Available Balance for Withdrawal",
       "amount": "Amount",
-      "amountPlaceholder": "Enter amount here",
+      "amountPlaceholder": "Enter amount to withdraw",
       "method": "Withdrawal Method",
+      "bankTransfer": "Bank Transfer",
+      "wallet": "E-Wallet",
       "accountNumber": "Account Number",
       "accountNumberPlaceholder": "Enter account number",
       "accountHelper": "Phone wallet number or Instapay",
@@ -384,5 +611,36 @@
       "failed": "Failed to initiate deposit. Please try again.",
       "error": "An error occurred during deposit."
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "noNotifications": "No notifications",
+    "markAllRead": "Mark all as read",
+    "loading": "Loading...",
+    "loadMore": "Load More"
+  },
+  "messages": {
+    "title": "Messages",
+    "noMessages": "No messages",
+    "noConversations": "No conversations",
+    "loading": "Loading...",
+    "close": "Close",
+    "user": "User",
+    "noMessagesDefault": "No messages",
+    "noMessagesYet": "No messages yet",
+    "onlineNow": "Online now",
+    "typeMessage": "Type your message here..",
+    "recording": "Recording...",
+    "locatingPosition": "Locating your position...",
+    "shareLocation": "Share Location",
+    "sendLocation": "Send Location",
+    "image": "Image",
+    "voiceMessage": "Voice Message",
+    "location": "Location",
+    "map": "Map",
+    "balanceError": "You cannot open chat with balance less than 5 EGP. Please top up your account.",
+    "selectImageFile": "Please select an image file",
+    "browserNotSupported": "Your browser does not support location services",
+    "locationFailed": "Failed to get location"
   }
 }

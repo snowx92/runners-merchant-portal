@@ -2,8 +2,8 @@
 .mainContainer {
   min-height: 100vh;
   background-color: #FAFAFA;
-  direction: rtl;
   padding-bottom: 4rem;
+  /* Direction controlled by dir attribute */
 }
 
 .container {
@@ -15,6 +15,13 @@
 /* Header */
 .header {
   margin: 2rem 0 1.5rem 0;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+[dir="rtl"] .header {
+  flex-direction: row-reverse;
 }
 
 .pageTitle {
@@ -22,21 +29,31 @@
   font-weight: 800;
   color: #111;
   margin: 0;
-  text-align: right;
+  text-align: left;
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+  flex-direction: row;
+}
 
+[dir="rtl"] .pageTitle {
+  text-align: right;
+  flex-direction: row-reverse;
 }
 
 .backArrow {
   cursor: pointer;
   transition: transform 0.2s;
   font-size: 1.75rem;
-  padding-left: 1rem;
+  display: inline-block;
 }
 
 .backArrow:hover {
   transform: translateX(-3px);
+}
+
+[dir="rtl"] .backArrow:hover {
+  transform: translateX(3px);
 }
 
 /* Form Card */
@@ -54,6 +71,11 @@
   margin: 0 0 1.5rem 0;
   padding-bottom: 0.75rem;
   border-bottom: 2px solid #F5F5F5;
+  text-align: left;
+}
+
+[dir="rtl"] .sectionTitle {
+  text-align: right;
 }
 
 .sectionTitle:not(:first-child) {
@@ -69,6 +91,11 @@
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  flex-direction: row;
+}
+
+[dir="rtl"] .formRow {
+  flex-direction: row-reverse;
 }
 
 .formGroupHalf {
@@ -81,6 +108,10 @@
   font-weight: 600;
   color: #333;
   margin-bottom: 0.5rem;
+  text-align: left;
+}
+
+[dir="rtl"] .label {
   text-align: right;
 }
 
@@ -94,8 +125,13 @@
   border-radius: 12px;
   font-family: inherit;
   transition: border-color 0.2s;
+  text-align: left;
+}
+
+[dir="rtl"] .input,
+[dir="rtl"] .select,
+[dir="rtl"] .textarea {
   text-align: right;
-  direction: rtl;
 }
 
 .input:focus,
@@ -110,8 +146,14 @@
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+[dir="rtl"] .select {
   background-position: left 1rem center;
   padding-left: 2.5rem;
+  padding-right: 1rem;
 }
 
 .select:disabled {
@@ -131,6 +173,12 @@
   gap: 1rem;
   margin-top: 2rem;
   justify-content: flex-start;
+  flex-direction: row;
+}
+
+[dir="rtl"] .buttonGroup {
+  justify-content: flex-end;
+  flex-direction: row-reverse;
 }
 
 .saveButton,
@@ -186,6 +234,10 @@
   font-size: 0.85rem;
   color: #666;
   margin-top: 0.5rem;
+  text-align: left;
+}
+
+[dir="rtl"] .addressHint {
   text-align: right;
 }
 
@@ -195,7 +247,15 @@
     flex-direction: column;
   }
 
+  [dir="rtl"] .formRow {
+    flex-direction: column;
+  }
+
   .buttonGroup {
+    flex-direction: column;
+  }
+
+  [dir="rtl"] .buttonGroup {
     flex-direction: column;
   }
 

@@ -2,7 +2,6 @@
 .mainContainer {
   min-height: 100vh;
   background-color: #FAFAFA;
-  direction: rtl;
   padding-bottom: 4rem;
 }
 
@@ -80,5 +79,35 @@
   font-weight: 500;
   color: #666;
   line-height: 1.9;
+  text-align: right;
+}
+
+/* LTR (English) Overrides */
+[dir="ltr"] .pageTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .content {
+  text-align: left;
+}
+
+[dir="ltr"] .sectionTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .paragraph {
+  text-align: left;
+}
+
+[dir="ltr"] .backButton svg {
+  transform: none;
+}
+
+/* RTL (Arabic) Default */
+.sectionTitle {
+  text-align: right;
+}
+
+.paragraph {
   text-align: right;
 }

@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { Navbar } from "@/components/home/Navbar";
 import styles from "@/styles/orders/editOrder.module.css";
 import { Cairo } from "next/font/google";
+import { useLocale, useTranslations } from "next-intl";
 import { orderService } from "@/lib/api/services";
 import { zoneService } from "@/lib/api/services/zoneService";
 import { locationService } from "@/lib/api/services/locationService";
@@ -23,6 +24,9 @@ export default function EditOrderPage() {
   const params = useParams();
   const orderId = params.id as string;
   const { showToast } = useToast();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations('orders.add');
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -173,44 +177,41 @@ export default function EditOrderPage() {
 
   if (loading) {
     return (
-      <main className={`${styles.mainContainer} ${cairo.className}`}>
+      <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
         <Navbar />
         <div className={styles.container}>
-          <div className={styles.loadingState}>جاري التحميل...</div>
+          <div className={styles.loadingState}>{t('loading')}</div>
         </div>
       </main>
     );
   }
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
-          
           <h1 className={styles.pageTitle}>
-                        <span className={styles.backArrow} onClick={() => router.push(`/orders/${orderId}`)}>
-              →
+            <span className={styles.backArrow} onClick={() => router.push(`/orders/${orderId}`)}>
+              {isRTL ? "→" : "←"}
             </span>
-            تعديل الطلب #{orderId}
-
+            Edit Order #{orderId}
           </h1>
-          
         </div>
 
         {/* Form */}
         <div className={styles.formCard}>
-          <h2 className={styles.sectionTitle}>بيانات العميل</h2>
+          <h2 className={styles.sectionTitle}>{t('customerName')} {t('required')}</h2>
 
           {/* Client Name */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>اسم العميل *</label>
+            <label className={styles.label}>{t('customerName')} *</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="أدخل اسم العميل"
+              placeholder={t('customerNamePlaceholder') || "Enter customer name"}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -219,11 +220,11 @@ export default function EditOrderPage() {
           {/* Phone Numbers */}
           <div className={styles.formRow}>
             <div className={styles.formGroupHalf}>
-              <label className={styles.label}>رقم الهاتف *</label>
+              <label className={styles.label}>{t('customerPhone')} *</label>
               <input
                 type="tel"
                 className={styles.input}
-                placeholder="رقم الهاتف"
+                placeholder={t('customerPhone')}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 maxLength={11}
@@ -233,11 +234,11 @@ export default function EditOrderPage() {
 
           {/* Address */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>عنوان المستلم *</label>
+            <label className={styles.label}>{t('recipientAddress')} *</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="أدخل عنوان المستلم"
+              placeholder={t('recipientAddressPlaceholder') || "Enter address"}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             />
@@ -246,7 +247,7 @@ export default function EditOrderPage() {
           {/* Governorate and City */}
           <div className={styles.formRow}>
             <div className={styles.formGroupHalf}>
-              <label className={styles.label}>المحافظة *</label>
+              <label className={styles.label}>{t('governorate')} *</label>
               <select
                 className={styles.select}
                 value={govId}
@@ -255,7 +256,7 @@ export default function EditOrderPage() {
                   setCityId("");
                 }}
               >
-                <option value="">اختر المحافظة</option>
+                <option value="">{t('selectGovernorate')}</option>
                 {zones.map((zone) => (
                   <option key={zone.id} value={zone.id}>
                     {zone.name}
@@ -264,7 +265,7 @@ export default function EditOrderPage() {
               </select>
             </div>
             <div className={styles.formGroupHalf}>
-              <label className={styles.label}>المدينة *</label>
+              <label className={styles.label}>{t('city')} *</label>
               <select
                 className={styles.select}
                 value={cityId}
@@ -273,7 +274,7 @@ export default function EditOrderPage() {
                 }}
                 disabled={!govId}
               >
-                <option value="">اختر المدينة</option>
+                <option value="">{t('selectCity')}</option>
                 {filteredCities.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -285,13 +286,13 @@ export default function EditOrderPage() {
 
           {/* Pickup Location */}
           <div className={styles.formGroup}>
-              <label className={styles.label}>اختر عنوان الاستلام *</label>
+            <label className={styles.label}>{t('chooseAddress')} *</label>
             <select
               className={styles.select}
               value={pickupId}
               onChange={(e) => setPickupId(e.target.value)}
             >
-              <option value="">اختر العنوان</option>
+              <option value="">{t('selectAddress')}</option>
               {userAddresses.map((addr) => (
                 <option key={addr.id} value={addr.id}>
                   {addr.title} - {addr.street}, {addr.city}
@@ -305,16 +306,16 @@ export default function EditOrderPage() {
             )}
           </div>
 
-          <h2 className={styles.sectionTitle}>بيانات الطلب</h2>
+          <h2 className={styles.sectionTitle}>{t('orderContent')}</h2>
 
           {/* Cash and Fees */}
           <div className={styles.formRow}>
             <div className={styles.formGroupHalf}>
-              <label className={styles.label}>قيمة الطلب *</label>
+              <label className={styles.label}>{t('orderPrice')} *</label>
               <input
                 type="number"
                 className={styles.input}
-                placeholder="أدخل قيمة الطلب"
+                placeholder={t('orderPricePlaceholder') || "Enter order price"}
                 value={cash}
                 onChange={(e) => setCash(e.target.value)}
                 min="0"
@@ -322,11 +323,11 @@ export default function EditOrderPage() {
               />
             </div>
             <div className={styles.formGroupHalf}>
-              <label className={styles.label}>مبلغ التوصيل</label>
+              <label className={styles.label}>{t('shippingPrice')}</label>
               <input
                 type="number"
                 className={styles.input}
-                placeholder="مبلغ التوصيل"
+                placeholder={t('shippingPrice')}
                 value={fees}
                 onChange={(e) => setFees(e.target.value)}
                 min="0"
@@ -337,24 +338,24 @@ export default function EditOrderPage() {
 
           {/* Type */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>نوع الطلب *</label>
+            <label className={styles.label}>{t('paymentType')} *</label>
             <select
               className={styles.select}
               value={type}
               onChange={(e) => setType(e.target.value as "COD" | "PREPAID")}
             >
-              <option value="COD">الدفع عند الاستلام (COD)</option>
-              <option value="PREPAID">مدفوع مسبقاً (PREPAID)</option>
+              <option value="COD">{t('cod')}</option>
+              <option value="PREPAID">{t('prepaid')}</option>
             </select>
           </div>
 
           {/* Content */}
           <div className={styles.formGroup}>
-              <label className={styles.label}>محتوى الطلب</label>
+            <label className={styles.label}>{t('orderContent')}</label>
             <input
               type="text"
               className={styles.input}
-              placeholder="وصف محتوى الطلب"
+              placeholder={t('packageDescriptionPlaceholder') || "Describe order content"}
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
@@ -362,10 +363,10 @@ export default function EditOrderPage() {
 
           {/* Notes */}
           <div className={styles.formGroup}>
-              <label className={styles.label}>ملاحظات</label>
+            <label className={styles.label}>{t('notes')}</label>
             <textarea
               className={styles.textarea}
-              placeholder="أي ملاحظات إضافية"
+              placeholder={t('notesPlaceholder') || "Enter notes"}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
@@ -379,14 +380,14 @@ export default function EditOrderPage() {
               onClick={() => router.push(`/orders/${orderId}`)}
               disabled={saving}
             >
-              إلغاء
+              {t('cancel')}
             </button>
             <button
               className={styles.saveButton}
               onClick={handleSave}
               disabled={saving}
             >
-              {saving ? "جاري الحفظ..." : "حفظ التغييرات"}
+              {saving ? t('loading') : t('submit')}
             </button>
           </div>
         </div>

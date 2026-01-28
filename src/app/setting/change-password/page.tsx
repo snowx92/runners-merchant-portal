@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Navbar } from "@/components/home/Navbar";
 import { MessageDrawer } from "@/components/home/MessageDrawer";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
@@ -19,6 +20,9 @@ const cairo = Cairo({
 
 export default function ChangePasswordPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations("settings");
   const { showToast } = useToast();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -55,22 +59,22 @@ export default function ChangePasswordPage() {
 
     // Validate new password
     if (newPassword.length < 8) {
-      setError("كلمة المرور يجب أن تكون 8 أحرف على الأقل");
-      showToast("كلمة المرور يجب أن تكون 8 أحرف على الأقل", "error");
+      setError(t("changePasswordPage.errors.minLength"));
+      showToast(t("changePasswordPage.errors.minLength"), "error");
       return;
     }
 
     // Validate passwords match
     if (newPassword !== confirmPassword) {
-      setError("كلمتا المرور غير متطابقتين");
-      showToast("كلمتا المرور غير متطابقتين", "error");
+      setError(t("changePasswordPage.errors.mismatch"));
+      showToast(t("changePasswordPage.errors.mismatch"), "error");
       return;
     }
 
     // Require current password for password provider users
     if (hasPasswordProvider && !currentPassword) {
-      setError("يرجى إدخال كلمة المرور الحالية");
-      showToast("يرجى إدخال كلمة المرور الحالية", "error");
+      setError(t("changePasswordPage.errors.currentRequired"));
+      showToast(t("changePasswordPage.errors.currentRequired"), "error");
       return;
     }
 
@@ -78,14 +82,14 @@ export default function ChangePasswordPage() {
 
     try {
       await commonService.changePassword(currentPassword, newPassword);
-      showToast("تم تغيير كلمة المرور بنجاح", "success");
+      showToast(t("changePasswordPage.errors.success"), "success");
       // Clear form
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
       router.push("/setting");
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "فشل في تغيير كلمة المرور";
+      const errorMessage = error instanceof Error ? error.message : t("changePasswordPage.errors.failed");
       setError(errorMessage);
       showToast(errorMessage, "error");
     } finally {
@@ -94,33 +98,19 @@ export default function ChangePasswordPage() {
   };
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`}>
+    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.titleSection}>
             <button className={styles.backButton} onClick={() => router.back()}>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M19 12H5M12 19l-7-7 7-7"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {isRTL ? "→" : "←"}
             </button>
-            <h1 className={styles.pageTitle}>تعديل كلمة المرور</h1>
+            <h1 className={styles.pageTitle}>{t("changePasswordPage.title")}</h1>
           </div>
           <button className={styles.saveButton} onClick={handleSave}>
-            حفظ التعديلات
+            {t("changePasswordPage.saveButton")}
           </button>
         </div>
 
@@ -135,12 +125,12 @@ export default function ChangePasswordPage() {
           {/* Current Password - Only show for password provider users */}
           {hasPasswordProvider && (
             <div className={styles.formGroup}>
-              <label className={styles.label}>كلمة المرور الحالية</label>
+              <label className={styles.label}>{t("changePasswordPage.currentPassword")}</label>
               <div className={styles.inputWrapper}>
                 <input
                   type={showCurrentPassword ? "text" : "password"}
                   className={styles.input}
-                  placeholder="ادخل كلمة المرور الحالية"
+                  placeholder={t("changePasswordPage.currentPasswordPlaceholder")}
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                 />
@@ -203,12 +193,12 @@ export default function ChangePasswordPage() {
 
           {/* New Password */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>كلمة المرور الجديدة</label>
+            <label className={styles.label}>{t("changePasswordPage.newPassword")}</label>
             <div className={styles.inputWrapper}>
               <input
                 type={showNewPassword ? "text" : "password"}
                 className={styles.input}
-                placeholder="ادخل كلمة المرور (8 أحرف على الأقل)"
+                placeholder={t("changePasswordPage.newPasswordPlaceholder")}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
@@ -270,12 +260,12 @@ export default function ChangePasswordPage() {
 
           {/* Confirm Password */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>تأكيد كلمة المرور</label>
+            <label className={styles.label}>{t("changePasswordPage.confirmPassword")}</label>
             <div className={styles.inputWrapper}>
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 className={styles.input}
-                placeholder="أعد إدخال كلمة المرور"
+                placeholder={t("changePasswordPage.confirmPasswordPlaceholder")}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />

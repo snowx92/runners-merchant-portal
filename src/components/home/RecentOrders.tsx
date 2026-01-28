@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import styles from "@/styles/home/home.module.css";
 import type { Order } from "@/lib/api/types/home.types";
 
@@ -25,19 +25,21 @@ const getStatusClassName = (status: string) => {
   return classMap[status] || styles.badgePending;
 };
 
-// Format price
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat("ar-EG", {
-    style: "currency",
-    currency: "EGP",
-    minimumFractionDigits: 0,
-  }).format(price);
-};
-
 export const RecentOrders = ({ orders }: RecentOrdersProps) => {
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const t = useTranslations("home");
   const tOrders = useTranslations("orders");
   const tCommon = useTranslations("common");
+
+  // Format price based on locale
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: "EGP",
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
 
   return (
     <>
@@ -74,7 +76,8 @@ export const RecentOrders = ({ orders }: RecentOrdersProps) => {
                   {/* Order Info */}
                   <div
                     className={styles.orderInfo}
-                    style={{ textAlign: "right" }}
+                    style={{ textAlign: isRTL ? "right" : "left" }}
+                    dir={isRTL ? "rtl" : "ltr"}
                   >
                     <span className={styles.orderTitle}>
                       {tOrders("orderNumber", { id: order.id })}
@@ -108,3 +111,4 @@ export const RecentOrders = ({ orders }: RecentOrdersProps) => {
     </>
   );
 };
+

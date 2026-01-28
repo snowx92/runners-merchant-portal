@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SessionManager } from "@/lib/utils/session";
 import type { User } from "firebase/auth";
 import { getFirebaseAuth } from "@/lib/firebase";
@@ -8,6 +9,22 @@ interface ApiResponse<T = unknown> {
   data: T;
   message?: string;
 }
+
+// Get current locale from next-intl cookie
+const getCurrentLocale = (): string => {
+  if (typeof window !== "undefined") {
+    // Check for next-intl cookie
+    const cookies = document.cookie.split(";");
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split("=");
+      if (name === "NEXT_LOCALE") return value || "ar";
+    }
+    // Also check document dir as fallback
+    const dir = document.documentElement.dir;
+    return dir === "ltr" ? "en" : "ar";
+  }
+  return "ar";
+};
 
 export class ApiService {
   private baseURL: string;
@@ -49,12 +66,18 @@ export class ApiService {
     const headersToUse = { ...customHeaders };
     delete headersToUse["Skip-Auth"]; // Remove the Skip-Auth header before sending
 
+    // Get current language from locale context
+    // If Language is explicitly passed in customHeaders, use it; otherwise use current locale
+    const language = customHeaders["Language"] || getCurrentLocale();
+
     if (skipAuth) {
       // Skip authentication, just add basic headers without Authorization
       console.log('🔓 ApiService: Skipping authentication for', fullUrl);
-      const staticHeaders = {
-        Language: "ar",
-      };
+      const staticHeaders: Record<string, string> = {};
+      // Only add Language header if not already present in customHeaders
+      if (!headersToUse["Language"]) {
+        staticHeaders["Language"] = language;
+      }
       return this.makeRequest(fullUrl, method, body, staticHeaders, headersToUse);
     }
 
@@ -99,10 +122,13 @@ export class ApiService {
       authToken = storedToken;
     }
 
-    const staticHeaders = {
+    const staticHeaders: Record<string, string> = {
       Authorization: `Bearer ${authToken}`,
-      Language: "ar",
     };
+    // Only add Language header if not already present in customHeaders (to allow forcing English for specific endpoints)
+    if (!headersToUse["Language"]) {
+      staticHeaders["Language"] = language;
+    }
 
     return this.makeRequest(fullUrl, method, body, staticHeaders, headersToUse);
   }
@@ -115,11 +141,12 @@ export class ApiService {
     customHeaders: Record<string, string>
   ): Promise<T | null> {
     // Merge headers, but ensure staticHeaders don't override with undefined Authorization
+    // customHeaders should override staticHeaders (so custom Language header is respected)
     const mergedHeaders: Record<string, string> = {
       "Content-Type": "application/json",
       Client: "FETCH",
-      ...customHeaders,
       ...staticHeaders,
+      ...customHeaders,
     };
 
     // Remove Authorization header if it's undefined or empty
@@ -344,3 +371,4 @@ export class ApiService {
     return this.request<T>(endpoint, "DELETE", body, {}, customHeaders);
   }
 }
+

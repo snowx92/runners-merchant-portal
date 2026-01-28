@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import styles from "@/styles/transaction/withdrawModal.module.css";
 import { commonService } from "@/lib/api/services/commonService";
 
@@ -13,6 +13,8 @@ interface WithdrawModalProps {
 }
 
 export const WithdrawModal = ({ isOpen, onClose, currentBalance }: WithdrawModalProps) => {
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const t = useTranslations('wallet.withdrawModal');
   const tCommon = useTranslations('common');
   const [amount, setAmount] = useState("");
@@ -61,7 +63,7 @@ export const WithdrawModal = ({ isOpen, onClose, currentBalance }: WithdrawModal
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
-      <div className={styles.modal}>
+      <div className={styles.modal} dir={isRTL ? "rtl" : "ltr"}>
         <div className={styles.modalContent}>
           {/* Header */}
           <h2 className={styles.modalTitle}>{t('title')}</h2>

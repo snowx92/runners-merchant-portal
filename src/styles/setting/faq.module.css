@@ -2,7 +2,6 @@
 .mainContainer {
   min-height: 100vh;
   background-color: #FAFAFA;
-  direction: rtl;
   padding-bottom: 4rem;
 }
 
@@ -93,5 +92,24 @@
   font-weight: 500;
   color: #666;
   line-height: 1.8;
+  text-align: right;
+}
+
+/* LTR (English) Overrides */
+[dir="ltr"] .pageTitle {
+  text-align: left;
+}
+
+[dir="ltr"] .faqAnswer p {
+  text-align: left;
+}
+
+[dir="ltr"] .faqQuestion {
+  text-align: left;
+  flex-direction: row;
+}
+
+/* RTL (Arabic) Default */
+.faqQuestion {
   text-align: right;
 }

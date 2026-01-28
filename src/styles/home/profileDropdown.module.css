@@ -122,7 +122,7 @@
 /* Menu Items */
 .menuItem {
   display: flex;
-  align-items: right;
+  align-items: center;
   gap: 0.75rem;
   padding: 0.875rem 1rem;
   border-radius: 12px;
@@ -135,7 +135,6 @@
   background: none;
   width: 100%;
   text-align: right;
- 
   text-decoration: none;
 }
 
@@ -170,4 +169,9 @@
 
 .menuItem:last-child:hover svg {
   color: #DC2626;
+}
+
+/* LTR (English) Overrides */
+[dir="ltr"] .menuItem {
+  text-align: left;
 }
