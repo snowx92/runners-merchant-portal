@@ -14,6 +14,7 @@ import {
   where, 
   onSnapshot,
   Unsubscribe,
+  
   DocumentData 
 } from "firebase/firestore";
 import { getFirebaseDb } from "@/lib/firebase";
@@ -146,7 +147,9 @@ export const MessageDrawer = () => {
     const chatsRef = collection(db, "chats");
     const chatsQuery = query(
       chatsRef,
-      where("participants", "array-contains", userId)
+      where("participants", "array-contains", userId),
+      where("lastMessage", "!=", ""),
+      orderBy("lastMessageTime", "desc")
     );
 
     chatUnsubscribeRef.current = onSnapshot(
