@@ -325,6 +325,27 @@
       "qrModal": {
         "title": "QR Code",
         "hint": "اعرض هذا الكود للمندوب"
+      },
+      "progress": {
+        "createOrder": "إنشاء الطلب",
+        "receiveOffers": "تلقي العروض",
+        "receiveOrder": "استلام الطلب",
+        "deliverOrder": "تسليم الطلب"
+      },
+      "viewAll": "عرض الكل",
+      "expectedDeliveryTime": "وقت الوصول المتوقع",
+      "courierSection": {
+        "pickupAddress": "عنوان الاستلام",
+        "customerName": "اسم العميل",
+        "customerPhone": "رقم هاتف العميل",
+        "customerAddress": "عنوان العميل",
+        "city": "المدينة",
+        "showReceiveCode": "عرض كود الاستلام",
+        "message": "رسالة",
+        "call": "اتصال",
+        "receiveCodeTitle": "كود الاستلام",
+        "receiveCodeHint": "قم باعطاء المورد هذا الكود عند الاستلام",
+        "returnBtn": "العودة"
       }
     }
   },

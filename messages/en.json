@@ -325,6 +325,27 @@
       "qrModal": {
         "title": "QR Code",
         "hint": "Show this code to the courier"
+      },
+      "progress": {
+        "createOrder": "Create Order",
+        "receiveOffers": "Receive Offers",
+        "receiveOrder": "Receive Order",
+        "deliverOrder": "Deliver Order"
+      },
+      "viewAll": "View All",
+      "expectedDeliveryTime": "Expected Delivery Time",
+      "courierSection": {
+        "pickupAddress": "Pickup Address",
+        "customerName": "Customer Name",
+        "customerPhone": "Customer Phone",
+        "customerAddress": "Customer Address",
+        "city": "City",
+        "showReceiveCode": "Show Receive Code",
+        "message": "Message",
+        "call": "Call",
+        "receiveCodeTitle": "Receive Code",
+        "receiveCodeHint": "Give this code to the courier upon receiving",
+        "returnBtn": "Return"
       }
     }
   },

@@ -200,6 +200,7 @@ export default function OrderDetailsPage() {
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [showReceiveCodeModal, setShowReceiveCodeModal] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const [processingAction, setProcessingAction] = useState(false);
   const [rating, setRating] = useState(5);
@@ -451,6 +452,39 @@ export default function OrderDetailsPage() {
     return `${day}/${month}/${year}`;
   };
 
+  const formatDateTime = (seconds: number) => {
+    const date = new Date(seconds * 1000);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const monthNames = isRTL
+      ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+      : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = monthNames[date.getMonth()];
+    return `${hours}:${minutes} ${isRTL ? 'م' : 'PM'} - ${day} ${month}`;
+  };
+
+  const getProgressStep = (status: string) => {
+    // Step 1: createOrder (always done if order exists)
+    // Step 2: receiveOffers (PENDING - waiting for bids)
+    // Step 3: receiveOrder (courier assigned/picked up)
+    // Step 4: deliverOrder (delivered/completed)
+    switch (status) {
+      case 'PENDING': return 2;
+      case 'PENDING_COURIER':
+      case 'ACCEPTED':
+      case 'RECEIVED':
+      case 'PICKED_UP': return 3;
+      case 'DELIVERED':
+      case 'COMPLETED':
+      case 'RETURNED': return 4;
+      case 'CANCELLED':
+      case 'EXPIRED':
+      case 'FAILED': return 0;
+      default: return 0;
+    }
+  };
+
   const canShowMap = () => {
     return order?.status === "PENDING";
   };
@@ -522,13 +556,14 @@ export default function OrderDetailsPage() {
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
-          <span className={styles.backArrow} onClick={() => router.push("/orders")}>
-            {isRTL ? "→" : "←"}
-          </span>
-
-          <h1 className={styles.pageTitle}>
-            {t("orderDetails")} #{order.id}
-          </h1>
+          <div className={styles.headerTitleGroup}>
+            <span className={styles.backArrow} onClick={() => router.push("/orders")}>
+              {isRTL ? "→" : "←"}
+            </span>
+            <h1 className={styles.pageTitle}>
+              {t("orderDetails")}
+            </h1>
+          </div>
 
           <div className={styles.orderActions}>
             {/* PENDING: Edit, Cancel, Map */}
@@ -551,35 +586,13 @@ export default function OrderDetailsPage() {
               </>
             )}
 
-            {/* PENDING_COURIER: QR, OTP, Cancel */}
-            {order.status === "PENDING_COURIER" && (
-              <>
-                {order.qrCode && (
-                  <button
-                    className={styles.actionButton}
-                    onClick={() => setShowQRModal(true)}
-                  >
-                    {t("showQRCode")}
-                  </button>
-                )}
-                <button
-                  className={styles.actionButtonWarning}
-                  onClick={() => setShowCancelModal(true)}
-                  disabled={processingAction}
-                >
-                  {t("cancelOrder")}
-                </button>
-              </>
-            )}
-
-            {/* RECEIVED: Cancel */}
-            {order.status === "RECEIVED" && (
+            {/* PENDING_COURIER and RECEIVED: Show QR Code */}
+            {(order.status === "PENDING_COURIER" || order.status === "RECEIVED") && order.qrCode && (
               <button
-                className={styles.actionButtonWarning}
-                onClick={() => setShowCancelModal(true)}
-                disabled={processingAction}
+                className={styles.actionButton}
+                onClick={() => setShowQRModal(true)}
               >
-                {t("cancelOrder")}
+                {t("showQRCode")}
               </button>
             )}
 
@@ -646,22 +659,6 @@ export default function OrderDetailsPage() {
           </div>
         )}
 
-        {/* Receive OTP Section for PENDING_COURIER */}
-        {canShowReceiveOTP() && order.receiveOTP && (
-          <div className={styles.otpSection}>
-            <div className={styles.otpCard}>
-              <div className={styles.otpIcon}>📱</div>
-              <div className={styles.otpContent}>
-                <h3 className={styles.otpTitle}>{t("otpReceive.title")}</h3>
-                <p className={styles.otpDescription}>
-                  {t("otpReceive.description")}
-                </p>
-                <div className={styles.otpCode}>{order.receiveOTP}</div>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Cancel OTP Section for FAILED */}
         {canShowCancelOTP() && (
           <div className={styles.otpSection}>
@@ -677,6 +674,96 @@ export default function OrderDetailsPage() {
             </div>
           </div>
         )}
+
+        {/* Order Info and Progress Section */}
+        <div className={styles.orderSection}>
+          {/* Order Info Card */}
+          <div className={styles.orderInfoCard}>
+            <div className={styles.orderTop}>
+              <span className={styles.orderDate}>{formatDate(order.createdAt._seconds)}</span>
+              <span className={`${styles.statusBadge} ${order.status === "CANCELLED" ? styles.statusBadgeCancelled : ""}`}>{getStatusLabel(order.status)}</span>
+            </div>
+
+            {order.attachment && (
+              <div className={styles.orderImageWrapper}>
+                <img
+                  src={order.attachment}
+                  alt={order.content || "Order"}
+                  className={styles.orderImage}
+                />
+              </div>
+            )}
+
+            <div className={styles.orderMain}>
+              <div className={styles.orderTextContent}>
+                <h2 className={styles.orderTitle}>
+                  {order.customer.name}
+                </h2>
+                <p className={styles.orderDescription}>
+                  {order.content || order.customer.address}
+                </p>
+                <p className={styles.orderDescription}>
+                  {order.customer.phone}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Progress Bar + Price Cards */}
+          <div className={styles.orderLeftSide}>
+            {/* Progress Bar */}
+            <div className={styles.progressCard}>
+              <div className={styles.progressBar}>
+                {[
+                  { label: t("progress.createOrder"), step: 1 },
+                  { label: t("progress.receiveOffers"), step: 2 },
+                  { label: t("progress.receiveOrder"), step: 3 },
+                  { label: t("progress.deliverOrder"), step: 4 },
+                ].map((item, index) => {
+                  const currentStep = getProgressStep(order.status);
+                  const isCompleted = currentStep >= item.step;
+                  const isActive = currentStep === item.step;
+                  return (
+                    <div key={index} className={styles.progressStep}>
+                      <div className={styles.progressStepIndicator}>
+                        <div className={`${styles.progressDot} ${isCompleted ? styles.progressDotCompleted : ''} ${isActive ? styles.progressDotActive : ''}`}>
+                          {isCompleted && !isActive && <span className={styles.progressCheck}>✓</span>}
+                        </div>
+                        {index < 3 && (
+                          <div className={`${styles.progressLine} ${isCompleted && currentStep >= item.step + 1 ? styles.progressLineCompleted : ''}`} />
+                        )}
+                      </div>
+                      <div className={styles.progressStepText}>
+                        <span className={styles.progressStepLabel}>{item.label}</span>
+                        <span className={styles.progressStepDate}>
+                          {isCompleted ? formatDateTime(order.createdAt._seconds) : ''}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Price Cards */}
+            <div className={styles.priceCardsGrid}>
+              <div className={styles.priceCard}>
+                <span className={styles.priceLabel}>{t("shippingPrice")}</span>
+                <span className={styles.priceValue}>{order.shippingAmount} {tCommon("currency")}</span>
+              </div>
+              <div className={styles.priceCard}>
+                <span className={styles.priceLabel}>{t("packagePrice")}</span>
+                <span className={styles.priceValue}>{order.cash} {tCommon("currency")}</span>
+              </div>
+              {order.type === "PREPAID" && order.otp && (
+                <div className={styles.priceCardOtp}>
+                  <span className={styles.priceLabel}>{t("otpCode")}</span>
+                  <span className={styles.otpValue}>{order.otp}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Google Maps Section for PENDING */}
         {canShowMap() && (
@@ -697,48 +784,98 @@ export default function OrderDetailsPage() {
           </div>
         )}
 
-        {/* Order Info and Price Section */}
-        <div className={styles.orderSection}>
-          {/* Price Cards - Right Half */}
-          <div className={styles.priceCardsGrid}>
-            <div className={styles.priceCard}>
-              <span className={styles.priceLabel}>{t("packagePrice")}</span>
-              <span className={styles.priceValue}>{order.cash} {tCommon("currency")}</span>
-            </div>
-            <div className={styles.priceCard}>
-              <span className={styles.priceLabel}>{t("shippingPrice")}</span>
-              <span className={styles.priceValue}>{order.shippingAmount} {tCommon("currency")}</span>
-            </div>
-            {order.type === "PREPAID" && order.otp && (
-              <div className={styles.priceCardOtp}>
-                <span className={styles.priceLabel}>{t("otpCode")}</span>
-                <span className={styles.otpValue}>{order.otp}</span>
+        {/* Courier & Order Details Section - Show when courier is assigned */}
+        {order.selectedCourier && (
+          <div className={styles.courierOrderSection}>
+            {/* Courier Card (right in RTL) */}
+            <div className={styles.courierCard}>
+              <div className={styles.courierHeader}>
+                <div className={styles.courierInfo}>
+                  <h3 className={styles.courierName}>{order.selectedCourier.name}</h3>
+                  <div className={styles.courierMeta}>
+                    <span className={styles.courierRating}>{order.selectedCourier.rating} ⭐</span>
+                  </div>
+                  <span className={styles.courierSuccessCount}>
+                    {order.selectedCourier.successCount} {t("successfulOrders")}
+                  </span>
+                </div>
+                <div className={styles.courierAvatarLarge}>
+                  <Image
+                    src={order.selectedCourier.avatar || "/icons/User.svg"}
+                    alt={order.selectedCourier.name}
+                    width={70}
+                    height={70}
+                  />
+                </div>
               </div>
-            )}
-          </div>
 
-          {/* Order Info Card - Left Half */}
-          <div className={styles.orderInfoCard}>
-            <div className={styles.orderTop}>
-              <span className={styles.orderDate}>{formatDate(order.createdAt._seconds)}</span>
-<span className={`${styles.statusBadge} ${order.status === "CANCELLED" ? styles.statusBadgeCancelled : ""}`}>{getStatusLabel(order.status)}</span>
+              <div className={styles.courierContactButtons}>
+                <a href={`tel:${order.selectedCourier.phone}`} className={styles.contactBtn}>
+                  <span className={styles.contactIcon}>📞</span>
+                </a>
+                <button className={styles.contactBtn}>
+                  <Image src="/icons/Chat.svg" alt={t("courierSection.message")} width={20} height={20} />
+                </button>
+              </div>
+
+              <div className={styles.courierDetailsGrid}>
+                <div className={styles.courierDetailRow}>
+                  <span className={styles.courierDetailLabel}>{t("expectedDeliveryTime")}</span>
+                  <span className={styles.courierDetailValue}>--</span>
+                </div>
+                <div className={styles.courierDetailRow}>
+                  <span className={styles.courierDetailLabel}>{t("deliveryMethod")}</span>
+                  <span className={styles.courierDetailValue}>{order.selectedCourier.method}</span>
+                </div>
+              </div>
+
+              <div className={styles.courierActions}>
+                {order.receiveOTP && (
+                  <button
+                    className={styles.showCodeBtn}
+                    onClick={() => setShowReceiveCodeModal(true)}
+                  >
+                    {t("courierSection.showReceiveCode")}
+                  </button>
+                )}
+                {(order.status === "PENDING_COURIER" || order.status === "RECEIVED") && (
+                  <button
+                    className={styles.cancelOrderBtn}
+                    onClick={() => setShowCancelModal(true)}
+                    disabled={processingAction}
+                  >
+                    <span>✕</span>
+                    {t("cancelOrder")}
+                  </button>
+                )}
+              </div>
             </div>
 
-            <div className={styles.orderMain}>
-              <div className={styles.orderTextContent}>
-                <h2 className={styles.orderTitle}>
-                  {order.customer.name}
-                </h2>
-                <p className={styles.orderDescription}>
-                  {order.customer.address}
-                </p>
-                <p className={styles.orderDescription}>
-                  {order.customer.phone}
-                </p>
+            {/* Merchant/Order Details Card (left in RTL) */}
+            <div className={styles.orderDetailsCard}>
+              <div className={styles.orderDetailRow}>
+                <span className={styles.orderDetailLabel}>{t("courierSection.pickupAddress")}</span>
+                <span className={styles.orderDetailValue}>{order.pickup.title}</span>
+              </div>
+              <div className={styles.orderDetailRow}>
+                <span className={styles.orderDetailLabel}>{t("courierSection.customerName")}</span>
+                <span className={styles.orderDetailValue}>{order.customer.name}</span>
+              </div>
+              <div className={styles.orderDetailRow}>
+                <span className={styles.orderDetailLabel}>{t("courierSection.customerPhone")}</span>
+                <span className={styles.orderDetailValue}>{order.customer.phone}</span>
+              </div>
+              <div className={styles.orderDetailRow}>
+                <span className={styles.orderDetailLabel}>{t("courierSection.customerAddress")}</span>
+                <span className={styles.orderDetailValue}>{order.customer.address}</span>
+              </div>
+              <div className={styles.orderDetailRow}>
+                <span className={styles.orderDetailLabel}>{t("courierSection.city")}</span>
+                <span className={styles.orderDetailValue}>{order.customer.gov}</span>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
 {/* Offers Section - Only show for PENDING status */}
         {order.status === "PENDING" && (
@@ -747,6 +884,7 @@ export default function OrderDetailsPage() {
             <h2 className={styles.offersTitle}>
               {t("bidsTitle")} ({bids.length.toString().padStart(2, "0")})
             </h2>
+            <span className={styles.viewAll}>{t("viewAll")}</span>
           </div>
 
           <div className={styles.offersList}>
@@ -991,22 +1129,31 @@ export default function OrderDetailsPage() {
                   ✕
                 </button>
               </div>
-              <div className={styles.modalBody} style={{ textAlign: "center" }}>
-                <div className={styles.qrCodeContainer}>
-<QRCodeDisplay data={order.qrCode} />
+              <div className={styles.modalBody}>
+                <QRCodeDisplay data={order.qrCode} />
+                <p className={styles.qrCodeHint}>{t("qrModal.hint")}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Receive Code Modal */}
+        {showReceiveCodeModal && (
+          <div className={styles.modalOverlay} onClick={() => setShowReceiveCodeModal(false)}>
+            <div className={styles.codeModal} onClick={(e) => e.stopPropagation()}>
+              <div className={styles.codeModalBody}>
+                <h2 className={styles.codeModalTitle}>{t("courierSection.receiveCodeTitle")}</h2>
+                <p className={styles.codeModalHint}>{t("courierSection.receiveCodeHint")}</p>
+                <div className={styles.codeModalValue}>
+                  {order.receiveOTP || '--'}
                 </div>
-                <p className={styles.qrCodeHint}>
-                  {t("qrModal.hint")}
-                </p>
               </div>
-              <div className={styles.modalFooter}>
-                <button
-                  className={styles.modalConfirmBtn}
-                  onClick={() => setShowQRModal(false)}
-                >
-                  {t("common.close")}
-                </button>
-              </div>
+              <button
+                className={styles.codeModalBtn}
+                onClick={() => setShowReceiveCodeModal(false)}
+              >
+                {t("courierSection.returnBtn")}
+              </button>
             </div>
           </div>
         )}

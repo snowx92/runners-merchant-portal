@@ -23,24 +23,22 @@
     flex-wrap: wrap;
 }
 
-[dir="rtl"] .header {
-    flex-direction: row-reverse;
+/* RTL handled automatically by dir="rtl" reversing row flow */
+
+.headerTitleGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-direction: row;
 }
+
+/* RTL handled automatically by dir="rtl" reversing row flow */
 
 .pageTitle {
     font-size: 1.5rem;
     font-weight: 800;
     color: #111;
     margin: 0;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
-}
-
-[dir="rtl"] .pageTitle {
-    text-align: right;
 }
 
 .backArrow {
@@ -62,20 +60,30 @@
     display: flex;
     gap: 1.5rem;
     margin-bottom: 2rem;
-    flex-direction: row-reverse;
+    flex-direction: row;
 }
 
 [dir="rtl"] .orderSection {
     flex-direction: row;
 }
 
-/* Order Info Card */
+/* Order Left Side (Progress + Prices) */
+.orderLeftSide {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+}
+
+/* Order Info Card - Right Side */
 .orderInfoCard {
     background: white;
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .orderTop {
@@ -110,6 +118,24 @@
     color: #EF5350;
 }
 
+.orderImageWrapper {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #F5F5F5 0%, #EEEEEE 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+}
+
+.orderImage {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
 .orderMain {
     display: flex;
     gap: 2rem;
@@ -119,18 +145,6 @@
 
 [dir="rtl"] .orderMain {
     flex-direction: row-reverse;
-}
-
-.orderImageWrapper {
-    flex-shrink: 0;
-    width: 150px;
-    height: 150px;
-    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
 }
 
 .orderTextContent {
@@ -146,7 +160,7 @@
     font-size: 1.25rem;
     font-weight: 700;
     color: #111;
-    margin: 0 0 0.75rem 0;
+    margin: 0 0 0.5rem 0;
 }
 
 .orderDescription {
@@ -156,13 +170,121 @@
     line-height: 1.7;
 }
 
+/* Progress Bar Card */
+.progressCard {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.progressBar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+    flex-direction: row;
+}
+
+.progressStep {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+.progressStepIndicator {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    position: relative;
+}
+
+.progressDot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #E0E0E0;
+    border: 3px solid #E0E0E0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    flex-shrink: 0;
+    transition: all 0.3s;
+}
+
+.progressDotCompleted {
+    background: #1A1A1A;
+    border-color: #1A1A1A;
+}
+
+.progressDotActive {
+    background: #1A1A1A;
+    border-color: #1A1A1A;
+    box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.15);
+}
+
+.progressCheck {
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.progressLine {
+    position: absolute;
+    height: 2px;
+    background: #E0E0E0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    width: calc(100% - 28px);
+}
+
+/* LTR: line extends to the right from the dot center */
+.progressLine {
+    left: calc(50% + 14px);
+}
+
+/* RTL: line extends to the left from the dot center */
+[dir="rtl"] .progressLine {
+    left: auto;
+    right: calc(50% + 14px);
+}
+
+.progressLineCompleted {
+    background: #1A1A1A;
+}
+
+.progressStepText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0.75rem;
+    text-align: center;
+}
+
+.progressStepLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+}
+
+.progressStepDate {
+    font-size: 0.65rem;
+    color: #999;
+    margin-top: 0.25rem;
+    white-space: nowrap;
+}
+
 /* Price Cards Grid */
 .priceCardsGrid {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 1rem;
-    min-width: 280px;
-    justify-content: space-between;
 }
 
 .priceCard {
@@ -190,6 +312,237 @@
     font-weight: 700;
 }
 
+/* ===== Courier & Order Details Section ===== */
+.courierOrderSection {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    flex-direction: row;
+}
+
+/* Order Details Card (left in RTL) */
+.orderDetailsCard {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.orderDetailRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #F0F0F0;
+    flex-direction: row;
+}
+
+.orderDetailRow:last-child {
+    border-bottom: none;
+}
+
+.orderDetailLabel {
+    font-size: 0.9rem;
+    color: #999;
+    font-weight: 500;
+}
+
+.orderDetailValue {
+    font-size: 0.95rem;
+    color: #111;
+    font-weight: 600;
+}
+
+/* Courier Card (right in RTL) */
+.courierCard {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.courierHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-direction: row;
+}
+
+.courierAvatarLarge {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #F5F5F5;
+}
+
+.courierAvatarLarge img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.courierInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: left;
+}
+
+[dir="rtl"] .courierInfo {
+    text-align: right;
+}
+
+.courierName {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+}
+
+.courierMeta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.courierRating {
+    font-size: 0.9rem;
+    color: #FFA726;
+    font-weight: 600;
+}
+
+.courierSuccessCount {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.courierContactButtons {
+    display: flex;
+    gap: 0.75rem;
+    flex-direction: row;
+}
+
+.contactBtn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid #E5E5E5;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.contactBtn:hover {
+    background-color: #F5F5F5;
+}
+
+.contactIcon {
+    font-size: 1.2rem;
+}
+
+.courierDetailsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.courierDetailRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    flex-direction: row;
+}
+
+.courierDetailLabel {
+    font-size: 0.85rem;
+    color: #999;
+    font-weight: 500;
+}
+
+.courierDetailValue {
+    font-size: 0.95rem;
+    color: #111;
+    font-weight: 700;
+}
+
+.courierActions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.showCodeBtn {
+    flex: 1;
+    padding: 0.85rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    border-radius: 50px;
+    background-color: #1A1A1A;
+    color: white;
+    text-align: center;
+}
+
+.showCodeBtn:hover {
+    background-color: #333;
+}
+
+.cancelOrderBtn {
+    flex: 1;
+    padding: 0.85rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    border-radius: 50px;
+    background-color: #FFEBEE;
+    color: #EF5350;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.cancelOrderBtn:hover {
+    background-color: #FFCDD2;
+}
+
+.cancelOrderBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cancelOrderBtn span {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .courierOrderSection {
+        flex-direction: column !important;
+    }
+}
+
 /* Offers Section */
 .offersSection {
     margin-top: 2rem;
@@ -200,6 +553,11 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    flex-direction: row;
+}
+
+[dir="rtl"] .offersSectionHeader {
+    flex-direction: row-reverse;
 }
 
 .offersTitle {
@@ -418,7 +776,7 @@
 
 @media (max-width: 768px) {
     .orderSection {
-        flex-direction: column;
+        flex-direction: column !important;
     }
 
     .orderInfoCard {
@@ -441,12 +799,21 @@
 
     .orderTop {
         justify-content: center;
-        flex-direction: column;
+        flex-direction: row !important;
         gap: 0.5rem;
     }
 
     .priceCardsGrid {
-        min-width: 100%;
+        flex-direction: column;
+    }
+
+    .progressBar {
+        flex-direction: column !important;
+        gap: 1rem;
+    }
+
+    .progressLine {
+        display: none;
     }
 
     .runnerRow {
@@ -956,7 +1323,7 @@
 
 .mapContainer {
     width: 100%;
-    height: 300px;
+    height: 200px;
     border-radius: 12px;
     overflow: hidden;
     background: #E5E5E5;
@@ -1050,4 +1417,68 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+/* ===== Code Modal (Receive Code) ===== */
+.codeModal {
+    background: white;
+    border-radius: 24px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.codeModalBody {
+    padding: 2.5rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.codeModalTitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111;
+    margin: 0;
+    text-align: center;
+}
+
+.codeModalHint {
+    font-size: 0.9rem;
+    color: #999;
+    margin: 0;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.codeModalValue {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1A1A1A;
+    letter-spacing: 0.3rem;
+    margin: 1rem 0;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.codeModalBtn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    background-color: #1A1A1A;
+    color: white;
+    font-family: inherit;
+    border-radius: 0 0 24px 24px;
+    transition: background-color 0.2s;
+}
+
+.codeModalBtn:hover {
+    background-color: #333;
 }
