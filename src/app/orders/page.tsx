@@ -1,17 +1,17 @@
 "use client";
 
-import { Navbar } from "@/components/home/Navbar";
 import { LoadingOverlay } from "@/components/common/LoadingOverlay";
-import styles from "@/styles/orders/orders.module.css";
-import { Cairo } from "next/font/google";
-import Image from "next/image";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
+import { Navbar } from "@/components/home/Navbar";
 import { orderService } from "@/lib/api/services/orderService";
 import { zoneService } from "@/lib/api/services/zoneService";
 import type { Order } from "@/lib/api/types/home.types";
-import type { Zone, City } from "@/lib/api/types/zone.types";
+import type { City, Zone } from "@/lib/api/types/zone.types";
+import styles from "@/styles/orders/orders.module.css";
+import { useLocale, useTranslations } from "next-intl";
+import { Cairo } from "next/font/google";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -19,7 +19,15 @@ const cairo = Cairo({
   variable: "--font-cairo",
 });
 
-type OrderStatusFilter = "all" | "PENDING" | "ACCEPTED" | "PICKED_UP" | "DELIVERED" | "COMPLETED" | "CANCELLED" | "FAILED";
+type OrderStatusFilter =
+  | "all"
+  | "PENDING"
+  | "ACCEPTED"
+  | "PICKED_UP"
+  | "DELIVERED"
+  | "COMPLETED"
+  | "CANCELLED"
+  | "FAILED";
 
 interface FilterState {
   keyword: string;
@@ -34,12 +42,24 @@ interface FilterState {
   shippingPriceTo: string;
 }
 
+const VALID_STATUSES: OrderStatusFilter[] = [
+  "all",
+  "PENDING",
+  "ACCEPTED",
+  "PICKED_UP",
+  "DELIVERED",
+  "COMPLETED",
+  "CANCELLED",
+  "FAILED",
+];
+
 export default function Orders() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const locale = useLocale();
   const isRTL = locale === "ar";
-  const t = useTranslations('orders');
-  const tCommon = useTranslations('common');
+  const t = useTranslations("orders");
+  const tCommon = useTranslations("common");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -74,6 +94,21 @@ export default function Orders() {
     shippingPriceFrom: "0",
     shippingPriceTo: "500",
   });
+
+  // Sync status from URL query on mount and when searchParams change
+  useEffect(() => {
+    const statusFromUrl = searchParams.get("status");
+    if (
+      statusFromUrl &&
+      VALID_STATUSES.includes(statusFromUrl as OrderStatusFilter)
+    ) {
+      setFilters((prev) => ({
+        ...prev,
+        status: statusFromUrl as OrderStatusFilter,
+      }));
+      setCurrentPage(1);
+    }
+  }, [searchParams]);
 
   // Fetch zones on mount
   useEffect(() => {
@@ -111,8 +146,10 @@ export default function Orders() {
       if (filters.status !== "all") params.status = filters.status;
 
       // Only add price filters if they differ from defaults
-      if (filters.priceFrom && filters.priceFrom !== "0") params.priceFrom = filters.priceFrom;
-      if (filters.priceTo && filters.priceTo !== "10000") params.priceTo = filters.priceTo;
+      if (filters.priceFrom && filters.priceFrom !== "0")
+        params.priceFrom = filters.priceFrom;
+      if (filters.priceTo && filters.priceTo !== "10000")
+        params.priceTo = filters.priceTo;
 
       // Location filters are optional
       if (filters.fromGovId) params.fromGovId = filters.fromGovId;
@@ -121,8 +158,10 @@ export default function Orders() {
       if (filters.toCityId) params.toCityId = filters.toCityId;
 
       // Only add shipping price filters if they differ from defaults
-      if (filters.shippingPriceFrom && filters.shippingPriceFrom !== "0") params.shippingPriceFrom = filters.shippingPriceFrom;
-      if (filters.shippingPriceTo && filters.shippingPriceTo !== "500") params.shippingPriceTo = filters.shippingPriceTo;
+      if (filters.shippingPriceFrom && filters.shippingPriceFrom !== "0")
+        params.shippingPriceFrom = filters.shippingPriceFrom;
+      if (filters.shippingPriceTo && filters.shippingPriceTo !== "500")
+        params.shippingPriceTo = filters.shippingPriceTo;
 
       console.log("📤 Sending API request with params:", params);
       const response = await orderService.getOrders(params);
@@ -132,7 +171,9 @@ export default function Orders() {
           setOrders(response.items);
           setCurrentPage(1);
         } else {
-          setOrders((prev) => page === 1 ? response.items : [...prev, ...response.items]);
+          setOrders((prev) =>
+            page === 1 ? response.items : [...prev, ...response.items],
+          );
         }
         setHasMore(!response.isLastPage);
       }
@@ -150,6 +191,15 @@ export default function Orders() {
   const handleStatusFilter = (status: OrderStatusFilter) => {
     setFilters((prev) => ({ ...prev, status }));
     setCurrentPage(1);
+    // Keep current tab in the URL so links and refresh preserve it
+    const params = new URLSearchParams(searchParams.toString());
+    if (status === "all") {
+      params.delete("status");
+    } else {
+      params.set("status", status);
+    }
+    const query = params.toString();
+    router.replace(query ? `/orders?${query}` : "/orders", { scroll: false });
   };
 
   const handleLoadMore = () => {
@@ -184,7 +234,7 @@ export default function Orders() {
     setToCitySearch("");
     setShowFilterModal(false);
     setCurrentPage(1);
-    
+
     // Fetch orders after state updates
     setTimeout(() => {
       fetchOrders(true);
@@ -192,7 +242,8 @@ export default function Orders() {
   };
 
   // Get display name for selected governorate/city
-  const getGovName = (govId: string) => zones.find((z) => z.id === govId)?.name || "";
+  const getGovName = (govId: string) =>
+    zones.find((z) => z.id === govId)?.name || "";
   const getCityName = (govId: string, cityId: string) => {
     const cities = getCitiesForGovernorate(govId);
     return cities.find((c) => c.id === cityId)?.name || "";
@@ -200,13 +251,13 @@ export default function Orders() {
 
   const getStatusLabel = (status: Order["status"]) => {
     const statusKeys: Record<Order["status"], string> = {
-      PENDING: 'pending',
-      ACCEPTED: 'accepted',
-      PICKED_UP: 'pickedUp',
-      DELIVERED: 'delivered',
-      COMPLETED: 'completed',
-      CANCELLED: 'cancelled',
-      FAILED: 'failed',
+      PENDING: "pending",
+      ACCEPTED: "accepted",
+      PICKED_UP: "pickedUp",
+      DELIVERED: "delivered",
+      COMPLETED: "completed",
+      CANCELLED: "cancelled",
+      FAILED: "failed",
     };
     const key = statusKeys[status];
     return key ? t(`status.${key}`) : status;
@@ -234,7 +285,7 @@ export default function Orders() {
   const getFilteredFromGovs = () => {
     if (!fromGovSearch) return zones;
     return zones.filter((zone) =>
-      zone.name.toLowerCase().includes(fromGovSearch.toLowerCase())
+      zone.name.toLowerCase().includes(fromGovSearch.toLowerCase()),
     );
   };
 
@@ -242,14 +293,14 @@ export default function Orders() {
     const cities = getCitiesForGovernorate(filters.fromGovId);
     if (!fromCitySearch) return cities;
     return cities.filter((city) =>
-      city.name.toLowerCase().includes(fromCitySearch.toLowerCase())
+      city.name.toLowerCase().includes(fromCitySearch.toLowerCase()),
     );
   };
 
   const getFilteredToGovs = () => {
     if (!toGovSearch) return zones;
     return zones.filter((zone) =>
-      zone.name.toLowerCase().includes(toGovSearch.toLowerCase())
+      zone.name.toLowerCase().includes(toGovSearch.toLowerCase()),
     );
   };
 
@@ -257,12 +308,15 @@ export default function Orders() {
     const cities = getCitiesForGovernorate(filters.toGovId);
     if (!toCitySearch) return cities;
     return cities.filter((city) =>
-      city.name.toLowerCase().includes(toCitySearch.toLowerCase())
+      city.name.toLowerCase().includes(toCitySearch.toLowerCase()),
     );
   };
 
   return (
-    <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
+    <main
+      className={`${styles.mainContainer} ${cairo.className}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       <Navbar />
 
       <div className={styles.container}>
@@ -273,16 +327,16 @@ export default function Orders() {
               className={styles.toggleButton}
               onClick={() => router.push("/orders/bulk")}
             >
-              {t('createBulk')}
+              {t("createBulk")}
             </button>
             <button
               className={`${styles.toggleButton} ${styles.toggleButtonActive}`}
               onClick={() => router.push("/orders/add")}
             >
-              {t('createNew')}
+              {t("createNew")}
             </button>
           </div>
-          <h1 className={styles.pageTitle}>{t('title')}</h1>
+          <h1 className={styles.pageTitle}>{t("title")}</h1>
         </div>
 
         {/* Second Row: Search bar with filter button on left */}
@@ -291,7 +345,12 @@ export default function Orders() {
             className={styles.filterButton}
             onClick={() => setShowFilterModal(true)}
           >
-            <Image src="/icons/Filter.svg" alt="Filter" width={20} height={20} />
+            <Image
+              src="/icons/Filter.svg"
+              alt="Filter"
+              width={20}
+              height={20}
+            />
           </button>
           <div className={styles.searchWrapper}>
             <div className={styles.searchIcon}>
@@ -307,10 +366,12 @@ export default function Orders() {
             </div>
             <input
               type="text"
-              placeholder={t('searchPlaceholder')}
+              placeholder={t("searchPlaceholder")}
               className={styles.searchInput}
               value={filters.keyword}
-              onChange={(e) => setFilters((prev) => ({ ...prev, keyword: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, keyword: e.target.value }))
+              }
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
           </div>
@@ -324,7 +385,7 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("CANCELLED")}
           >
-            {t('status.cancelled')}
+            {t("status.cancelled")}
           </button>
           <button
             className={`${styles.statusTab} ${
@@ -332,7 +393,7 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("FAILED")}
           >
-            {t('status.failed')}
+            {t("status.failed")}
           </button>
           <button
             className={`${styles.statusTab} ${
@@ -340,7 +401,7 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("COMPLETED")}
           >
-            {t('status.completed')}
+            {t("status.completed")}
           </button>
           <button
             className={`${styles.statusTab} ${
@@ -348,7 +409,7 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("DELIVERED")}
           >
-            {t('status.delivered')}
+            {t("status.delivered")}
           </button>
           <button
             className={`${styles.statusTab} ${
@@ -356,7 +417,7 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("PENDING")}
           >
-            {t('status.pending')}
+            {t("status.pending")}
           </button>
           <button
             className={`${styles.statusTab} ${
@@ -364,16 +425,16 @@ export default function Orders() {
             }`}
             onClick={() => handleStatusFilter("all")}
           >
-            {t('status.all')}
+            {t("status.all")}
           </button>
         </div>
 
         {/* Orders List */}
         <div className={styles.ordersList}>
           {loading && orders.length === 0 ? (
-            <div className={styles.loadingState}>{tCommon('loading')}</div>
+            <div className={styles.loadingState}>{tCommon("loading")}</div>
           ) : orders.length === 0 ? (
-            <div className={styles.emptyState}>{t('noOrders')}</div>
+            <div className={styles.emptyState}>{t("noOrders")}</div>
           ) : (
             <>
               {orders.map((order) => (
@@ -383,7 +444,9 @@ export default function Orders() {
                   onClick={() => router.push(`/orders/${order.id}`)}
                 >
                   <div className={styles.orderBadge}>
-                    <span className={`${styles.badge} ${getStatusClass(order.status)}`}>
+                    <span
+                      className={`${styles.badge} ${getStatusClass(order.status)}`}
+                    >
                       {getStatusLabel(order.status)}
                     </span>
                   </div>
@@ -395,7 +458,9 @@ export default function Orders() {
                       {order.customer.city}, {order.customer.gov}
                     </p>
                     <p className={styles.orderPrice}>
-                      {t('price')}: {order.cash} {tCommon('currency')} - {t('shipping')}: {order.shippingAmount} {tCommon('currency')}
+                      {t("price")}: {order.cash} {tCommon("currency")} -{" "}
+                      {t("shipping")}: {order.shippingAmount}{" "}
+                      {tCommon("currency")}
                     </p>
                   </div>
                 </div>
@@ -407,7 +472,7 @@ export default function Orders() {
                   onClick={handleLoadMore}
                   disabled={loading}
                 >
-                  {loading ? tCommon('loading') : tCommon('loadMore')}
+                  {loading ? tCommon("loading") : tCommon("loadMore")}
                 </button>
               )}
             </>
@@ -417,8 +482,15 @@ export default function Orders() {
 
       {/* Filter Modal */}
       {showFilterModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowFilterModal(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()} dir={isRTL ? "rtl" : "ltr"}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setShowFilterModal(false)}
+        >
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+            dir={isRTL ? "rtl" : "ltr"}
+          >
             <div className={styles.modalHeader}>
               <button
                 className={styles.closeButton}
@@ -426,16 +498,19 @@ export default function Orders() {
               >
                 ✕
               </button>
-              <h2 className={styles.modalTitle}>{t('filterOrders')}</h2>
+              <h2 className={styles.modalTitle}>{t("filterOrders")}</h2>
             </div>
 
             <div className={styles.filterSection}>
               {/* Price Range with Slider */}
               <div className={styles.filterGroup}>
                 <div className={styles.rangeHeader}>
-                  <span className={styles.rangeLabel}>{t('filter.priceRange')}</span>
+                  <span className={styles.rangeLabel}>
+                    {t("filter.priceRange")}
+                  </span>
                   <span className={styles.rangeValues}>
-                    {filters.priceFrom} - {filters.priceTo} {tCommon('currency')}
+                    {filters.priceFrom} - {filters.priceTo}{" "}
+                    {tCommon("currency")}
                   </span>
                 </div>
                 <div className={styles.dualRangeSlider}>
@@ -470,13 +545,17 @@ export default function Orders() {
                   <div className={styles.sliderTrack}>
                     <div
                       className={styles.sliderRange}
-                      style={isRTL ? {
-                        right: `${(Number(filters.priceFrom) / 10000) * 100}%`,
-                        left: `${100 - (Number(filters.priceTo) / 10000) * 100}%`
-                      } : {
-                        left: `${(Number(filters.priceFrom) / 10000) * 100}%`,
-                        right: `${100 - (Number(filters.priceTo) / 10000) * 100}%`
-                      }}
+                      style={
+                        isRTL
+                          ? {
+                              right: `${(Number(filters.priceFrom) / 10000) * 100}%`,
+                              left: `${100 - (Number(filters.priceTo) / 10000) * 100}%`,
+                            }
+                          : {
+                              left: `${(Number(filters.priceFrom) / 10000) * 100}%`,
+                              right: `${100 - (Number(filters.priceTo) / 10000) * 100}%`,
+                            }
+                      }
                     />
                   </div>
                 </div>
@@ -485,9 +564,12 @@ export default function Orders() {
               {/* Shipping Price Range with Slider */}
               <div className={styles.filterGroup}>
                 <div className={styles.rangeHeader}>
-                  <span className={styles.rangeLabel}>{t('filter.shippingRange')}</span>
+                  <span className={styles.rangeLabel}>
+                    {t("filter.shippingRange")}
+                  </span>
                   <span className={styles.rangeValues}>
-                    {filters.shippingPriceFrom} - {filters.shippingPriceTo} {tCommon('currency')}
+                    {filters.shippingPriceFrom} - {filters.shippingPriceTo}{" "}
+                    {tCommon("currency")}
                   </span>
                 </div>
                 <div className={styles.dualRangeSlider}>
@@ -500,7 +582,10 @@ export default function Orders() {
                     onChange={(e) => {
                       const val = e.target.value;
                       if (Number(val) <= Number(filters.shippingPriceTo)) {
-                        setFilters((prev) => ({ ...prev, shippingPriceFrom: val }));
+                        setFilters((prev) => ({
+                          ...prev,
+                          shippingPriceFrom: val,
+                        }));
                       }
                     }}
                     className={`${styles.rangeSlider} ${styles.rangeSliderMin}`}
@@ -514,7 +599,10 @@ export default function Orders() {
                     onChange={(e) => {
                       const val = e.target.value;
                       if (Number(val) >= Number(filters.shippingPriceFrom)) {
-                        setFilters((prev) => ({ ...prev, shippingPriceTo: val }));
+                        setFilters((prev) => ({
+                          ...prev,
+                          shippingPriceTo: val,
+                        }));
                       }
                     }}
                     className={`${styles.rangeSlider} ${styles.rangeSliderMax}`}
@@ -522,13 +610,17 @@ export default function Orders() {
                   <div className={styles.sliderTrack}>
                     <div
                       className={styles.sliderRange}
-                      style={isRTL ? {
-                        right: `${(Number(filters.shippingPriceFrom) / 500) * 100}%`,
-                        left: `${100 - (Number(filters.shippingPriceTo) / 500) * 100}%`
-                      } : {
-                        left: `${(Number(filters.shippingPriceFrom) / 500) * 100}%`,
-                        right: `${100 - (Number(filters.shippingPriceTo) / 500) * 100}%`
-                      }}
+                      style={
+                        isRTL
+                          ? {
+                              right: `${(Number(filters.shippingPriceFrom) / 500) * 100}%`,
+                              left: `${100 - (Number(filters.shippingPriceTo) / 500) * 100}%`,
+                            }
+                          : {
+                              left: `${(Number(filters.shippingPriceFrom) / 500) * 100}%`,
+                              right: `${100 - (Number(filters.shippingPriceTo) / 500) * 100}%`,
+                            }
+                      }
                     />
                   </div>
                 </div>
@@ -536,7 +628,9 @@ export default function Orders() {
 
               {/* From Location with Search */}
               <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>{t('filter.fromLocation')} - {tCommon('optional')}</label>
+                <label className={styles.filterLabel}>
+                  {t("filter.fromLocation")} - {tCommon("optional")}
+                </label>
 
                 {/* Two Column Layout for Governorate and City */}
                 <div className={styles.filterRow}>
@@ -544,7 +638,11 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.fromGovId ? getGovName(filters.fromGovId) : t('filter.selectGovernorate')}
+                      placeholder={
+                        filters.fromGovId
+                          ? getGovName(filters.fromGovId)
+                          : t("filter.selectGovernorate")
+                      }
                       className={styles.filterInput}
                       value={fromGovSearch}
                       onChange={(e) => {
@@ -552,7 +650,9 @@ export default function Orders() {
                         setFromGovOpen(true);
                       }}
                       onFocus={() => setFromGovOpen(true)}
-                      onBlur={() => setTimeout(() => setFromGovOpen(false), 200)}
+                      onBlur={() =>
+                        setTimeout(() => setFromGovOpen(false), 200)
+                      }
                     />
                     {fromGovOpen && (
                       <div className={styles.searchResults}>
@@ -562,7 +662,11 @@ export default function Orders() {
                               key={zone.id}
                               className={styles.searchResultItem}
                               onClick={() => {
-                                setFilters((prev) => ({ ...prev, fromGovId: zone.id, fromCityId: "" }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  fromGovId: zone.id,
+                                  fromCityId: "",
+                                }));
                                 setFromGovSearch("");
                                 setFromGovOpen(false);
                               }}
@@ -571,7 +675,9 @@ export default function Orders() {
                             </div>
                           ))
                         ) : (
-                          <div className={styles.searchResultItem}>{tCommon('noResults')}</div>
+                          <div className={styles.searchResultItem}>
+                            {tCommon("noResults")}
+                          </div>
                         )}
                       </div>
                     )}
@@ -581,7 +687,11 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.fromCityId ? getCityName(filters.fromGovId, filters.fromCityId) : t('filter.selectCity')}
+                      placeholder={
+                        filters.fromCityId
+                          ? getCityName(filters.fromGovId, filters.fromCityId)
+                          : t("filter.selectCity")
+                      }
                       className={styles.filterInput}
                       value={fromCitySearch}
                       onChange={(e) => {
@@ -589,7 +699,9 @@ export default function Orders() {
                         setFromCityOpen(true);
                       }}
                       onFocus={() => setFromCityOpen(true)}
-                      onBlur={() => setTimeout(() => setFromCityOpen(false), 200)}
+                      onBlur={() =>
+                        setTimeout(() => setFromCityOpen(false), 200)
+                      }
                       disabled={!filters.fromGovId}
                     />
                     {fromCityOpen && filters.fromGovId && (
@@ -600,7 +712,10 @@ export default function Orders() {
                               key={city.id}
                               className={styles.searchResultItem}
                               onClick={() => {
-                                setFilters((prev) => ({ ...prev, fromCityId: city.id }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  fromCityId: city.id,
+                                }));
                                 setFromCitySearch("");
                                 setFromCityOpen(false);
                               }}
@@ -609,7 +724,9 @@ export default function Orders() {
                             </div>
                           ))
                         ) : (
-                          <div className={styles.searchResultItem}>{tCommon('noResults')}</div>
+                          <div className={styles.searchResultItem}>
+                            {tCommon("noResults")}
+                          </div>
                         )}
                       </div>
                     )}
@@ -619,7 +736,9 @@ export default function Orders() {
 
               {/* To Location with Search */}
               <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>{t('filter.toLocation')} - {tCommon('optional')}</label>
+                <label className={styles.filterLabel}>
+                  {t("filter.toLocation")} - {tCommon("optional")}
+                </label>
 
                 {/* Two Column Layout for Governorate and City */}
                 <div className={styles.filterRow}>
@@ -627,7 +746,11 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.toGovId ? getGovName(filters.toGovId) : t('filter.selectGovernorate')}
+                      placeholder={
+                        filters.toGovId
+                          ? getGovName(filters.toGovId)
+                          : t("filter.selectGovernorate")
+                      }
                       className={styles.filterInput}
                       value={toGovSearch}
                       onChange={(e) => {
@@ -645,7 +768,11 @@ export default function Orders() {
                               key={zone.id}
                               className={styles.searchResultItem}
                               onClick={() => {
-                                setFilters((prev) => ({ ...prev, toGovId: zone.id, toCityId: "" }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  toGovId: zone.id,
+                                  toCityId: "",
+                                }));
                                 setToGovSearch("");
                                 setToGovOpen(false);
                               }}
@@ -654,7 +781,9 @@ export default function Orders() {
                             </div>
                           ))
                         ) : (
-                          <div className={styles.searchResultItem}>{tCommon('noResults')}</div>
+                          <div className={styles.searchResultItem}>
+                            {tCommon("noResults")}
+                          </div>
                         )}
                       </div>
                     )}
@@ -664,7 +793,11 @@ export default function Orders() {
                   <div className={styles.searchableSelectWrapper}>
                     <input
                       type="text"
-                      placeholder={filters.toCityId ? getCityName(filters.toGovId, filters.toCityId) : t('filter.selectCity')}
+                      placeholder={
+                        filters.toCityId
+                          ? getCityName(filters.toGovId, filters.toCityId)
+                          : t("filter.selectCity")
+                      }
                       className={styles.filterInput}
                       value={toCitySearch}
                       onChange={(e) => {
@@ -683,7 +816,10 @@ export default function Orders() {
                               key={city.id}
                               className={styles.searchResultItem}
                               onClick={() => {
-                                setFilters((prev) => ({ ...prev, toCityId: city.id }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  toCityId: city.id,
+                                }));
                                 setToCitySearch("");
                                 setToCityOpen(false);
                               }}
@@ -692,7 +828,9 @@ export default function Orders() {
                             </div>
                           ))
                         ) : (
-                          <div className={styles.searchResultItem}>{tCommon('noResults')}</div>
+                          <div className={styles.searchResultItem}>
+                            {tCommon("noResults")}
+                          </div>
                         )}
                       </div>
                     )}
@@ -703,10 +841,10 @@ export default function Orders() {
 
             <div className={styles.modalActions}>
               <button className={styles.resetButton} onClick={resetFilters}>
-                {tCommon('reset')}
+                {tCommon("reset")}
               </button>
               <button className={styles.applyButton} onClick={applyFilters}>
-                {tCommon('apply')}
+                {tCommon("apply")}
               </button>
             </div>
           </div>

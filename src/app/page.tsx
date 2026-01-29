@@ -117,14 +117,6 @@ export default function Home() {
     return null;
   }
 
-  // Debug logging
-  console.log("🔍 Render State:", {
-    dataLoading,
-    analytics,
-    bannersCount: banners.length,
-    ordersCount: orders.length,
-    error
-  });
 
   return (
     <main className={`${styles.mainContainer} ${cairo.className}`} dir={isRTL ? "rtl" : "ltr"}>
