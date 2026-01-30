@@ -224,6 +224,7 @@ export interface MarkAsReturnedRequest {
  */
 export interface CancelCourierRequest {
   reason: string;
+  explain: string;
 }
 
 /**

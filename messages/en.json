@@ -335,8 +335,32 @@
       },
       "cancelOrderModal": {
         "title": "Cancel Order",
-        "label": "Cancellation Reason",
-        "placeholder": "Enter the reason for cancellation..."
+        "subtitle": "Please select a reason for cancelling this order",
+        "reasonLabel": "Reason",
+        "reasonPlaceholder": "Select reason",
+        "explainLabel": "Explanation",
+        "explainPlaceholder": "Enter explanation here",
+        "back": "Back",
+        "submit": "Next",
+        "reasons": {
+          "courierRequested": "Courier requested cancellation",
+          "orderInfoError": "Error in order information",
+          "courierLate": "Courier late for pickup",
+          "deliveredOther": "Delivered by another method",
+          "other": "Other reason"
+        }
+      },
+      "cancelConfirmModal": {
+        "title": "You are about to cancel the order",
+        "hint": "Please note that cancelling this order will result in a fee of 50 EGP applied to your account",
+        "back": "Back",
+        "confirm": "Cancel Order"
+      },
+      "walletModal": {
+        "title": "Please top up your wallet",
+        "hint": "Please top up your wallet with the agreed shipping amount of 100 EGP with the supplier in order to deduct it and cancel the order",
+        "back": "Back",
+        "chargeWallet": "Top Up Wallet"
       },
       "processingCancel": "Cancelling...",
       "confirmCancel": "Confirm Cancellation",

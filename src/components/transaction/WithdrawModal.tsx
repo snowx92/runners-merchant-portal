@@ -51,7 +51,7 @@ export const WithdrawModal = ({ isOpen, onClose, currentBalance }: WithdrawModal
       onClose();
     } catch (error) {
       console.error("Withdrawal failed", error);
-      alert(t('failed'));
+      alert(error instanceof Error ? error.message : t('failed'));
     } finally {
       setIsLoading(false);
     }

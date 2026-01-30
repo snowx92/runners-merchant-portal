@@ -8,7 +8,7 @@ import { Cairo } from "next/font/google";
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { orderService } from "@/lib/api/services";
+import { orderService /* , commonService */ } from "@/lib/api/services";
 import type { OrderBid } from "@/lib/api/types/order.types";
 import Image from "next/image";
 import { useToast } from "@/lib/contexts/ToastContext";
@@ -201,7 +201,10 @@ export default function OrderDetailsPage() {
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [showReceiveCodeModal, setShowReceiveCodeModal] = useState(false);
+  // const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  // const [showWalletModal, setShowWalletModal] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
+  const [cancelExplain, setCancelExplain] = useState("");
   const [processingAction, setProcessingAction] = useState(false);
   const [rating, setRating] = useState(5);
   const [reviewContent, setReviewContent] = useState("");
@@ -380,17 +383,18 @@ export default function OrderDetailsPage() {
   };
 
   const handleCancelOrder = async () => {
-    if (!cancelReason.trim()) {
+    if (!cancelReason) {
       showToast(t("enterCancelReason"), "warning");
       return;
     }
 
     try {
       setProcessingAction(true);
-      await orderService.cancelCourier(orderId, { reason: cancelReason });
+      await orderService.cancelCourier(orderId, { reason: cancelReason, explain: cancelExplain });
       await fetchOrderDetails();
       setShowCancelModal(false);
       setCancelReason("");
+      setCancelExplain("");
       showToast(t("orderCancelledSuccess"), "success");
     } catch (error) {
       console.error("Error cancelling order:", error);
@@ -399,6 +403,41 @@ export default function OrderDetailsPage() {
       setProcessingAction(false);
     }
   };
+
+  // const handleCancelNext = () => {
+  //   if (!cancelReason) {
+  //     showToast(t("enterCancelReason"), "warning");
+  //     return;
+  //   }
+  //   setShowCancelModal(false);
+  //   setShowCancelConfirm(true);
+  // };
+
+  // const handleCancelConfirm = async () => {
+  //   try {
+  //     setProcessingAction(true);
+  //     const balanceRes = await commonService.getBalance();
+  //     const balance = balanceRes?.data?.balance ?? 0;
+  //
+  //     if (balance < 50) {
+  //       setShowCancelConfirm(false);
+  //       setShowWalletModal(true);
+  //       return;
+  //     }
+  //
+  //     await orderService.cancelCourier(orderId, { reason: cancelReason, explain: cancelExplain });
+  //     await fetchOrderDetails();
+  //     setShowCancelConfirm(false);
+  //     setCancelReason("");
+  //     setCancelExplain("");
+  //     showToast(t("orderCancelledSuccess"), "success");
+  //   } catch (error) {
+  //     console.error("Error cancelling order:", error);
+  //     showToast(t("orderCancelledError"), "error");
+  //   } finally {
+  //     setProcessingAction(false);
+  //   }
+  // };
 
   const handleSubmitRating = async () => {
     try {
@@ -813,7 +852,20 @@ export default function OrderDetailsPage() {
                 <a href={`tel:${order.selectedCourier.phone}`} className={styles.contactBtn}>
                   <span className={styles.contactIcon}>📞</span>
                 </a>
-                <button className={styles.contactBtn}>
+                <button
+                  className={styles.contactBtn}
+                  onClick={() => {
+                    if (order.selectedCourier) {
+                      window.dispatchEvent(new CustomEvent("openChatWithUser", {
+                        detail: {
+                          userId: order.selectedCourier.id,
+                          name: order.selectedCourier.name,
+                          avatar: order.selectedCourier.avatar || "/icons/User.svg",
+                        }
+                      }));
+                    }
+                  }}
+                >
                   <Image src="/icons/Chat.svg" alt={t("courierSection.message")} width={20} height={20} />
                 </button>
               </div>
@@ -975,47 +1027,135 @@ export default function OrderDetailsPage() {
         {/* Cancel Modal */}
         {showCancelModal && (
           <div className={styles.modalOverlay} onClick={() => setShowCancelModal(false)}>
-            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-              <div className={styles.modalHeader}>
-                <h3 className={styles.modalTitle}>{t("cancelOrderModal.title")}</h3>
-                <button
-                  className={styles.modalClose}
-                  onClick={() => setShowCancelModal(false)}
-                >
-                  ✕
-                </button>
+            <div className={styles.cancelModal} onClick={(e) => e.stopPropagation()}>
+              <h2 className={styles.cancelModalTitle}>{t("cancelOrderModal.title")}</h2>
+              <p className={styles.cancelModalSubtitle}>{t("cancelOrderModal.subtitle")}</p>
+
+              <div className={styles.cancelModalField}>
+                <label className={styles.cancelModalLabel}>{t("cancelOrderModal.reasonLabel")}</label>
+                <div className={styles.cancelSelectWrapper}>
+                  <select
+                    className={styles.cancelSelect}
+                    value={cancelReason}
+                    onChange={(e) => setCancelReason(e.target.value)}
+                  >
+                    <option value="">{t("cancelOrderModal.reasonPlaceholder")}</option>
+                    <option value="courier_requested">{t("cancelOrderModal.reasons.courierRequested")}</option>
+                    <option value="order_info_error">{t("cancelOrderModal.reasons.orderInfoError")}</option>
+                    <option value="courier_late">{t("cancelOrderModal.reasons.courierLate")}</option>
+                    <option value="delivered_other">{t("cancelOrderModal.reasons.deliveredOther")}</option>
+                    <option value="other">{t("cancelOrderModal.reasons.other")}</option>
+                  </select>
+                  <span className={styles.cancelSelectArrow}>&#8249;</span>
+                </div>
               </div>
-              <div className={styles.modalBody}>
-                <label className={styles.modalLabel}>{t("cancelOrderModal.label")}</label>
+
+              <div className={styles.cancelModalField}>
+                <label className={styles.cancelModalLabel}>{t("cancelOrderModal.explainLabel")}</label>
                 <textarea
-                  className={styles.modalTextarea}
-                  placeholder={t("cancelOrderModal.placeholder")}
-                  value={cancelReason}
-                  onChange={(e) => setCancelReason(e.target.value)}
-                  rows={4}
+                  className={styles.cancelTextarea}
+                  placeholder={t("cancelOrderModal.explainPlaceholder")}
+                  value={cancelExplain}
+                  onChange={(e) => setCancelExplain(e.target.value)}
+                  rows={5}
                 />
               </div>
-              <div className={styles.modalFooter}>
+
+              <div className={styles.cancelModalFooter}>
                 <button
-                  className={styles.modalCancelBtn}
+                  className={styles.cancelBackBtn}
                   onClick={() => {
                     setShowCancelModal(false);
                     setCancelReason("");
+                    setCancelExplain("");
                   }}
                 >
-                  {t("common.cancel")}
+                  {t("cancelOrderModal.back")}
                 </button>
                 <button
-                  className={styles.modalConfirmBtn}
+                  className={styles.cancelSubmitBtn}
                   onClick={handleCancelOrder}
                   disabled={processingAction}
                 >
-                  {processingAction ? t("processingCancel") : t("confirmCancel")}
+                  {processingAction ? t("processingCancel") : t("cancelOrderModal.submit")}
                 </button>
               </div>
             </div>
           </div>
         )}
+
+        {/* Cancel Confirmation Modal - commented out for now */}
+        {/* {showCancelConfirm && (
+          <div className={styles.modalOverlay} onClick={() => setShowCancelConfirm(false)}>
+            <div className={styles.cancelConfirmModal} onClick={(e) => e.stopPropagation()}>
+              <div className={styles.cancelConfirmIcon}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 9v4m0 4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h2 className={styles.cancelConfirmTitle}>{t("cancelConfirmModal.title")}</h2>
+              <p className={styles.cancelConfirmHint}>{t("cancelConfirmModal.hint")}</p>
+              <div className={styles.cancelModalFooter}>
+                <button
+                  className={styles.cancelBackBtn}
+                  onClick={() => {
+                    setShowCancelConfirm(false);
+                    setShowCancelModal(true);
+                  }}
+                >
+                  {t("cancelConfirmModal.back")}
+                </button>
+                <button
+                  className={styles.cancelSubmitBtn}
+                  onClick={handleCancelConfirm}
+                  disabled={processingAction}
+                >
+                  {processingAction ? t("processingCancel") : t("cancelConfirmModal.confirm")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )} */}
+
+        {/* Wallet Top-up Modal - commented out for now */}
+        {/* {showWalletModal && (
+          <div className={styles.modalOverlay} onClick={() => setShowWalletModal(false)}>
+            <div className={styles.cancelConfirmModal} onClick={(e) => e.stopPropagation()}>
+              <div className={styles.walletModalIcon}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 7H3a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M16 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="#fff"/>
+                  <path d="M4 7V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h2 className={styles.cancelConfirmTitle}>{t("walletModal.title")}</h2>
+              <p className={styles.cancelConfirmHint}>{t("walletModal.hint")}</p>
+              <div className={styles.cancelModalFooter}>
+                <button
+                  className={styles.cancelBackBtn}
+                  onClick={() => {
+                    setShowWalletModal(false);
+                    setCancelReason("");
+                    setCancelExplain("");
+                  }}
+                >
+                  {t("walletModal.back")}
+                </button>
+                <button
+                  className={styles.cancelSubmitBtn}
+                  onClick={() => {
+                    setShowWalletModal(false);
+                    setCancelReason("");
+                    setCancelExplain("");
+                    router.push("/transaction");
+                  }}
+                >
+                  {t("walletModal.chargeWallet")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )} */}
 
         {/* Mark as Returned Modal */}
         {showReturnModal && (

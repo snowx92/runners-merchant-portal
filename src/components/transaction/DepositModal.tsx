@@ -47,7 +47,7 @@ export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
       }
     } catch (error) {
       console.error("Deposit failed", error);
-      alert(t('error'));
+      alert(error instanceof Error ? error.message : t('error'));
     } finally {
       setIsLoading(false);
     }

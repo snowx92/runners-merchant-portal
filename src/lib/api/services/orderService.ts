@@ -166,11 +166,6 @@ class OrderService extends ApiService {
   async confirmReturnOrder(orderId: string): Promise<OrderActionResponse | null> {
     try {
       const response = await this.post<OrderActionResponse>(`/orders/return/${orderId}`, {});
-      
-      if (!response) {
-        throw new Error("Failed to confirm return order");
-      }
-      
       return response;
     } catch (error: unknown) {
       // Check if it's an error with a specific message indicating the return was already processed
@@ -196,11 +191,6 @@ class OrderService extends ApiService {
    */
   async relistOrder(orderId: string): Promise<OrderActionResponse | null> {
     const response = await this.post<OrderActionResponse>(`/orders/relist/${orderId}`, {});
-
-    if (!response) {
-      throw new Error("Failed to re-list order");
-    }
-
     return response;
   }
 
@@ -213,11 +203,6 @@ class OrderService extends ApiService {
    */
   async cancelCourier(orderId: string, data: CancelCourierRequest): Promise<OrderActionResponse | null> {
     const response = await this.post<OrderActionResponse>(`/orders/cancel/${orderId}`, data);
-
-    if (!response) {
-      throw new Error("Failed to cancel courier");
-    }
-
     return response;
   }
 
@@ -246,11 +231,6 @@ class OrderService extends ApiService {
    */
   async updateBid(bidId: string, bidData: UpdateBidRequest): Promise<OrderActionResponse | null> {
     const response = await this.put<OrderActionResponse>(`/orders/bid/${bidId}`, bidData);
-
-    if (!response) {
-      throw new Error("Failed to update bid");
-    }
-
     return response;
   }
 
@@ -263,11 +243,6 @@ class OrderService extends ApiService {
    */
   async updateOrder(orderId: string, orderData: UpdateOrderRequest): Promise<OrderActionResponse | null> {
     const response = await this.put<OrderActionResponse>(`/orders/${orderId}`, orderData);
-
-    if (!response) {
-      throw new Error("Failed to update order");
-    }
-
     return response;
   }
 
@@ -309,11 +284,6 @@ class OrderService extends ApiService {
    */
   async addReview(orderId: string, reviewData: AddReviewRequest): Promise<AddReviewResponse | null> {
     const response = await this.post<AddReviewResponse>(`/reviews/${orderId}`, reviewData);
-
-    if (!response) {
-      throw new Error("Failed to add review");
-    }
-
     return response;
   }
 }

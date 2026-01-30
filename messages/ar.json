@@ -334,9 +334,33 @@
         "description": "رمز الإلغاء (للإلغاء دون سبب)"
       },
       "cancelOrderModal": {
-        "title": "إلغاء الطلب",
-        "label": "سبب الإلغاء",
-        "placeholder": "اكتب سبب إلغاء الطلب..."
+        "title": "الغاء الطلب",
+        "subtitle": "هذا النص هو مثال لنص يمكن أن يستبدل",
+        "reasonLabel": "السبب",
+        "reasonPlaceholder": "اختر السبب",
+        "explainLabel": "توضيح",
+        "explainPlaceholder": "ادخل توضيح السبب هنا",
+        "back": "رجوع",
+        "submit": "التالي",
+        "reasons": {
+          "courierRequested": "المندوب طلب الغاء الطلب",
+          "orderInfoError": "هناك خطاء في معلومات الطلب",
+          "courierLate": "المندوب متآخر عن موعد الاستلام",
+          "deliveredOther": "تم التوصيل بطريقه اخري",
+          "other": "سبب اخري"
+        }
+      },
+      "cancelConfirmModal": {
+        "title": "انت على وشك الغاء الطلب",
+        "hint": "يرجى العلم انه في حالة الغاء هذا الطلب سيتم تطبيق عليك رسوم 50 جنيه",
+        "back": "رجوع",
+        "confirm": "الغاء الطلب"
+      },
+      "walletModal": {
+        "title": "الرجاء شحن المحفظة",
+        "hint": "الرجاء شحن محفظتك بمبلغ الشحن المتفق عليه مع المورد 100 جنيه من اجل خصمه و الغاء الطلب",
+        "back": "رجوع",
+        "chargeWallet": "شحن المحفظة"
       },
       "processingCancel": "جاري الإلغاء...",
       "confirmCancel": "تأكيد الإلغاء",

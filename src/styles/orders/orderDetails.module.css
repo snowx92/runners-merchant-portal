@@ -1482,3 +1482,229 @@
 .codeModalBtn:hover {
     background-color: #333;
 }
+
+/* ===== Cancel Order Modal ===== */
+.cancelModal {
+    background: white;
+    border-radius: 24px;
+    max-width: 500px;
+    width: 100%;
+    padding: 2.5rem 2rem 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.cancelModalTitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111;
+    margin: 0;
+    text-align: center;
+}
+
+.cancelModalSubtitle {
+    font-size: 0.9rem;
+    color: #999;
+    margin: 0;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.cancelModalField {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.cancelModalLabel {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111;
+}
+
+.cancelSelectWrapper {
+    position: relative;
+}
+
+.cancelSelect {
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    border-radius: 16px;
+    border: 1px solid #E5E5E5;
+    background: #F7F7F7;
+    font-size: 0.95rem;
+    color: #999;
+    font-family: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.cancelSelect:focus {
+    border-color: #ccc;
+}
+
+.cancelSelect option {
+    color: #333;
+}
+
+.cancelSelect option[value=""] {
+    color: #999;
+}
+
+/* Show dark text when a real option is selected */
+.cancelSelect:not(:invalid) {
+    color: #333;
+}
+
+.cancelSelectArrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-size: 1.25rem;
+    color: #999;
+    pointer-events: none;
+}
+
+/* LTR: arrow on the left */
+.cancelSelectArrow {
+    left: 1rem;
+}
+
+/* RTL: arrow on the left (which is visually left in RTL) */
+[dir="rtl"] .cancelSelectArrow {
+    left: 1rem;
+    right: auto;
+}
+
+/* LTR: arrow on the right */
+[dir="ltr"] .cancelSelectArrow {
+    right: 1rem;
+    left: auto;
+}
+
+.cancelTextarea {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border-radius: 16px;
+    border: 1px solid #E5E5E5;
+    background: #F7F7F7;
+    font-size: 0.95rem;
+    color: #333;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+    min-height: 120px;
+    box-sizing: border-box;
+}
+
+.cancelTextarea::placeholder {
+    color: #999;
+}
+
+.cancelTextarea:focus {
+    border-color: #ccc;
+}
+
+.cancelModalFooter {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.cancelBackBtn,
+.cancelSubmitBtn {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.2s;
+}
+
+.cancelBackBtn {
+    background-color: #F0F0F0;
+    color: #333;
+}
+
+.cancelBackBtn:hover {
+    background-color: #E5E5E5;
+}
+
+.cancelSubmitBtn {
+    background-color: #1A1A1A;
+    color: white;
+}
+
+.cancelSubmitBtn:hover:not(:disabled) {
+    background-color: #333;
+}
+
+.cancelSubmitBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== Cancel Confirm & Wallet Modal ===== */
+.cancelConfirmModal {
+    background: white;
+    border-radius: 24px;
+    max-width: 450px;
+    width: 100%;
+    padding: 2.5rem 2rem 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cancelConfirmIcon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #F5C344;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 0 0 12px rgba(245, 195, 68, 0.15);
+}
+
+.walletModalIcon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #E74C4C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 0 0 12px rgba(231, 76, 76, 0.12);
+}
+
+.cancelConfirmTitle {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #111;
+    margin: 0;
+    text-align: center;
+}
+
+.cancelConfirmHint {
+    font-size: 0.9rem;
+    color: #777;
+    margin: 0;
+    text-align: center;
+    line-height: 1.7;
+    max-width: 340px;
+}
