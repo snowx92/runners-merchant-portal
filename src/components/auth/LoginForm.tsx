@@ -33,12 +33,17 @@ const auth = getFirebaseAuth();
 const db = getFirebaseDb();
 
 
+import { TermsModal } from "./TermsModal";
+
+// ... existing imports
+
 export const LoginForm = () => {
   const router = useRouter();
   const t = useTranslations('auth');
   const tCommon = useTranslations('common');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     identifier: "",
@@ -50,7 +55,7 @@ export const LoginForm = () => {
   const clearSessionAndSignOut = async () => {
     try {
       await signOut(auth);
-    } catch {}
+    } catch { }
 
     const session = SessionManager.getInstance();
     session.setToken("");
@@ -287,9 +292,28 @@ export const LoginForm = () => {
           linkText={t('register')}
           href="/auth/register"
         />
+
+        <div className={styles.termsLink} style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.875rem' }}>
+          {t.rich('termsAgreement', {
+            link: (chunks) => (
+              <button
+                type="button"
+                onClick={() => setIsTermsOpen(true)}
+                style={{ background: 'none', border: 'none', color: 'inherit', textDecoration: 'underline', cursor: 'pointer', padding: 0, margin: '0 4px', fontSize: 'inherit' }}
+              >
+                {chunks}
+              </button>
+            )
+          })}
+        </div>
       </form>
 
       <LoadingOverlay isLoading={isLoading} />
+
+      <TermsModal
+        isOpen={isTermsOpen}
+        onClose={() => setIsTermsOpen(false)}
+      />
     </>
   );
 };

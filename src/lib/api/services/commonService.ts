@@ -19,16 +19,16 @@ import type {
 
 // Get current locale for API requests
 const getCurrentLocale = (): string => {
-  if (typeof window !== "undefined") {
-    const cookies = document.cookie.split(";");
-    for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split("=");
-      if (name === "NEXT_LOCALE") return value || "ar";
+    if (typeof window !== "undefined") {
+        const cookies = document.cookie.split(";");
+        for (const cookie of cookies) {
+            const [name, value] = cookie.trim().split("=");
+            if (name === "NEXT_LOCALE") return value || "ar";
+        }
+        const dir = document.documentElement.dir;
+        return dir === "ltr" ? "en" : "ar";
     }
-    const dir = document.documentElement.dir;
-    return dir === "ltr" ? "en" : "ar";
-  }
-  return "ar";
+    return "ar";
 };
 
 class CommonService extends CommonApiService {
@@ -90,10 +90,14 @@ class CommonService extends CommonApiService {
      * Get Terms
      * GET /v1/common/settings/terms
      */
-    async getTerms(): Promise<ApiResponse<string>> {
+    async getTerms(skipAuth: boolean = false): Promise<ApiResponse<string>> {
         // Add timestamp to prevent cached responses
         const language = getCurrentLocale();
-        const response = await this.get<ApiResponse<string>>("/common/settings/terms", { _t: Date.now().toString() }, { Language: language });
+        const headers: Record<string, string> = { Language: language };
+        if (skipAuth) {
+            headers["Skip-Auth"] = "true";
+        }
+        const response = await this.get<ApiResponse<string>>("/common/settings/terms", { _t: Date.now().toString() }, headers);
         if (!response) throw new Error("Failed to fetch terms");
         return response;
     }

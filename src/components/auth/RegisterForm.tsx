@@ -37,6 +37,10 @@ const validatePhone = (phone: string): boolean => {
     return /^\d{11}$/.test(phone) && phone.startsWith('0');
 };
 
+// ... existing imports
+import { TermsModal } from "./TermsModal";
+// ...
+
 export const RegisterForm = () => {
     const router = useRouter();
     const t = useTranslations('auth');
@@ -45,6 +49,7 @@ export const RegisterForm = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isTermsOpen, setIsTermsOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [otpCode, setOtpCode] = useState<string>("");
 
@@ -663,7 +668,17 @@ export const RegisterForm = () => {
                         disabled={isLoading}
                     />
                     <label htmlFor="terms" className={registerStyles.checkboxLabel}>
-                        {t('termsAgreement')}
+                        {t.rich('termsAgreement', {
+                            link: (chunks) => (
+                                <button
+                                    type="button"
+                                    onClick={() => setIsTermsOpen(true)}
+                                    style={{ background: 'none', border: 'none', color: 'inherit', textDecoration: 'underline', cursor: 'pointer', padding: 0, margin: '0 4px', fontSize: 'inherit', display: 'inline' }}
+                                >
+                                    {chunks}
+                                </button>
+                            )
+                        })}
                     </label>
                 </div>
 
@@ -709,6 +724,10 @@ export const RegisterForm = () => {
                 </div>
             </form>
             <LoadingOverlay isLoading={isLoading} />
+            <TermsModal
+                isOpen={isTermsOpen}
+                onClose={() => setIsTermsOpen(false)}
+            />
         </>
     );
 };
