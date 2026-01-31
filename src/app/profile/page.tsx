@@ -237,7 +237,7 @@ export default function ProfilePage() {
                     </svg>
                   )}
                 </h2>
-                <p className={styles.userId}>{user?.id || ''}</p>
+                <p className={styles.userId}>#{user?.uniqueId || user?.id || ''}</p>
               </div>
             </div>
 

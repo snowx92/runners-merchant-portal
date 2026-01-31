@@ -123,7 +123,7 @@ export default function Home() {
       <Navbar />
 
       <div className={styles.container}>
-        <h1 className={styles.pageTitle} style={{ textAlign: 'right' }}>{t('title')}</h1>
+        <h1 className={styles.pageTitle} style={{ textAlign: isRTL ? 'right' : 'left' }}>{t('title')}</h1>
 
         {error && (
           <div style={{

@@ -152,7 +152,7 @@ export interface LatestOrdersResponse {
 export interface GetOrdersQueryParams {
   pageNo?: number;
   limit?: number;
-  status?: "PENDING" | "ACCEPTED" | "PICKED_UP" | "DELIVERED" | "COMPLETED" | "CANCELLED" | "FAILED";
+  status?: "PENDING" | "ACCEPTED" | "PICKED_UP" | "DELIVERED" | "COMPLETED" | "CANCELLED" | "FAILED" | "RETURNED";
   type?: "COD" | "PREPAID";
   startDate?: string;
   endDate?: string;

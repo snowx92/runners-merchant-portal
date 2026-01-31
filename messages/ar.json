@@ -294,6 +294,12 @@
       "suggestedPrice": "سعر التوصيل المقترح",
       "bidDate": "تاريخ العرض",
       "deliveryMethod": "طريقة التوصيل",
+      "deliveryMethods": {
+        "WALKING": "سيراً على الأقدام",
+        "BICYCLE": "دراجة",
+        "MOTORCYCLE": "دراجة نارية",
+        "CAR": "سيارة"
+      },
       "acceptBid": "قبول العرض",
       "rejectBid": "رفض العرض",
       "acceptedBid": "مقبول ✓",
@@ -386,7 +392,8 @@
         "createOrder": "إنشاء الطلب",
         "receiveOffers": "تلقي العروض",
         "receiveOrder": "استلام الطلب",
-        "deliverOrder": "تسليم الطلب"
+        "deliverOrder": "تسليم الطلب",
+        "cancelOrder": "تم الغاء الطلب"
       },
       "viewAll": "عرض الكل",
       "expectedDeliveryTime": "وقت الوصول المتوقع",

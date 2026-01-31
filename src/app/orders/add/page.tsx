@@ -13,6 +13,7 @@ import { locationService } from "@/lib/api/services/locationService";
 import type { UserAddress } from "@/lib/api/types/address.types";
 import type { Zone } from "@/lib/api/types/zone.types";
 import type { CreateOrderRequest } from "@/lib/api/types/order.types";
+import { SearchableSelect } from "@/components/common/SearchableSelect";
 
 
 const cairo = Cairo({
@@ -416,26 +417,13 @@ export default function AddOrder() {
             {/* المحافظة - Governorate dropdown */}
             <div className={styles.formGroup}>
               <label className={styles.label}>{t("governorate")}</label>
-              <div className={styles.selectWrapper}>
-                <select
-                  className={`${styles.select} ${errors[`${order.id}_governorate`] ? styles.inputError : ""}`}
-                  value={order.governorateId}
-                  onChange={(e) => {
-                    const selectedZone = zones.find((z) => z.id === e.target.value);
-                    if (selectedZone) {
-                      handleGovernorateChange(order.id, selectedZone.id, selectedZone.name);
-                    }
-                  }}
-                >
-                  <option value="">{t("selectGovernorate")}</option>
-                  {zones.map((zone) => (
-                    <option key={zone.id} value={zone.id}>
-                      {zone.name}
-                    </option>
-                  ))}
-                </select>
-                <span className={styles.selectArrow}>›</span>
-              </div>
+              <SearchableSelect
+                options={zones}
+                value={order.governorateId}
+                onChange={(id, name) => handleGovernorateChange(order.id, id, name)}
+                placeholder={t("selectGovernorate")}
+                hasError={!!errors[`${order.id}_governorate`]}
+              />
               {errors[`${order.id}_governorate`] && (
                 <span className={styles.errorText}>{errors[`${order.id}_governorate`]}</span>
               )}
@@ -443,35 +431,21 @@ export default function AddOrder() {
             {/* المدينة - City dropdown (depends on governorate) */}
             <div className={styles.formGroup}>
               <label className={styles.label}>{t("city")}</label>
-              <div className={styles.selectWrapper}>
-                <select
-                  className={`${styles.select} ${errors[`${order.id}_city`] ? styles.inputError : ""}`}
-                  value={order.cityId}
-                  onChange={(e) => {
-                    const cities = getCitiesForGovernorate(order.governorateId);
-                    const selectedCity = cities.find((c) => c.id === e.target.value);
-                    if (selectedCity) {
-                      updateOrder(order.id, "cityId", selectedCity.id);
-                      updateOrder(order.id, "city", selectedCity.name);
-                    }
-                  }}
-                  disabled={!order.governorateId}
-                >
-                  <option value="">{t("selectCity")}</option>
-                  {getCitiesForGovernorate(order.governorateId).map((city) => (
-                    <option key={city.id} value={city.id}>
-                      {city.name}
-                    </option>
-                  ))}
-                 </select>
-                <span className={styles.selectArrow}> › </span>
-              </div>
+              <SearchableSelect
+                options={getCitiesForGovernorate(order.governorateId)}
+                value={order.cityId}
+                onChange={(id, name) => {
+                  updateOrder(order.id, "cityId", id);
+                  updateOrder(order.id, "city", name);
+                }}
+                placeholder={t("selectCity")}
+                disabled={!order.governorateId}
+                hasError={!!errors[`${order.id}_city`]}
+              />
               {errors[`${order.id}_city`] && (
                 <span className={styles.errorText}>{errors[`${order.id}_city`]}</span>
               )}
             </div>
-
-
           </div>
 
           {/* Payment Type - نوع الدفع */}

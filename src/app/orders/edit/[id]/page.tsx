@@ -12,6 +12,7 @@ import { locationService } from "@/lib/api/services/locationService";
 import type { Zone, City } from "@/lib/api/types/zone.types";
 import type { UserAddress } from "@/lib/api/types/address.types";
 import { useToast } from "@/lib/contexts/ToastContext";
+import { SearchableSelect } from "@/components/common/SearchableSelect";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -248,39 +249,25 @@ export default function EditOrderPage() {
           <div className={styles.formRow}>
             <div className={styles.formGroupHalf}>
               <label className={styles.label}>{t('governorate')} *</label>
-              <select
-                className={styles.select}
+              <SearchableSelect
+                options={zones}
                 value={govId}
-                onChange={(e) => {
-                  setGovId(e.target.value);
+                onChange={(id) => {
+                  setGovId(id);
                   setCityId("");
                 }}
-              >
-                <option value="">{t('selectGovernorate')}</option>
-                {zones.map((zone) => (
-                  <option key={zone.id} value={zone.id}>
-                    {zone.name}
-                  </option>
-                ))}
-              </select>
+                placeholder={t('selectGovernorate')}
+              />
             </div>
             <div className={styles.formGroupHalf}>
               <label className={styles.label}>{t('city')} *</label>
-              <select
-                className={styles.select}
+              <SearchableSelect
+                options={filteredCities}
                 value={cityId}
-                onChange={(e) => {
-                  setCityId(e.target.value);
-                }}
+                onChange={(id) => setCityId(id)}
+                placeholder={t('selectCity')}
                 disabled={!govId}
-              >
-                <option value="">{t('selectCity')}</option>
-                {filteredCities.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
           </div>
 

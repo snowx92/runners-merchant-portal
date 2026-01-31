@@ -244,6 +244,7 @@ function TransactionContent() {
         isOpen={isWithdrawModalOpen}
         onClose={() => setIsWithdrawModalOpen(false)}
         currentBalance={balance || 0}
+        onSuccess={fetchWalletData}
       />
       <DepositModal isOpen={isDepositModalOpen} onClose={() => setIsDepositModalOpen(false)} />
       <TransactionDetailsModal

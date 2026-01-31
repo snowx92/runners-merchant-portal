@@ -19,7 +19,7 @@ const getStatusClassName = (status: string) => {
     COMPLETED: styles.badgeCompleted,
     CANCELLED: styles.badgeCancelled,
     FAILED: styles.badgeCancelled,
-    RETURNED: styles.badgeCancelled,
+    RETURNED: styles.badgeReturned,
   };
 
   return classMap[status] || styles.badgePending;
@@ -31,15 +31,6 @@ export const RecentOrders = ({ orders }: RecentOrdersProps) => {
   const t = useTranslations("home");
   const tOrders = useTranslations("orders");
   const tCommon = useTranslations("common");
-
-  // Format price based on locale
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency: "EGP",
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
 
   return (
     <>
@@ -83,8 +74,14 @@ export const RecentOrders = ({ orders }: RecentOrdersProps) => {
                       {tOrders("orderNumber", { id: order.id })}
                     </span>
                     <span className={styles.orderSub}>
-                      {tOrders("customer")}: {order.customer.name} •{" "}
-                      {formatPrice(order.cash)} {tCommon("currency")}
+                      {order.customer.name} - {order.content}
+                    </span>
+                    <span className={styles.orderSub}>
+                      {order.customer.city}, {order.customer.gov}
+                    </span>
+                    <span className={styles.orderSub}>
+                      {tOrders("price")}: {order.cash} {tCommon("currency")} -{" "}
+                      {tOrders("shipping")}: {order.shippingAmount} {tCommon("currency")}
                     </span>
                   </div>
 

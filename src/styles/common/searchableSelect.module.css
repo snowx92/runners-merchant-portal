@@ -1,0 +1,204 @@
+/* SearchableSelect Container */
+.container {
+    position: relative;
+    width: 100%;
+}
+
+/* Trigger (looks like a normal select) */
+.trigger {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    padding-right: 2.5rem;
+    border: 1px solid #E5E5E5;
+    border-radius: 12px;
+    background: #FAFAFA;
+    font-size: 0.95rem;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color 0.2s, background 0.2s;
+    min-height: 50px;
+    box-sizing: border-box;
+}
+
+[dir="rtl"] .trigger {
+    padding-right: 1.25rem;
+    padding-left: 2.5rem;
+}
+
+.trigger:hover {
+    border-color: #CCC;
+}
+
+.triggerError {
+    border-color: #EF4444;
+}
+
+.triggerDisabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #F0F0F0;
+}
+
+.triggerText {
+    color: #111;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+
+[dir="rtl"] .triggerText {
+    text-align: right;
+}
+
+.triggerPlaceholder {
+    color: #999;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+
+[dir="rtl"] .triggerPlaceholder {
+    text-align: right;
+}
+
+/* Arrow */
+.arrow {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    color: #999;
+    transition: transform 0.2s;
+    pointer-events: none;
+    flex-shrink: 0;
+}
+
+[dir="rtl"] .arrow {
+    right: auto;
+    left: 1rem;
+}
+
+.arrowOpen {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Dropdown */
+.dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #E5E5E5;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    z-index: 100;
+    overflow: hidden;
+    animation: dropdownIn 0.15s ease;
+}
+
+@keyframes dropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Search Input inside dropdown */
+.searchBox {
+    padding: 0.5rem;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    background: #FAFAFA;
+    color: #111;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+[dir="rtl"] .searchInput {
+    text-align: right;
+}
+
+.searchInput:focus {
+    border-color: #1A1A1A;
+    background: white;
+}
+
+.searchInput::placeholder {
+    color: #CCC;
+}
+
+/* Options List */
+.optionsList {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.optionsList::-webkit-scrollbar {
+    width: 4px;
+}
+
+.optionsList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.optionsList::-webkit-scrollbar-thumb {
+    background: #DDD;
+    border-radius: 2px;
+}
+
+/* Single Option */
+.option {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid #F8F8F8;
+    text-align: left;
+}
+
+[dir="rtl"] .option {
+    text-align: right;
+}
+
+.option:last-child {
+    border-bottom: none;
+}
+
+.option:hover {
+    background: #F5F5F5;
+}
+
+.optionSelected {
+    background: #F0F0F0;
+    font-weight: 600;
+    color: #111;
+}
+
+/* No Results */
+.noResults {
+    padding: 1rem;
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+}

@@ -27,7 +27,8 @@ type OrderStatusFilter =
   | "DELIVERED"
   | "COMPLETED"
   | "CANCELLED"
-  | "FAILED";
+  | "FAILED"
+  | "RETURNED";
 
 interface FilterState {
   keyword: string;
@@ -51,6 +52,7 @@ const VALID_STATUSES: OrderStatusFilter[] = [
   "COMPLETED",
   "CANCELLED",
   "FAILED",
+  "RETURNED",
 ];
 
 export default function Orders() {
@@ -258,6 +260,7 @@ export default function Orders() {
       COMPLETED: "completed",
       CANCELLED: "cancelled",
       FAILED: "failed",
+      RETURNED: "returned",
     };
     const key = statusKeys[status];
     return key ? t(`status.${key}`) : status;
@@ -272,6 +275,7 @@ export default function Orders() {
       COMPLETED: styles.badgeCompleted,
       CANCELLED: styles.badgeCancelled,
       FAILED: styles.badgeFailed,
+      RETURNED: styles.badgeReturned,
     };
     return classMap[status] || styles.badgePending;
   };
@@ -320,61 +324,124 @@ export default function Orders() {
       <Navbar />
 
       <div className={styles.container}>
-        {/* First Row: Title on right, Toggle Buttons on left */}
+        {/* First Row: Title on left, Toggle Buttons on right (LTR), reversed for RTL */}
         <div className={styles.headerRow}>
-          <div className={styles.toggleContainer}>
-            <button
-              className={styles.toggleButton}
-              onClick={() => router.push("/orders/bulk")}
-            >
-              {t("createBulk")}
-            </button>
-            <button
-              className={`${styles.toggleButton} ${styles.toggleButtonActive}`}
-              onClick={() => router.push("/orders/add")}
-            >
-              {t("createNew")}
-            </button>
-          </div>
-          <h1 className={styles.pageTitle}>{t("title")}</h1>
+          {isRTL ? (
+            <>
+              <div className={styles.toggleContainer}>
+                <button
+                  className={styles.toggleButton}
+                  onClick={() => router.push("/orders/bulk")}
+                >
+                  {t("createBulk")}
+                </button>
+                <button
+                  className={`${styles.toggleButton} ${styles.toggleButtonActive}`}
+                  onClick={() => router.push("/orders/add")}
+                >
+                  {t("createNew")}
+                </button>
+              </div>
+              <h1 className={styles.pageTitle}>{t("title")}</h1>
+            </>
+          ) : (
+            <>
+              <h1 className={styles.pageTitle}>{t("title")}</h1>
+              <div className={styles.toggleContainer}>
+                <button
+                  className={styles.toggleButton}
+                  onClick={() => router.push("/orders/bulk")}
+                >
+                  {t("createBulk")}
+                </button>
+                <button
+                  className={`${styles.toggleButton} ${styles.toggleButtonActive}`}
+                  onClick={() => router.push("/orders/add")}
+                >
+                  {t("createNew")}
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Second Row: Search bar with filter button on left */}
+        {/* Second Row: Search bar on left, filter button on right (LTR), reversed for RTL */}
         <div className={styles.searchSection}>
-          <button
-            className={styles.filterButton}
-            onClick={() => setShowFilterModal(true)}
-          >
-            <Image
-              src="/icons/Filter.svg"
-              alt="Filter"
-              width={20}
-              height={20}
-            />
-          </button>
-          <div className={styles.searchWrapper}>
-            <div className={styles.searchIcon}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35"
-                  stroke="#999"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+          {isRTL ? (
+            <>
+              <button
+                className={styles.filterButton}
+                onClick={() => setShowFilterModal(true)}
+              >
+                <Image
+                  src="/icons/Filter.svg"
+                  alt="Filter"
+                  width={20}
+                  height={20}
                 />
-              </svg>
-            </div>
-            <input
-              type="text"
-              placeholder={t("searchPlaceholder")}
-              className={styles.searchInput}
-              value={filters.keyword}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, keyword: e.target.value }))
-              }
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            />
-          </div>
+              </button>
+              <div className={styles.searchWrapper}>
+                <div className={styles.searchIcon}>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35"
+                      stroke="#999"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder={t("searchPlaceholder")}
+                  className={styles.searchInput}
+                  value={filters.keyword}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, keyword: e.target.value }))
+                  }
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className={styles.searchWrapper}>
+                <div className={styles.searchIcon}>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35"
+                      stroke="#999"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder={t("searchPlaceholder")}
+                  className={styles.searchInput}
+                  value={filters.keyword}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, keyword: e.target.value }))
+                  }
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                />
+              </div>
+              <button
+                className={styles.filterButton}
+                onClick={() => setShowFilterModal(true)}
+              >
+                <Image
+                  src="/icons/Filter.svg"
+                  alt="Filter"
+                  width={20}
+                  height={20}
+                />
+              </button>
+            </>
+          )}
         </div>
 
         {/* Status Filter Tabs */}
@@ -452,8 +519,11 @@ export default function Orders() {
                   </div>
                   <div className={styles.orderInfo}>
                     <h3 className={styles.orderTitle}>
-                      {order.customer.name} - {order.content}
+                      {t("orderNumber", { id: order.id })}
                     </h3>
+                    <p className={styles.orderSubtitle}>
+                      {order.customer.name} - {order.content}
+                    </p>
                     <p className={styles.orderSubtitle}>
                       {order.customer.city}, {order.customer.gov}
                     </p>

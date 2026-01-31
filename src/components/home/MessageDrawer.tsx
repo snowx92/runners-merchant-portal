@@ -266,6 +266,7 @@ export const MessageDrawer = () => {
         chatUnsubscribeRef.current();
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   // Listen for "open chat with user" (e.g. from order details courier contact)
@@ -290,6 +291,10 @@ export const MessageDrawer = () => {
           currentUserId,
           userId,
         );
+
+        // Update participant info (store courier's name and avatar in chat room)
+        await chatService.updateParticipantInfo(chatId, userId, name, avatar);
+
         const syntheticMessage: Message = {
           id: chatId,
           chatId,
@@ -298,7 +303,6 @@ export const MessageDrawer = () => {
           text: "",
           time: "",
         };
-        setChatMessages([]);
         setSelectedChat(syntheticMessage);
         setIsOpen(true);
       } catch (err) {
@@ -668,7 +672,12 @@ export const MessageDrawer = () => {
           onClick={handleToggleDrawer}
           aria-label={t("title")}
         >
-          <span className={styles.floatingButtonText}>{t("title")}</span>
+          <div className={styles.buttonContent}>
+            <span className={styles.floatingButtonText}>{t("title")}</span>
+            {unreadCount > 0 && (
+              <span className={styles.messageBadge}>{unreadCount}</span>
+            )}
+          </div>
           <svg
             className={styles.chevron}
             width="24"
@@ -690,9 +699,6 @@ export const MessageDrawer = () => {
             />
           </svg>
         </button>
-        {unreadCount > 0 && (
-          <span className={styles.messageBadge}>{unreadCount}</span>
-        )}
       </div>
 
       {/* Drawer Overlay */}

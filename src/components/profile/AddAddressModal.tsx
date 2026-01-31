@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import styles from "@/styles/profile/addAddressModal.module.css";
 import { zoneService } from "@/lib/api/services/zoneService";
 import type { Zone, City } from "@/lib/api/types/zone.types";
+import { SearchableSelect } from "@/components/common/SearchableSelect";
 
 interface AddAddressModalProps {
   isOpen: boolean;
@@ -56,7 +57,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<google.maps.places.AutocompletePrediction[]>([]);
-  const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
 
   const mapRef = useRef<HTMLDivElement>(null);
@@ -66,123 +67,121 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
   const autocompleteServiceRef = useRef<google.maps.places.AutocompleteService | null>(null);
   const placesServiceRef = useRef<google.maps.places.PlacesService | null>(null);
   const geocoderRef = useRef<google.maps.Geocoder | null>(null);
+  const mapInitializedRef = useRef(false);
 
   // Load Google Maps Script
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const loadGoogleMapsScript = () => {
-      if (window.google) {
-        setGoogleMapsLoaded(true);
-        return;
-      }
-
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-      if (!apiKey) {
-        console.error("Google Maps API key not found");
-        return;
-      }
-
-      // Check if script is already loading or loaded
-      const existingScript = document.querySelector(`script[src*="${apiKey}"]`);
-      if (existingScript) {
-        if (window.google) {
-          setGoogleMapsLoaded(true);
-        } else {
-          existingScript.addEventListener('load', () => setGoogleMapsLoaded(true));
-        }
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&v=weekly`;
-      script.async = true;
-      script.onload = () => {
-        console.log("Google Maps script loaded successfully");
-        setGoogleMapsLoaded(true);
-      };
-      script.onerror = (error) => {
-        console.error("Failed to load Google Maps script:", error);
-        setGoogleMapsLoaded(false);
-        setMapError(t('mapLoadError'));
-      };
-      document.head.appendChild(script);
-    };
-
-    loadGoogleMapsScript();
-  }, [isOpen]);
-
-  // Initialize Google Maps
-  const initGoogleMaps = useCallback(() => {
-    if (!mapRef.current || !window.google || !googleMapsLoaded) return;
-
-    // Prevent multiple initializations
-    if (mapRefObj.current) return;
-
-    try {
-      const google = window.google;
-
-      // Initialize services
-      autocompleteServiceRef.current = new google.maps.places.AutocompleteService();
-      geocoderRef.current = new google.maps.Geocoder();
-      placesServiceRef.current = new google.maps.places.PlacesService(mapRef.current);
-
-      // Initialize map
-      const map = new google.maps.Map(mapRef.current, {
-        center: { lat: latitude, lng: longitude },
-        zoom: 15,
-        disableDefaultUI: false,
-        zoomControl: true,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: true,
-        mapTypeId: "roadmap",
-      });
-
-      mapRefObj.current = map;
-
-      // Create marker
-      const marker = new google.maps.Marker({
-        position: { lat: latitude, lng: longitude },
-        map: map,
-        draggable: true,
-        title: t('deliveryMarker'),
-        animation: google.maps.Animation.DROP,
-      });
-
-      markerRef.current = marker;
-
-      // Marker drag event
-      marker.addListener("dragend", async () => {
-        const position = marker.getPosition();
-        if (position) {
-          const lat = position.lat();
-          const lng = position.lng();
-          setLatitude(lat);
-          setLongitude(lng);
-          await reverseGeocode(lat, lng);
-        }
-      });
-
-      // Map click event to move marker
-      map.addListener("click", (event: google.maps.MapMouseEvent) => {
-        if (event.latLng) {
-          const lat = event.latLng.lat();
-          const lng = event.latLng.lng();
-          marker.setPosition({ lat, lng });
-          setLatitude(lat);
-          setLongitude(lng);
-          reverseGeocode(lat, lng);
-        }
-      });
-
-      console.log("Google Maps initialized successfully");
-
-    } catch (error) {
-      console.error("Error initializing Google Maps:", error);
-      setGoogleMapsLoaded(false);
+  const loadGoogleMapsScript = () => {
+    if (window.google) {
+      setMapLoaded(true);
+      return;
     }
-  }, [latitude, longitude, googleMapsLoaded]);
+
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) {
+      console.error("Google Maps API key not found");
+      setMapError("Google Maps API key not found");
+      return;
+    }
+
+    const existingScript = document.querySelector(`script[src*="maps.googleapis.com"]`);
+    if (existingScript) {
+      if (window.google) {
+        setMapLoaded(true);
+      } else {
+        existingScript.addEventListener('load', () => setMapLoaded(true));
+      }
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => setMapLoaded(true);
+    script.onerror = () => {
+      setMapError(t('mapLoadError'));
+    };
+    document.head.appendChild(script);
+  };
+
+  // Initialize map (simple approach matching order details page)
+  const initializeMap = (lat: number, lng: number) => {
+    if (!mapRef.current || !window.google) return;
+
+    const center = { lat, lng };
+
+    const map = new google.maps.Map(mapRef.current, {
+      center,
+      zoom: 15,
+      disableDefaultUI: false,
+      zoomControl: true,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: true,
+    });
+
+    mapRefObj.current = map;
+
+    // Initialize services after map is created
+    autocompleteServiceRef.current = new google.maps.places.AutocompleteService();
+    geocoderRef.current = new google.maps.Geocoder();
+    placesServiceRef.current = new google.maps.places.PlacesService(map);
+
+    const marker = new google.maps.Marker({
+      position: center,
+      map: map,
+      draggable: true,
+      title: t('deliveryMarker'),
+    });
+
+    markerRef.current = marker;
+
+    // Marker drag event
+    marker.addListener("dragend", async () => {
+      const position = marker.getPosition();
+      if (position) {
+        const newLat = position.lat();
+        const newLng = position.lng();
+        setLatitude(newLat);
+        setLongitude(newLng);
+        await reverseGeocode(newLat, newLng);
+      }
+    });
+
+    // Map click event to move marker
+    map.addListener("click", (event: google.maps.MapMouseEvent) => {
+      if (event.latLng) {
+        const newLat = event.latLng.lat();
+        const newLng = event.latLng.lng();
+        marker.setPosition({ lat: newLat, lng: newLng });
+        setLatitude(newLat);
+        setLongitude(newLng);
+        reverseGeocode(newLat, newLng);
+      }
+    });
+
+    mapInitializedRef.current = true;
+
+    // If no initial data (new address), try to get user's current location
+    if (!initialData && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLat = position.coords.latitude;
+          const userLng = position.coords.longitude;
+          const userPos = { lat: userLat, lng: userLng };
+          map.panTo(userPos);
+          marker.setPosition(userPos);
+          setLatitude(userLat);
+          setLongitude(userLng);
+          reverseGeocode(userLat, userLng);
+        },
+        () => {
+          // Geolocation denied or failed - keep default Cairo position
+        },
+        { enableHighAccuracy: true, timeout: 5000 }
+      );
+    }
+  };
 
   // Reverse geocode coordinates to get address
   const reverseGeocode = async (lat: number, lng: number) => {
@@ -221,7 +220,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
   };
 
   // Search for places
-  const searchPlaces = useCallback(async (query: string) => {
+  const searchPlaces = async (query: string) => {
     if (!autocompleteServiceRef.current || query.length < 3) {
       setSearchResults([]);
       return;
@@ -244,7 +243,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
     } finally {
       setIsSearching(false);
     }
-  }, []);
+  };
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -334,6 +333,15 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
   // Load zones and set initial data on mount/open
   useEffect(() => {
     if (isOpen) {
+      // Reset map state for fresh initialization
+      mapInitializedRef.current = false;
+      if (markerRef.current) {
+        markerRef.current.setMap(null);
+        markerRef.current = null;
+      }
+      mapRefObj.current = null;
+      setMapError(null);
+
       const loadData = async () => {
         await loadZones();
         if (initialData) {
@@ -366,41 +374,26 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
         }
       };
       loadData();
+
+      // Load Google Maps script
+      loadGoogleMapsScript();
     }
   }, [isOpen, initialData]);
 
-  // Initialize map when Google Maps is loaded
+  // Initialize map when script is loaded and modal is open
   useEffect(() => {
-    if (isOpen && googleMapsLoaded && mapRef.current && !mapRefObj.current) {
-      // Use requestAnimationFrame for better timing
-      const initMap = () => {
-        requestAnimationFrame(() => {
-          initGoogleMaps();
-        });
-      };
-
-      // Small delay to ensure DOM is ready
-      const timer = setTimeout(initMap, 50);
+    if (isOpen && mapLoaded && !mapInitializedRef.current) {
+      // Small delay to ensure DOM is rendered
+      const timer = setTimeout(() => {
+        if (mapRef.current) {
+          const lat = initialData?.latitude ?? latitude;
+          const lng = initialData?.longitude ?? longitude;
+          initializeMap(lat, lng);
+        }
+      }, 100);
       return () => clearTimeout(timer);
     }
-  }, [isOpen, googleMapsLoaded, initGoogleMaps]);
-
-  // Cleanup when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      // Clean up map and marker references
-      if (markerRef.current) {
-        markerRef.current.setMap(null);
-        markerRef.current = null;
-      }
-      if (mapRefObj.current) {
-        // Google Maps doesn't have a destroy method, but we can clear references
-        mapRefObj.current = null;
-      }
-      setGoogleMapsLoaded(false);
-      setMapError(null);
-    }
-  }, [isOpen]);
+  }, [isOpen, mapLoaded]);
 
   // Filter cities when state changes
   useEffect(() => {
@@ -432,23 +425,20 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
 
   const retryLoadMap = () => {
     setMapError(null);
-    setGoogleMapsLoaded(false);
-    // Re-trigger the script loading
-    if (isOpen) {
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-      if (apiKey) {
-        const existingScript = document.querySelector(`script[src*="${apiKey}"]`);
-        if (existingScript) {
-          existingScript.remove();
-        }
-      }
-      // Reset refs
-      mapRefObj.current = null;
-      markerRef.current = null;
-      autocompleteServiceRef.current = null;
-      placesServiceRef.current = null;
-      geocoderRef.current = null;
+    setMapLoaded(false);
+    mapInitializedRef.current = false;
+    mapRefObj.current = null;
+    markerRef.current = null;
+    autocompleteServiceRef.current = null;
+    placesServiceRef.current = null;
+    geocoderRef.current = null;
+    // Remove existing script and reload
+    const existingScript = document.querySelector(`script[src*="maps.googleapis.com"]`);
+    if (existingScript) {
+      existingScript.remove();
     }
+    // Re-trigger script loading
+    loadGoogleMapsScript();
   };
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -582,40 +572,11 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
             )}
           </div>
 
-          {/* Location Search */}
-          <div className={styles.formGroup}>
-            <label className={styles.label}>{t('searchLocation')}</label>
-            <div className={styles.searchWrapper}>
-              <input
-                ref={searchInputRef}
-                type="text"
-                className={styles.searchInput}
-                placeholder={t('searchPlaceholder')}
-                value={searchQuery}
-                onChange={handleSearchChange}
-              />
-              {isSearching && <span className={styles.searchLoading}>⏳</span>}
-            </div>
-            {searchResults.length > 0 && (
-              <div className={styles.searchResults}>
-                {searchResults.map((result) => (
-                  <div
-                    key={result.place_id}
-                    className={styles.searchResultItem}
-                    onClick={() => selectPlace(result.place_id)}
-                  >
-                    {result.structured_formatting.main_text}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Map */}
           <div className={styles.formGroup}>
             <label className={styles.label}>{t('deliveryLocation')}</label>
             <div className={styles.mapContainer}>
-              {!googleMapsLoaded && !mapError && (
+              {!mapLoaded && !mapError && (
                 <div className={styles.mapLoading}>
                   <div className={styles.loadingSpinner}></div>
                   <p>{t('loadingMap')}</p>
@@ -629,10 +590,7 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
                   </button>
                 </div>
               )}
-              <div ref={mapRef} style={{ width: '100%', height: '100%', display: googleMapsLoaded && !mapError ? 'block' : 'none' }}></div>
-            </div>
-            <div className={styles.coordinatesDisplay}>
-              <span>lat: {latitude.toFixed(6)}, lng: {longitude.toFixed(6)}</span>
+              <div ref={mapRef} style={{ width: '100%', height: '100%', display: mapLoaded && !mapError ? 'block' : 'none' }}></div>
             </div>
           </div>
 
@@ -640,71 +598,23 @@ export const AddAddressModal = ({ isOpen, onClose, onSave, initialData }: AddAdd
           <div className={styles.formRow}>
             <div className={styles.formGroupHalf}>
               <label className={styles.label}>{t('governorate')}</label>
-              <div className={styles.selectWrapper}>
-                <select
-                  className={styles.select}
-                  value={stateId}
-                  onChange={(e) => setStateId(e.target.value)}
-                  disabled={isLoadingZones}
-                >
-                  <option value="">{t('governorate')}</option>
-                  {zones.map((zone) => (
-                    <option key={zone.id} value={zone.id}>
-                      {zone.name}
-                    </option>
-                  ))}
-                </select>
-                <svg
-                  className={styles.selectIcon}
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5 7.5L10 12.5L15 7.5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
+              <SearchableSelect
+                options={zones}
+                value={stateId}
+                onChange={(id) => setStateId(id)}
+                placeholder={t('governorate')}
+                disabled={isLoadingZones}
+              />
             </div>
             <div className={styles.formGroupHalf}>
               <label className={styles.label}>{t('city')}</label>
-              <div className={styles.selectWrapper}>
-                <select
-                  className={styles.select}
-                  value={cityId}
-                  onChange={(e) => setCityId(e.target.value)}
-                  disabled={!stateId || isLoadingZones}
-                >
-                  <option value="">{t('city')}</option>
-                  {filteredCities.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-                <svg
-                  className={styles.selectIcon}
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5 7.5L10 12.5L15 7.5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
+              <SearchableSelect
+                options={filteredCities}
+                value={cityId}
+                onChange={(id) => setCityId(id)}
+                placeholder={t('city')}
+                disabled={!stateId || isLoadingZones}
+              />
             </div>
           </div>
 

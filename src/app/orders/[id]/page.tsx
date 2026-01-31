@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
@@ -122,7 +123,7 @@ function QRCodeDisplay({ data }: { data: string }) {
             // Check for various possible field names
             qrData = payload.qrCode || payload.data || payload.encryptedData || data;
           }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
         } catch (_) {
           // If not JWT, use as is
         }
@@ -524,6 +525,33 @@ export default function OrderDetailsPage() {
     }
   };
 
+  const getDeliveryMethodLabel = (method: string) => {
+    const methodMap: Record<string, string> = {
+      "WALKING": t("deliveryMethods.WALKING"),
+      "BICYCLE": t("deliveryMethods.BICYCLE"),
+      "MOTORCYCLE": t("deliveryMethods.MOTORCYCLE"),
+      "CAR": t("deliveryMethods.CAR"),
+    };
+    return methodMap[method] || method;
+  };
+
+  const getStatusBadgeClass = (status: string) => {
+    const statusMap: Record<string, string> = {
+      "PENDING": styles.statusBadgePending,
+      "PENDING_COURIER": styles.statusBadgeAccepted,
+      "RECEIVED": styles.statusBadgeAccepted,
+      "ACCEPTED": styles.statusBadgeAccepted,
+      "PICKED_UP": styles.statusBadgePickedUp,
+      "DELIVERED": styles.statusBadgeDelivered,
+      "COMPLETED": styles.statusBadgeCompleted,
+      "CANCELLED": styles.statusBadgeCancelled,
+      "EXPIRED": styles.statusBadgeCancelled,
+      "FAILED": styles.statusBadgeFailed,
+      "RETURNED": styles.statusBadgeReturned,
+    };
+    return statusMap[status] || styles.statusBadge;
+  };
+
   const canShowMap = () => {
     return order?.status === "PENDING";
   };
@@ -720,7 +748,7 @@ export default function OrderDetailsPage() {
           <div className={styles.orderInfoCard}>
             <div className={styles.orderTop}>
               <span className={styles.orderDate}>{formatDate(order.createdAt._seconds)}</span>
-              <span className={`${styles.statusBadge} ${order.status === "CANCELLED" ? styles.statusBadgeCancelled : ""}`}>{getStatusLabel(order.status)}</span>
+            <span className={getStatusBadgeClass(order.status)}>{getStatusLabel(order.status)}</span>
             </div>
 
             {order.attachment && (
@@ -753,34 +781,43 @@ export default function OrderDetailsPage() {
             {/* Progress Bar */}
             <div className={styles.progressCard}>
               <div className={styles.progressBar}>
-                {[
-                  { label: t("progress.createOrder"), step: 1 },
-                  { label: t("progress.receiveOffers"), step: 2 },
-                  { label: t("progress.receiveOrder"), step: 3 },
-                  { label: t("progress.deliverOrder"), step: 4 },
-                ].map((item, index) => {
-                  const currentStep = getProgressStep(order.status);
-                  const isCompleted = currentStep >= item.step;
-                  const isActive = currentStep === item.step;
-                  return (
-                    <div key={index} className={styles.progressStep}>
-                      <div className={styles.progressStepIndicator}>
-                        <div className={`${styles.progressDot} ${isCompleted ? styles.progressDotCompleted : ''} ${isActive ? styles.progressDotActive : ''}`}>
-                          {isCompleted && !isActive && <span className={styles.progressCheck}>✓</span>}
+                {(() => {
+                  const progressSteps = order.status === "CANCELLED" || order.status === "EXPIRED"
+                    ? [
+                        { label: t("progress.createOrder"), step: 1 },
+                        { label: t("progress.cancelOrder"), step: 2 },
+                      ]
+                    : [
+                        { label: t("progress.createOrder"), step: 1 },
+                        { label: t("progress.receiveOffers"), step: 2 },
+                        { label: t("progress.receiveOrder"), step: 3 },
+                        { label: t("progress.deliverOrder"), step: 4 },
+                      ];
+
+                  return progressSteps.map((item, index) => {
+                    const currentStep = order.status === "CANCELLED" || order.status === "EXPIRED" ? 2 : getProgressStep(order.status);
+                    const isCompleted = currentStep >= item.step;
+                    const isActive = currentStep === item.step;
+                    return (
+                      <div key={index} className={styles.progressStep}>
+                        <div className={styles.progressStepIndicator}>
+                          <div className={`${styles.progressDot} ${isCompleted ? styles.progressDotCompleted : ''} ${isActive ? styles.progressDotActive : ''}`}>
+                            {isCompleted && <span className={styles.progressCheck}>✓</span>}
+                          </div>
+                          {index < progressSteps.length - 1 && (
+                            <div className={`${styles.progressLine} ${isCompleted && currentStep >= item.step + 1 ? styles.progressLineCompleted : ''}`} />
+                          )}
                         </div>
-                        {index < 3 && (
-                          <div className={`${styles.progressLine} ${isCompleted && currentStep >= item.step + 1 ? styles.progressLineCompleted : ''}`} />
-                        )}
+                        <div className={styles.progressStepText}>
+                          <span className={styles.progressStepLabel}>{item.label}</span>
+                          <span className={styles.progressStepDate}>
+                            {isCompleted ? formatDateTime(order.createdAt._seconds) : ''}
+                          </span>
+                        </div>
                       </div>
-                      <div className={styles.progressStepText}>
-                        <span className={styles.progressStepLabel}>{item.label}</span>
-                        <span className={styles.progressStepDate}>
-                          {isCompleted ? formatDateTime(order.createdAt._seconds) : ''}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  });
+                })()}
               </div>
             </div>
 
@@ -828,7 +865,7 @@ export default function OrderDetailsPage() {
           <div className={styles.courierOrderSection}>
             {/* Courier Card (right in RTL) */}
             <div className={styles.courierCard}>
-              <div className={styles.courierHeader}>
+              <div className={styles.courierHeader} onClick={() => order.selectedCourier && handleViewCourierProfile(order.selectedCourier.id)} style={{ cursor: "pointer" }}>
                 <div className={styles.courierInfo}>
                   <h3 className={styles.courierName}>{order.selectedCourier.name}</h3>
                   <div className={styles.courierMeta}>
@@ -872,17 +909,13 @@ export default function OrderDetailsPage() {
 
               <div className={styles.courierDetailsGrid}>
                 <div className={styles.courierDetailRow}>
-                  <span className={styles.courierDetailLabel}>{t("expectedDeliveryTime")}</span>
-                  <span className={styles.courierDetailValue}>--</span>
-                </div>
-                <div className={styles.courierDetailRow}>
                   <span className={styles.courierDetailLabel}>{t("deliveryMethod")}</span>
-                  <span className={styles.courierDetailValue}>{order.selectedCourier.method}</span>
+                  <span className={styles.courierDetailValue}>{getDeliveryMethodLabel(order.selectedCourier.method)}</span>
                 </div>
               </div>
 
               <div className={styles.courierActions}>
-                {order.receiveOTP && (
+                {order.receiveOTP && order.status !== "COMPLETED" && order.status !== "DELIVERED" && (
                   <button
                     className={styles.showCodeBtn}
                     onClick={() => setShowReceiveCodeModal(true)}
@@ -903,31 +936,32 @@ export default function OrderDetailsPage() {
               </div>
             </div>
 
-            {/* Merchant/Order Details Card (left in RTL) */}
-            <div className={styles.orderDetailsCard}>
-              <div className={styles.orderDetailRow}>
-                <span className={styles.orderDetailLabel}>{t("courierSection.pickupAddress")}</span>
-                <span className={styles.orderDetailValue}>{order.pickup.title}</span>
-              </div>
-              <div className={styles.orderDetailRow}>
-                <span className={styles.orderDetailLabel}>{t("courierSection.customerName")}</span>
-                <span className={styles.orderDetailValue}>{order.customer.name}</span>
-              </div>
-              <div className={styles.orderDetailRow}>
-                <span className={styles.orderDetailLabel}>{t("courierSection.customerPhone")}</span>
-                <span className={styles.orderDetailValue}>{order.customer.phone}</span>
-              </div>
-              <div className={styles.orderDetailRow}>
-                <span className={styles.orderDetailLabel}>{t("courierSection.customerAddress")}</span>
-                <span className={styles.orderDetailValue}>{order.customer.address}</span>
-              </div>
-              <div className={styles.orderDetailRow}>
-                <span className={styles.orderDetailLabel}>{t("courierSection.city")}</span>
-                <span className={styles.orderDetailValue}>{order.customer.gov}</span>
-              </div>
-            </div>
           </div>
         )}
+
+        {/* Merchant/Order Details Card - Always visible */}
+        <div className={styles.orderDetailsCard}>
+          <div className={styles.orderDetailRow}>
+            <span className={styles.orderDetailLabel}>{t("courierSection.pickupAddress")}</span>
+            <span className={styles.orderDetailValue}>{order.pickup.title}</span>
+          </div>
+          <div className={styles.orderDetailRow}>
+            <span className={styles.orderDetailLabel}>{t("courierSection.customerName")}</span>
+            <span className={styles.orderDetailValue}>{order.customer.name}</span>
+          </div>
+          <div className={styles.orderDetailRow}>
+            <span className={styles.orderDetailLabel}>{t("courierSection.customerPhone")}</span>
+            <span className={styles.orderDetailValue}>{order.customer.phone}</span>
+          </div>
+          <div className={styles.orderDetailRow}>
+            <span className={styles.orderDetailLabel}>{t("courierSection.customerAddress")}</span>
+            <span className={styles.orderDetailValue}>{order.customer.address}</span>
+          </div>
+          <div className={styles.orderDetailRow}>
+            <span className={styles.orderDetailLabel}>{t("courierSection.city")}</span>
+            <span className={styles.orderDetailValue}>{order.customer.gov}</span>
+          </div>
+        </div>
 
 {/* Offers Section - Only show for PENDING status */}
         {order.status === "PENDING" && (
@@ -987,7 +1021,7 @@ export default function OrderDetailsPage() {
                         </div>
                         <div className={styles.detailItem}>
                           <span className={styles.detailLabel}>{t("deliveryMethod")}</span>
-                          <span className={styles.detailValue}>{bid.courier.method}</span>
+                          <span className={styles.detailValue}>{getDeliveryMethodLabel(bid.courier.method)}</span>
                         </div>
                       </div>
                       {bid.status === "PENDING" && (

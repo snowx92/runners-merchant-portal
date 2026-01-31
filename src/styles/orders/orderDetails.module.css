@@ -113,9 +113,44 @@
     color: #2196F3;
 }
 
+.statusBadgePending {
+    background-color: #FFF8E1;
+    color: #F9A825;
+}
+
+.statusBadgeDelivered {
+    background-color: #E3F2FD;
+    color: #2196F3;
+}
+
+.statusBadgeCompleted {
+    background-color: #E8F5E9;
+    color: #4CAF50;
+}
+
 .statusBadgeCancelled {
     background-color: #FFEBEE;
     color: #EF5350;
+}
+
+.statusBadgeAccepted {
+    background-color: #E8F5E9;
+    color: #66BB6A;
+}
+
+.statusBadgePickedUp {
+    background-color: #E1F5FE;
+    color: #29B6F6;
+}
+
+.statusBadgeFailed {
+    background-color: #FFEBEE;
+    color: #E53935;
+}
+
+.statusBadgeReturned {
+    background-color: #FFF8E1;
+    color: #FF8F00;
 }
 
 .orderImageWrapper {

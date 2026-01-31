@@ -65,7 +65,7 @@ export interface Order {
   otp: string | null;
   receiveOTP: string;
   courierShippingAmount: number;
-  status: "PENDING" | "ACCEPTED" | "PICKED_UP" | "DELIVERED" | "COMPLETED" | "CANCELLED" | "FAILED";
+  status: "PENDING" | "ACCEPTED" | "PICKED_UP" | "DELIVERED" | "COMPLETED" | "CANCELLED" | "FAILED" | "RETURNED";
   cashStatus: "PENDING" | "PAID" | "REFUNDED";
   createdAt: {
     _seconds: number;

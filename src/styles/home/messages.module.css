@@ -1,6 +1,6 @@
 /* Floating Button */
 .floatingButton {
-  position: fixed;
+  position: relative;
   bottom: 0;
   background: white;
   border: none;
@@ -20,18 +20,18 @@
   min-width: 160px;
 }
 
-[dir="rtl"] .floatingButton {
-  right: 32px;
-  left: auto;
-}
-
-[dir="ltr"] .floatingButton {
-  left: 32px;
-  right: auto;
-}
-
 .floatingButton:hover {
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.buttonContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[dir="rtl"] .buttonContent {
+  flex-direction: row-reverse;
 }
 
 .floatingButtonText {
@@ -46,27 +46,38 @@
 
 /* Badge for unread count on floating button */
 .messageBadge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
   background: #dc2626;
   color: white;
   border-radius: 50%;
-  min-width: 22px;
-  height: 22px;
+  min-width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
   border: 2px solid white;
   padding: 0 4px;
+  z-index: 101;
+  margin-left: 8px;
 }
 
 .messageButtonWrapper {
-  position: relative;
+  position: fixed;
+  bottom: 0;
   display: flex;
   align-items: center;
+  z-index: 100;
+}
+
+[dir="rtl"] .messageButtonWrapper {
+  right: 32px;
+  left: auto;
+}
+
+[dir="ltr"] .messageButtonWrapper {
+  left: 32px;
+  right: auto;
 }
 
 /* Overlay */
@@ -910,6 +921,11 @@
     right: 16px;
     padding: 10px 20px;
     min-width: 140px;
+  }
+
+  .messageButtonWrapper {
+    left: 16px !important;
+    right: auto !important;
   }
 
   .attachmentMenu {

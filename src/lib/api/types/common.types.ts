@@ -16,6 +16,7 @@ export interface Address {
 
 export interface UserProfile {
     id: string;
+    uniqueId?: string;
     email: string;
     firstName?: string;
     fistName?: string; // API Typo
@@ -165,7 +166,10 @@ export interface DepositResponse {
 export interface PayoutRequest {
     amount: number;
     method: string;
-    accountNumber?: string;
+    accountNumber: string;
+    bank_card_number?: string;
+    bank_code?: string;
+    bank_method?: string;
 }
 
 export interface PayoutResponse {

@@ -259,6 +259,7 @@
     align-items: center;
     justify-content: center;
     color: #333;
+    margin-left: 1rem;
 }
 
 .statIconLarge {
@@ -270,7 +271,14 @@
     align-items: center;
     justify-content: center;
     margin-left: 1rem;
+    margin-right: 1rem;
     color: #111;
+    flex-shrink: 0;
+}
+
+[dir="rtl"] .statIconLarge {
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 /* Recent Orders */
@@ -346,6 +354,11 @@
 .badgeCancelled {
     background-color: #FFEBEE;
     color: #F44336;
+}
+
+.badgeReturned {
+    background-color: #FFF8E1;
+    color: #FF8F00;
 }
 
 /* Responsive */
