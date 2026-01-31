@@ -8,16 +8,22 @@ const cairo = Cairo({
   variable: "--font-cairo",
 });
 
-export default function AuthLayout({
+import { getLocale } from "next-intl/server";
+
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const isRTL = locale === "ar";
+  const direction = isRTL ? "rtl" : "ltr";
+
   return (
     <div className={`${cairo.className} ${styles.authContainer}`}>
       <div className={styles.splitLayout}>
         <AuthHeader />
-        <div className={`${styles.card} ${styles.contentRTL}`} dir="rtl">
+        <div className={styles.card} dir={direction}>
           {children}
         </div>
       </div>

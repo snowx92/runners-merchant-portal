@@ -83,7 +83,7 @@
 /* Shared Form Elements (Inputs, Buttons, Divider) */
 .formGroup {
     margin-bottom: 1.25rem;
-    text-align: right;
+    /* text-align: right; removed to support LTR */
 }
 
 .label {
@@ -102,7 +102,10 @@
 
 .input {
     width: 100%;
-    padding: 1rem 1.25rem;
+    padding-block: 1rem;
+    padding-inline-start: 1.25rem;
+    padding-inline-end: 2.5rem;
+    /* Space for the icon */
     background-color: #F8F9FA;
     border: 1px solid transparent;
     border-radius: 12px;
@@ -110,7 +113,7 @@
     color: #333;
     transition: all 0.2s;
     outline: none;
-    text-align: right;
+    /* text-align: right; removed to support LTR */
     font-family: inherit;
 }
 
@@ -127,7 +130,7 @@
 
 .iconButton {
     position: absolute;
-    left: 1rem;
+    inset-inline-end: 1rem;
     background: none;
     border: none;
     cursor: pointer;
