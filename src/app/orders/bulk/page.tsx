@@ -203,9 +203,9 @@ export default function BulkOrder() {
 
       <div className={styles.container}>
         {/* Header */}
-        <div className={styles.header}>
+        <div className={styles.header} dir={isRTL ? "rtl" : "ltr"}>
           <span className={styles.backArrow} onClick={() => router.back()}>
-            →
+            {isRTL ? "→" : "←"}
           </span>
           <h1 className={styles.pageTitle}>{t('title')}</h1>
           <button

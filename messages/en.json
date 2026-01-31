@@ -395,6 +395,7 @@
         "receiveOffers": "Receive Offers",
         "receiveOrder": "Receive Order",
         "deliverOrder": "Deliver Order",
+        "returnOrder": "Return Order",
         "cancelOrder": "Order Cancelled"
       },
       "viewAll": "View All",
@@ -773,6 +774,7 @@
       "submit": "Deposit",
       "processing": "Processing...",
       "invalidInput": "Please enter a valid amount and select a payment method.",
+      "minAmountError": "Minimum deposit amount is 10 EGP",
       "failed": "Failed to initiate deposit. Please try again.",
       "error": "An error occurred during deposit."
     }

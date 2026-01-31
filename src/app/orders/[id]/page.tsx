@@ -787,6 +787,13 @@ export default function OrderDetailsPage() {
                         { label: t("progress.createOrder"), step: 1 },
                         { label: t("progress.cancelOrder"), step: 2 },
                       ]
+                    : order.status === "RETURNED"
+                    ? [
+                        { label: t("progress.createOrder"), step: 1 },
+                        { label: t("progress.receiveOffers"), step: 2 },
+                        { label: t("progress.receiveOrder"), step: 3 },
+                        { label: t("progress.returnOrder"), step: 4 },
+                      ]
                     : [
                         { label: t("progress.createOrder"), step: 1 },
                         { label: t("progress.receiveOffers"), step: 2 },
@@ -915,7 +922,7 @@ export default function OrderDetailsPage() {
               </div>
 
               <div className={styles.courierActions}>
-                {order.receiveOTP && order.status !== "COMPLETED" && order.status !== "DELIVERED" && (
+                {order.status === "PENDING" && order.receiveOTP && (
                   <button
                     className={styles.showCodeBtn}
                     onClick={() => setShowReceiveCodeModal(true)}

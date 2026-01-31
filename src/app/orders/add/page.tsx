@@ -676,7 +676,7 @@ export default function AddOrder() {
         <div className={styles.header} data-rtl={isRTL}>
           <h1 className={styles.pageTitle} data-rtl={isRTL}>
             <span className={styles.backArrow} data-rtl={isRTL} onClick={() => router.push("/orders")}>
-              →
+              {isRTL ? "→" : "←"}
             </span>
             {t("title")}
           </h1>

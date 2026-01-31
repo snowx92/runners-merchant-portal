@@ -27,7 +27,18 @@ export const DepositModal = ({ isOpen, onClose }: DepositModalProps) => {
   };
 
   const handleDeposit = async () => {
-    if (!amount || isNaN(Number(amount)) || !paymentMethod) {
+    const numericAmount = Number(amount);
+    if (!amount || isNaN(numericAmount)) {
+      alert(t('invalidInput'));
+      return;
+    }
+
+    if (numericAmount < 10) {
+      alert(t('minAmountError'));
+      return;
+    }
+
+    if (!paymentMethod) {
       alert(t('invalidInput'));
       return;
     }
