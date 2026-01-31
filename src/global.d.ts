@@ -6,6 +6,10 @@ declare global {
   interface Window {
     google: typeof google;
     initMap: () => void;
+    fcWidget: {
+      init: (options: any) => void;
+      open: () => void;
+    };
   }
 
   namespace google {
@@ -221,5 +225,5 @@ declare global {
   }
 }
 
-export {};
+export { };
 

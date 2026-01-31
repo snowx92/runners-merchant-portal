@@ -25,11 +25,11 @@ export default function ContactPage() {
   useEffect(() => {
     // Wait for Freshchat to load and initialize it
     const initFreshchat = () => {
-      console.log('Initializing Freshchat...', window.fcWidget);
+      console.log('Initializing Freshchat...', (window as any).fcWidget);
 
-      if (window.fcWidget) {
+      if ((window as any).fcWidget) {
         // Initialize with custom config to hide the launcher
-        window.fcWidget.init({
+        (window as any).fcWidget.init({
           token: "40297092",
           host: "https://uae.freshchat.com",
           config: {
@@ -42,7 +42,7 @@ export default function ContactPage() {
         console.log('Freshchat initialized, opening widget...');
 
         // Auto-open the chat widget
-        window.fcWidget.open();
+        (window as any).fcWidget.open();
 
         // Move the Freshchat widget into our container
         const moveWidget = () => {
@@ -124,7 +124,7 @@ export default function ContactPage() {
     };
 
     // Check if script is already loaded
-    if (window.fcWidget) {
+    if ((window as any).fcWidget) {
       initFreshchat();
     } else {
       // Wait for script to load
@@ -139,7 +139,6 @@ export default function ContactPage() {
       <Script
         src="//uae.fw-cdn.com/40297092/184501.js"
         strategy="afterInteractive"
-        chat="true"
         onLoad={() => console.log('Freshchat script loaded')}
       />
 
